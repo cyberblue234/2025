@@ -16,10 +16,10 @@ public:
     Controls(Drivetrain *, KitBotOutput*);
     /// @brief Runs all of the subsystems controls every cycle
     /// @param period
-    void Periodic(units::time::second_t period);
+    void Periodic(time::second_t period);
     /// @brief Drivetrain controls
     /// @param period
-    void DriveControls(units::time::second_t period);
+    void DriveControls(time::second_t period);
 
     /// @brief Applies a deadband around zero. Zone depends on deadband value. 
     /// @param value Value to apply the deadband to
@@ -31,7 +31,7 @@ public:
         return value;
     }
 
-    frc::XboxController gamepad{0};
+    XboxController gamepad{0};
 
 private:
     Drivetrain *swerve;

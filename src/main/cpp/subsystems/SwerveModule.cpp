@@ -1,13 +1,13 @@
 #include "subsystems/SwerveModule.h"
 
-SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, int canCoderID, units::turn_t canCoderMagnetOffset)
+SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, int canCoderID, turn_t canCoderMagnetOffset)
     : driveMotor(driveMotorID, "rio"),
       turnMotor(turnMotorID, "rio"),
       canCoder(canCoderID, "rio")
 {
     this->name = name;
 
-    SetEncoder(0);
+    SetEncoder(0_tr);
 
     driveMotor.GetConfigurator().Apply(configs::TalonFXConfiguration{});
     configs::TalonFXConfiguration driveMotorConfig{};
@@ -21,7 +21,6 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     driveMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.15_s;
     driveMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.15_s;
 
-    // driveMotorConfig.Feedback.SensorToMechanismRatio = kDriveGearRatio;
 
     driveMotorConfig.Slot0.kP = kDriveP;
     driveMotorConfig.Slot0.kI = kDriveI;
@@ -35,7 +34,6 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     turnMotorConfig.Feedback.FeedbackRemoteSensorID = canCoder.GetDeviceID();
     turnMotorConfig.Feedback.FeedbackSensorSource = signals::FeedbackSensorSourceValue::RemoteCANcoder;
     turnMotorConfig.Feedback.SensorToMechanismRatio = 1.0;
-    // turnMotorConfig.Feedback.RotorToSensorRatio = kTurnGearRatio;
 
     turnMotorConfig.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
 
@@ -45,10 +43,6 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     turnMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.15_s;
     turnMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.15_s;
     turnMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.15_s;
-
-    // TODO: find replacement -- try configs::MotorOutputConfigs::WithPeakForwardDutyCycle and configs::MotorOutputConfigs::WithPeakReverseDutyCycle
-    // turnMotor.ConfigVoltageCompSaturation(11.0);
-    // turnMotor.EnableVoltageCompensation(true);
 
     turnMotor.GetConfigurator().Apply(turnMotorConfig);
 
@@ -67,30 +61,23 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     canCoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1_tr;
 
     canCoder.GetConfigurator().Apply(canCoderConfig);
-
-    wpi::SendableRegistry::SetName(&driveMotor, name, "Drive");
-    wpi::SendableRegistry::SetName(&turnMotor, name, "Turn");
-    wpi::SendableRegistry::SetName(&canCoder, name, "CANCoder");
 }
 
-void SwerveModule::SetDesiredState(const frc::SwerveModuleState &referenceState)
+void SwerveModule::SetDesiredState(SwerveModuleState &state)
 {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    // Deprecated!
-    auto state = frc::SwerveModuleState::Optimize(referenceState, GetAngle());
-
+    state.Optimize(GetAngle());
     // Scale speed by cosine of angle error. This scales down movement
     // perpendicular to the desired direction of travel that can occur when
     // modules change directions. This results in smoother driving.
-    state.speed *= (state.angle - GetAngle()).Cos();
+    state.CosineScale(GetAngle());
 
-    auto deltaAngle = units::angle::turn_t(state.angle.operator-(GetAngle()).Degrees().value() / 360);
+    turn_t deltaAngle = state.angle.operator-(GetAngle()).Degrees() / 360;
     // Calculate the turning motor output from the turning PID controller.
     controls::PositionVoltage& turnPos = turnPositionOut.WithPosition(deltaAngle + GetCANcoderPosition());
     turnMotor.SetControl(turnPos);
     // Set the motor outputs.
-    units::volt_t setVoltage = (state.speed / DrivetrainConstants::kMaxSpeed) * kVoltageComp;
-    driveMotor.SetVoltage(setVoltage);
+    driveMotor.Set(state.speed.value() / DrivetrainConstants::kMaxSpeed.value());
 
     TelemetryHelperNumber("SetSpeed", state.speed.value());
     TelemetryHelperNumber("SetAngle", state.angle.Degrees().value());

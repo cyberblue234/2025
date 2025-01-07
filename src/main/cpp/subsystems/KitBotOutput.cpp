@@ -2,5 +2,5 @@
 
 void KitBotOutput::SetMotor(double power)
 {
-    motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, power);
+    motor.Set(motorcontrol::ControlMode::PercentOutput, power);
 };

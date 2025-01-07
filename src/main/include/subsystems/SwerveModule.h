@@ -19,8 +19,6 @@
 
 #include <ctre/phoenix6/sim/CANcoderSimState.hpp>
 #include <ctre/phoenix6/sim/TalonFXSimState.hpp>
-#include <frc/simulation/DCMotorSim.h>
-#include <frc/simulation/EncoderSim.h>
 
 #include "Constants.h"
 
@@ -36,83 +34,83 @@ public:
     /// @param turnMotorID Can bus ID for the turn motor
     /// @param canCoderID Can bus ID for the CANcoder
     /// @param canCoderMagnetOffset Magnet offset for the CANcoder; ensures CANcoder is at 0 when facing straight ahead
-    SwerveModule(std::string name, int driveMotorID, int turnMotorID, int canCoderID, units::turn_t canCoderMagnetOffset);
+    SwerveModule(std::string name, int driveMotorID, int turnMotorID, int canCoderID, turn_t canCoderMagnetOffset);
 
     /// @brief Returns the state of the module. State is drive velocity and turn angle
     /// @return SwerveModuleState
-    frc::SwerveModuleState GetState() { return {GetVelocity(), GetAngle()}; };
+    const SwerveModuleState GetState() { return {GetVelocity(), GetAngle()}; };
     /// @brief Returns the position of the module. Position is drive distance and turn angle
     /// @return SwerveModulePosition
-    frc::SwerveModulePosition GetPosition() { return {GetDistance(), GetAngle()}; };
+    const SwerveModulePosition GetPosition() { return {GetDistance(), GetAngle()}; };
     /// @brief Sets the desired states of the module. State is drive velocity and turn angle
     /// @param state Reference to a new SwerveModuleState
-    void SetDesiredState(const frc::SwerveModuleState &state);
+    void SetDesiredState(SwerveModuleState &state);
 
     /// @brief Updates the SmartDashboard with the module information
     void UpdateTelemetry();
-    void TelemetryHelperNumber(std::string valueName, double value) { frc::SmartDashboard::PutNumber(valueName + " " + name, value); }
-    /// @brief Simulates the module
-    /// @param angle Angle to set the CANcoder at for the simulation
-    void SimMode();
+    /// @brief Quick SmartDashboard helper tool for printing diagnostics
+    /// @param valueName Description of the value
+    /// @param value Value to be printed
+    void TelemetryHelperNumber(std::string valueName, double value) { SmartDashboard::PutNumber(valueName + " " + name, value); }
 
     /// @brief Returns the distance of the drive motor
     /// @return Distance in meters
-    units::meter_t GetDistance() { return units::meter_t(driveMotor.GetPosition().GetValueAsDouble() * kDriveDistanceRatio); };
+    const meter_t GetDistance() { return driveMotor.GetPosition().GetValue() * kDriveDistanceRatio; };
     /// @brief Returns the velocity of the drive motor
     /// @return Velocity in meters per second
-    units::meters_per_second_t GetVelocity() { return units::meters_per_second_t(driveMotor.GetRotorVelocity().GetValueAsDouble() * kDriveDistanceRatio); };
+    const meters_per_second_t GetVelocity() { return driveMotor.GetRotorVelocity().GetValue() * kDriveDistanceRatio; };
     /// @brief Returns the angle of the module
     /// @return Rotation2d of the angle; domain: [0, 2π), [0°, 360°)
-    frc::Rotation2d GetAngle() { return frc::Rotation2d{units::radian_t(canCoder.GetAbsolutePosition().GetValueAsDouble() * kTurnDistanceRatio)}; };
+    const Rotation2d GetAngle() { return Rotation2d{canCoder.GetAbsolutePosition().GetValue() * kTurnDistanceRatio}; };
     /// @brief Returns the position of the CANcoder
-    /// @return units::turn_t CANcoder position 
-    units::angle::turn_t GetCANcoderPosition() { return canCoder.GetPosition().GetValue(); };
+    /// @return turn_t CANcoder position 
+    const turn_t GetCANcoderPosition() { return canCoder.GetPosition().GetValue(); };
     /// @brief Returns the absolute position of the CANcoder
-    /// @return units::turn_t CANcoder position 
-    units::angle::turn_t GetAbsoluteCANcoderPosition() { return canCoder.GetAbsolutePosition().GetValue(); };
+    /// @return turn_t CANcoder position 
+    const turn_t GetAbsoluteCANcoderPosition() { return canCoder.GetAbsolutePosition().GetValue(); };
 
     /// @brief Returns the supply voltage of the drive motor
     /// @return Supply voltage
-    units::voltage::volt_t GetDriveSupplyVoltage() { return driveMotor.GetSupplyVoltage().GetValue(); };
+    const volt_t GetDriveSupplyVoltage() { return driveMotor.GetSupplyVoltage().GetValue(); };
     /// @brief Returns the supply voltage of the turn motor
     /// @return Supply voltage
-    units::voltage::volt_t GetTurnSupplyVoltage() { return turnMotor.GetSupplyVoltage().GetValue(); };
+    const volt_t GetTurnSupplyVoltage() { return turnMotor.GetSupplyVoltage().GetValue(); };
     /// @brief Returns the output voltage of the drive motor
     /// @return Output (applied) voltage
-    units::voltage::volt_t GetDriveOutputVoltage() { return driveMotor.GetMotorVoltage().GetValue(); };
+    const volt_t GetDriveOutputVoltage() { return driveMotor.GetMotorVoltage().GetValue(); };
     /// @brief Returns the output voltage of the turn motor
     /// @return Output (applied) voltage
-    units::voltage::volt_t GetTurnOutputVoltage() { return turnMotor.GetMotorVoltage().GetValue(); };
+    const volt_t GetTurnOutputVoltage() { return turnMotor.GetMotorVoltage().GetValue(); };
     /// @brief Returns the torque current of the drive motor
     /// @return Torque current
-    units::current::ampere_t GetDriveTorqueCurrent() { return driveMotor.GetTorqueCurrent().GetValue(); };
+    const ampere_t GetDriveTorqueCurrent() { return driveMotor.GetTorqueCurrent().GetValue(); };
     /// @brief Returns the toque current of the turn motor
     /// @return Torque current
-    units::current::ampere_t GetTurnTorqueCurrent() { return turnMotor.GetTorqueCurrent().GetValue(); };
+    const ampere_t GetTurnTorqueCurrent() { return turnMotor.GetTorqueCurrent().GetValue(); };
     /// @brief Returns the stator current of the drive motor
     /// @return Stator current
-    units::current::ampere_t GetDriveStatorCurrent() { return driveMotor.GetStatorCurrent().GetValue(); };
+    const ampere_t GetDriveStatorCurrent() { return driveMotor.GetStatorCurrent().GetValue(); };
     /// @brief Returns the stator current of the turn motor
     /// @return Stator current
-    units::current::ampere_t GetTurnStatorCurrent() { return turnMotor.GetStatorCurrent().GetValue(); };
+    const ampere_t GetTurnStatorCurrent() { return turnMotor.GetStatorCurrent().GetValue(); };
     /// @brief Returns the supply current of the drive motor
     /// @return Supply current
-    units::current::ampere_t GetDriveSupplyCurrent() { return driveMotor.GetSupplyCurrent().GetValue(); };
+    const ampere_t GetDriveSupplyCurrent() { return driveMotor.GetSupplyCurrent().GetValue(); };
     /// @brief Returns the supply current of the turn motor
     /// @return Supply current
-    units::current::ampere_t GetTurnSupplyCurrent() { return turnMotor.GetSupplyCurrent().GetValue(); };
+    const ampere_t GetTurnSupplyCurrent() { return turnMotor.GetSupplyCurrent().GetValue(); };
     /// @brief Returns the temperature of the drive motor
     /// @return Temperature (°C)
-    units::temperature::celsius_t GetDriveTemp() { return driveMotor.GetDeviceTemp().GetValue(); };
+    const celsius_t GetDriveTemp() { return driveMotor.GetDeviceTemp().GetValue(); };
     /// @brief Returns the temperature of the turn motor
     /// @return Temperature (°C)
-    units::temperature::celsius_t GetTurnTemp() { return turnMotor.GetDeviceTemp().GetValue(); };
+    const celsius_t GetTurnTemp() { return turnMotor.GetDeviceTemp().GetValue(); };
     /// @brief Returns the temperature of the drive motor controller
     /// @return Temperature (°C)
-    units::temperature::celsius_t GetDriveProcessorTemp() { return driveMotor.GetProcessorTemp().GetValue(); };
+    const celsius_t GetDriveProcessorTemp() { return driveMotor.GetProcessorTemp().GetValue(); };
     /// @brief Returns the temperature of the turn motor controller
     /// @return Temperature (°C)
-    units::temperature::celsius_t GetTurnProcessorTemp() { return turnMotor.GetProcessorTemp().GetValue(); };
+    const celsius_t GetTurnProcessorTemp() { return turnMotor.GetProcessorTemp().GetValue(); };
 
     /// @brief Returns the drive motor object
     /// @return Pointer to TalonFX
@@ -126,10 +124,10 @@ public:
     
     /// @brief Sets the raw encoder position of the drive motor
     /// @param value new raw position
-    void SetEncoder(double value) { driveMotor.SetPosition(units::angle::turn_t(value)); };
+    void SetEncoder(turn_t value) { driveMotor.SetPosition(value); };
     /// @brief Sets the raw encoder position of the CANcoder
     /// @param value new raw position
-    void SetCanCoder(double value) { canCoder.SetPosition(units::angle::turn_t(value)); }
+    void SetCanCoder(turn_t value) { canCoder.SetPosition(value); }
 
 private:
     std::string name;
