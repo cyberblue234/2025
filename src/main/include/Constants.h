@@ -40,11 +40,17 @@
 #include <units/voltage.h>
 #include <units/volume.h>
 
+#include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
+
+#include <frc/smartdashboard/SmartDashboard.h>
+
 #include <numbers>
 #include <string>
 #include <array>
 #include <vector>
+#include <math>
 
 using namespace units;
 using namespace frc;
@@ -121,6 +127,16 @@ namespace DrivetrainConstants
     inline constexpr turn_t kFrontRightMagnetOffset = -0.846_tr;
     inline constexpr turn_t kBackLeftMagnetOffset   = -0.023_tr;
     inline constexpr turn_t kBackRightMagnetOffset  = -0.245_tr;
+}
+
+namespace PathPlannerConstants
+{
+    inline constexpr double kTranslationP = 5.0;
+    inline constexpr double kTranslationI = 0.0;
+    inline constexpr double kTranslationD = 0.0;
+    inline constexpr double kRotationP = 5.0;
+    inline constexpr double kRotationI = 0.0;
+    inline constexpr double kRotationD = 0.0;
 }
 
 namespace KitBotConstants

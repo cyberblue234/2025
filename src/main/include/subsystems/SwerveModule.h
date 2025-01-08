@@ -3,15 +3,9 @@
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 
-#include <frc/geometry/Rotation2d.h>
-
 #include <frc/controller/SimpleMotorFeedforward.h>
 
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <wpi/sendable/SendableRegistry.h>
-
-#include <numbers>
-#include <string>
 
 #include <ctre/phoenix6/CANcoder.hpp>
 #include <ctre/phoenix6/TalonFX.hpp>

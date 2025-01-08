@@ -36,7 +36,12 @@ void Controls::DriveControls(time::second_t period)
     const radians_per_second_t rot = -ApplyDeadband(pow(gamepad.GetRightX(), 3), 0.05) *
                      DrivetrainConstants::kMaxAngularSpeed;
 
-    if (swerve) swerve->Drive(xSpeed, ySpeed, rot, true, period);
+    SmartDashboard::PutNumber("xSpeed", xSpeed.value());
+    SmartDashboard::PutNumber("ySpeed", ySpeed.value());
+    SmartDashboard::PutNumber("rot", rot.value());
+
+    ChassisSpeeds setSpeeds = ChassisSpeeds::Discretize(ChassisSpeeds{xSpeed, ySpeed, rot}, period);
+    if (swerve) swerve->Drive(setSpeeds, fieldRelative);
 }
 
 void Controls::KitBotControls() 

@@ -1,12 +1,9 @@
 #pragma once
 
 #include <frc/XboxController.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 #include "subsystems/Drivetrain.h"
 #include "subsystems/KitBotOutput.h"
 #include "Constants.h"
-
-#include <math.h>
 
 class Controls
 {
@@ -38,4 +35,6 @@ public:
 private:
     Drivetrain *swerve;
     KitBotOutput *kitBotOutput;
+
+    fieldRelative = true;
 };

@@ -3,7 +3,6 @@
 #include <frc/XboxController.h>
 #include <frc/DriverStation.h>
 
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/smartdashboard/Field2d.h>
 
 #include <frc/kinematics/SwerveDriveKinematics.h>
@@ -17,10 +16,6 @@
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 
 #include <frc/controller/PIDController.h>
-
-#include <frc/geometry/Pose2d.h>
-#include <frc/geometry/Rotation2d.h>
-#include <frc/geometry/Translation2d.h>
 
 #include "studica/AHRS.h"
 
@@ -36,29 +31,24 @@ public:
     /// @brief Constructs the swerve drivetrain 
     Drivetrain();
 
-    /// @brief Calculates the desired SwerveModuleStates for all of the SwerveModules
-    /// @param xSpeed Desired speed in the x-direction
-    /// @param ySpeed Desired speed in the y-direction
-    /// @param rot Desired rotational speed
-    /// @param fieldRelative True for field relative, false for robot relative
-    /// @param period RoboRio cycle period - typically 20ms
-    void Drive(meters_per_second_t xSpeed,
-             meters_per_second_t ySpeed, radians_per_second_t rot,
-             bool fieldRelative, second_t period);
+    /// @brief Calculates the desired SwerveModuleStates for all of the Swerve Modules
+    /// @param speeds The created ChassisSpeeds to run the bot - must be robot relative
+    /// @param fieldRelative When set to true, the ChassisSpeeds will be updated to fieldRelative
+    void Drive(ChassisSpeeds speeds, bool fieldRelative);
     
     /// @brief Calls odometry update
     void UpdateOdometry();
     /// @brief Sets current robot pose
     /// @warning might be an issue - before it was .ResetPosition(...)
-    void SetPose(Pose2d pose) { odometry.ResetPose(pose); };
+    void ResetPose(Pose2d pose) { odometry.ResetPose(pose); };
     /// @brief Returns current robot pose
     /// @return Pose2d of current robot pose
     Pose2d GetPose() { return odometry.GetEstimatedPosition(); };
     /// @brief Sets the current chassis speeds
-    void SetChassisSpeeds(ChassisSpeeds newSpeeds) { currentChassisSpeeds = newSpeeds; };
+    void SetRobotRelativeSpeeds(ChassisSpeeds newSpeeds) { robotRelativeSpeeds = newSpeeds; };
     /// @brief Returns the current chassis speeds
     /// @return ChassisSpeeds of the current speeds
-    ChassisSpeeds GetChassisSpeeds() { return currentChassisSpeeds; };
+    ChassisSpeeds GetRobotRelativeSpeeds() { return robotRelativeSpeeds; };
 
     /// @brief Gets the gyro angle
     /// @return Rotation2d of the gyro angle
@@ -95,7 +85,7 @@ private:
 
     Field2d field{};
 
-    frc::ChassisSpeeds currentChassisSpeeds;
+    frc::ChassisSpeeds robotRelativeSpeeds;
 
     SwerveDriveKinematics<4> kinematics{
         kFrontLeftLocation,
