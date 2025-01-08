@@ -9,6 +9,7 @@ Controls::Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput)
 void Controls::Periodic(time::second_t period)
 {
     DriveControls(period);
+    KitBotControls();
 }
 
 void Controls::DriveControls(time::second_t period)
@@ -36,4 +37,16 @@ void Controls::DriveControls(time::second_t period)
                      DrivetrainConstants::kMaxAngularSpeed;
 
     if (swerve) swerve->Drive(xSpeed, ySpeed, rot, true, period);
+}
+
+void Controls::KitBotControls() 
+{
+    if(gamepad.GetYButton()) 
+    {
+        kitBotOutput->SetMotor(KitBotConstants::kMotorPower);
+    }
+    else
+    {
+        kitBotOutput->SetMotor(KitBotConstants::kMotorStop);
+    }
 }

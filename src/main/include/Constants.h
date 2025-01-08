@@ -123,6 +123,12 @@ namespace DrivetrainConstants
     inline constexpr turn_t kBackRightMagnetOffset  = -0.245_tr;
 }
 
+namespace KitBotConstants
+{
+    inline constexpr double kMotorPower = 0.5;
+    inline constexpr double kMotorStop = 0.0;
+}
+
 template <typename T>
 constexpr T clamp(T val, T low, T high) 
 {

@@ -21,6 +21,8 @@ public:
     /// @param period
     void DriveControls(time::second_t period);
 
+    void KitBotControls(); 
+
     /// @brief Applies a deadband around zero. Zone depends on deadband value. 
     /// @param value Value to apply the deadband to
     /// @param deadband Value around zero
