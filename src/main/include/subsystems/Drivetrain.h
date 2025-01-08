@@ -12,6 +12,10 @@
 
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/config/RobotConfig.h>
+#include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
+
 #include <frc/controller/PIDController.h>
 
 #include <frc/geometry/Pose2d.h>
@@ -24,6 +28,7 @@
 #include "Constants.h"
 
 using namespace DrivetrainConstants;
+using namespace pathplanner;
 
 class Drivetrain
 {
@@ -43,6 +48,22 @@ public:
     
     /// @brief Calls odometry update
     void UpdateOdometry();
+    /// @brief Sets current robot pose
+    /// @warning might be an issue - before it was .ResetPosition(...)
+    void SetPose(Pose2d pose) { odometry.ResetPose(pose); };
+    /// @brief Returns current robot pose
+    /// @return Pose2d of current robot pose
+    Pose2d GetPose() { return odometry.GetEstimatedPosition(); };
+    /// @brief Sets the current chassis speeds
+    void SetChassisSpeeds(ChassisSpeeds newSpeeds) { currentChassisSpeeds = newSpeeds; };
+    /// @brief Returns the current chassis speeds
+    /// @return ChassisSpeeds of the current speeds
+    ChassisSpeeds GetChassisSpeeds() { return currentChassisSpeeds; };
+
+    /// @brief Gets the gyro angle
+    /// @return Rotation2d of the gyro angle
+    Rotation2d GetGyroAngle() { return gyro.GetRotation2d(); };
+    
     /// @brief Updates SmartDashboard values
     void UpdateTelemetry();
     
@@ -73,6 +94,8 @@ private:
     studica::AHRS gyro{studica::AHRS::NavXComType::kMXP_SPI};
 
     Field2d field{};
+
+    frc::ChassisSpeeds currentChassisSpeeds;
 
     SwerveDriveKinematics<4> kinematics{
         kFrontLeftLocation,
