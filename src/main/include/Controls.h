@@ -36,5 +36,5 @@ private:
     Drivetrain *swerve;
     KitBotOutput *kitBotOutput;
 
-    fieldRelative = true;
+    bool fieldRelative = true;
 };

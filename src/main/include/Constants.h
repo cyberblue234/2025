@@ -50,7 +50,7 @@
 #include <string>
 #include <array>
 #include <vector>
-#include <math>
+#include <math.h>
 
 using namespace units;
 using namespace frc;

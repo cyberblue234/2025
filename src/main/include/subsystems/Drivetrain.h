@@ -15,7 +15,7 @@
 #include <pathplanner/lib/config/RobotConfig.h>
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 
-#include <frc/controller/PIDController.h>
+#include <frc2/command/SubsystemBase.h>
 
 #include "studica/AHRS.h"
 
@@ -25,7 +25,7 @@
 using namespace DrivetrainConstants;
 using namespace pathplanner;
 
-class Drivetrain
+class Drivetrain : frc2::SubsystemBase
 {
 public:
     /// @brief Constructs the swerve drivetrain 
