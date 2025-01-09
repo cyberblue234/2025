@@ -141,7 +141,7 @@ namespace PathPlannerConstants
 
 namespace KitBotConstants
 {
-    inline constexpr double kMotorPower = 0.5;
+    inline constexpr double kMotorPower = -0.5;
     inline constexpr double kMotorStop = 0.0;
 }
 
