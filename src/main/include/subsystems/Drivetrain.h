@@ -12,6 +12,12 @@
 
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/config/RobotConfig.h>
+#include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
+
+#include <frc2/command/SubsystemBase.h>
+
 #include <frc/controller/PIDController.h>
 
 #include <frc/geometry/Pose2d.h>
@@ -24,12 +30,13 @@
 #include "Constants.h"
 
 using namespace DrivetrainConstants;
+using namespace pathplanner;
 
-class Drivetrain
+class Drivetrain : frc2::SubsystemBase
 {
 public:
     /// @brief Constructs the swerve drivetrain 
-    Drivetrain() { gyro.Reset(); };
+    Drivetrain();
     
     /// @brief Calculates the desired SwerveModuleStates for all of the SwerveModules
     /// @param xSpeed Desired speed in the x-direction
@@ -40,6 +47,23 @@ public:
     void Drive(units::meters_per_second_t xSpeed,
              units::meters_per_second_t ySpeed, units::radians_per_second_t rot,
              bool fieldRelative, units::second_t period);
+
+    /// @brief Calculates the desired SwerveModuleStates for all of the Swerve Modules
+    /// @param speeds The created ChassisSpeeds to run the bot - must be robot relative
+    /// @param fieldRelative When set to true, the ChassisSpeeds will be updated to fieldRelative
+    void Drive(ChassisSpeeds speeds, bool fieldRelative);
+
+    /// @brief Sets current robot pose
+    /// @warning might be an issue - before it was .ResetPosition(...)
+    void ResetPose(frc::Pose2d pose) { odometry.ResetPose(pose); };
+    /// @brief Returns current robot pose
+    /// @return Pose2d of current robot pose
+    frc::Pose2d GetPose() { return odometry.GetEstimatedPosition(); };
+    /// @brief Sets the current chassis speeds
+    void SetRobotRelativeSpeeds(frc::ChassisSpeeds newSpeeds) { robotRelativeSpeeds = newSpeeds; };
+    /// @brief Returns the current chassis speeds
+    /// @return ChassisSpeeds of the current speeds
+    frc::ChassisSpeeds GetRobotRelativeSpeeds() { return robotRelativeSpeeds; };
 
     /// @brief Calls odometry update
     void UpdateOdometry();
@@ -72,6 +96,8 @@ private:
     studica::AHRS gyro{studica::AHRS::NavXComType::kMXP_SPI};
 
     frc::Field2d field{};
+
+    frc::ChassisSpeeds robotRelativeSpeeds;
 
     frc::SwerveDriveKinematics<4> kinematics{
         kFrontLeftLocation,
