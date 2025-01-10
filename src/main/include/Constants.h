@@ -77,11 +77,19 @@ namespace RobotMap
     constexpr int kBackRightCanCoderID = 24;
 }
 
+namespace units
+{
+    using meters_per_turn = units::compound_unit<units::meter, units::inverse<units::turn>>;
+    using meters_per_turn_t = units::unit_t<meters_per_turn>;
+    using radians_per_turn = units::compound_unit<units::radian, units::inverse<units::turn>>;
+    using radians_per_turn_t = units::unit_t<radians_per_turn>;
+}
+
 namespace SwerveModuleConstants
 {
     inline constexpr double kDriveP = 0.50;
     inline constexpr double kDriveI = 0.0;
-    inline constexpr double kDriveD = 0.1;
+    inline constexpr double kDriveD = 0.0;
     inline constexpr auto kDrive_kS = 1_V;
     inline constexpr auto kDrive_kV = 0.5_V / 1_tps;
 
@@ -89,11 +97,11 @@ namespace SwerveModuleConstants
     inline constexpr double kTurnI = 0.0;
     inline constexpr double kTurnD = 0.5;
 
-    inline constexpr double kDriveGearRatio = 6.54;
-    inline constexpr double kTurnGearRatio = 11.31;
-    inline constexpr double kWheelRadius = 0.0491;
-    inline constexpr double kDriveDistanceRatio = kWheelRadius * 2 * std::numbers::pi / kDriveGearRatio;
-    inline constexpr double kTurnDistanceRatio = 2 * std::numbers::pi;
+    inline constexpr units::turn_t kDriveGearRatio = 6.54_tr;
+    inline constexpr units::turn_t kTurnGearRatio = 11.31_tr;
+    inline constexpr units::meter_t kWheelRadius = 0.0491_m;
+    inline constexpr units::meters_per_turn_t kDriveDistanceRatio = kWheelRadius * 2 * std::numbers::pi / kDriveGearRatio;
+    inline constexpr units::radians_per_turn_t kTurnDistanceRatio = 2_rad * std::numbers::pi / 1_tr;
 
     inline constexpr units::radians_per_second_t kModuleMaxAngularVelocity = std::numbers::pi * 4_rad_per_s;
     inline constexpr units::radians_per_second_squared_t kModuleMaxAngularAcceleration = std::numbers::pi * 2_rad_per_s / 1_s;
@@ -111,12 +119,10 @@ namespace DrivetrainConstants
     inline constexpr units::meters_per_second_t kMaxSpeed = 4.0_mps;
     inline constexpr units::radians_per_second_t kMaxAngularSpeed = std::numbers::pi * 2_rad_per_s;
 
-    inline constexpr units::turn_t kFrontLeftMagnetOffset  = -0.547_tr; //-0.666016;
-    inline constexpr units::turn_t kFrontRightMagnetOffset = -0.846_tr; //-0.78125;
-    inline constexpr units::turn_t kBackLeftMagnetOffset   = -0.023_tr; //0.8852546;
-    inline constexpr units::turn_t kBackRightMagnetOffset  = -0.245_tr; //-0.251953;
-
-    inline constexpr double kDriveSlowAdjustment = 0.20;
+    inline constexpr units::turn_t kFrontLeftMagnetOffset  = -0.547_tr;
+    inline constexpr units::turn_t kFrontRightMagnetOffset = -0.846_tr;
+    inline constexpr units::turn_t kBackLeftMagnetOffset   = -0.023_tr;
+    inline constexpr units::turn_t kBackRightMagnetOffset  = -0.245_tr;
 }
 
 template <typename T>

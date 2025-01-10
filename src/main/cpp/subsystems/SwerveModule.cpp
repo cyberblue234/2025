@@ -7,7 +7,7 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
 {
     this->name = name;
 
-    SetEncoder(0);
+    SetEncoder(0_tr);
 
     driveMotor.GetConfigurator().Apply(configs::TalonFXConfiguration{});
     configs::TalonFXConfiguration driveMotorConfig{};
@@ -67,24 +67,20 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     canCoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1_tr;
 
     canCoder.GetConfigurator().Apply(canCoderConfig);
-
-    wpi::SendableRegistry::SetName(&driveMotor, name, "Drive");
-    wpi::SendableRegistry::SetName(&turnMotor, name, "Turn");
-    wpi::SendableRegistry::SetName(&canCoder, name, "CANCoder");
 }
 
-void SwerveModule::SetDesiredState(const frc::SwerveModuleState &referenceState)
+void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
 {
     // Optimize the reference state to avoid spinning further than 90 degrees
     // Deprecated!
-    auto state = frc::SwerveModuleState::Optimize(referenceState, GetAngle());
+    state.Optimize(GetAngle());
 
     // Scale speed by cosine of angle error. This scales down movement
     // perpendicular to the desired direction of travel that can occur when
     // modules change directions. This results in smoother driving.
-    state.speed *= (state.angle - GetAngle()).Cos();
+    state.CosineScale(GetAngle());
 
-    auto deltaAngle = units::angle::turn_t(state.angle.operator-(GetAngle()).Degrees().value() / 360);
+    units::turn_t deltaAngle = units::turn_t(state.angle.operator-(GetAngle()).Degrees().value() / 360);
     // Calculate the turning motor output from the turning PID controller.
     controls::PositionVoltage& turnPos = turnPositionOut.WithPosition(deltaAngle + GetCANcoderPosition());
     turnMotor.SetControl(turnPos);
