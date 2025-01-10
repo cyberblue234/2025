@@ -51,7 +51,7 @@ public:
     /// @brief Calculates the desired SwerveModuleStates for all of the Swerve Modules
     /// @param speeds The created ChassisSpeeds to run the bot - must be robot relative
     /// @param fieldRelative When set to true, the ChassisSpeeds will be updated to fieldRelative
-    void Drive(ChassisSpeeds speeds, bool fieldRelative);
+    void Drive(frc::ChassisSpeeds speeds, bool fieldRelative);
 
     /// @brief Sets current robot pose
     /// @warning might be an issue - before it was .ResetPosition(...)

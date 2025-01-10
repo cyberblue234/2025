@@ -24,7 +24,7 @@ Drivetrain::Drivetrain()
 
             auto alliance = frc::DriverStation::GetAlliance();
             if (alliance) {
-                return alliance.value() == DriverStation::Alliance::kRed;
+                return alliance.value() == frc::DriverStation::Alliance::kRed;
             }
             return false;
         },
@@ -67,11 +67,11 @@ void Drivetrain::Drive(units::meters_per_second_t xSpeed,
     frc::SmartDashboard::PutData("Field", &field);
 }
 
-void Drivetrain::Drive(ChassisSpeeds speeds, bool fieldRelative)
+void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
 {
     SetRobotRelativeSpeeds(speeds); // Sets ChassisSpeeds before field relative translation for PPLib
-    if (fieldRelative) speeds = ChassisSpeeds::FromFieldRelativeSpeeds(speeds, GetGyroAngle());
-    wpi::array<SwerveModuleState, 4U> states = kinematics.ToSwerveModuleStates(speeds);
+    if (fieldRelative) speeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(speeds, gyro.GetRotation2d());
+    wpi::array<frc::SwerveModuleState, 4U> states = kinematics.ToSwerveModuleStates(speeds);
     
     kinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
 
