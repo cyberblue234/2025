@@ -3,7 +3,6 @@
 #include <frc/XboxController.h>
 #include <frc/DriverStation.h>
 
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/smartdashboard/Field2d.h>
 
 #include <frc/kinematics/SwerveDriveKinematics.h>
@@ -20,9 +19,7 @@
 
 #include <frc/controller/PIDController.h>
 
-#include <frc/geometry/Pose2d.h>
-#include <frc/geometry/Rotation2d.h>
-#include <frc/geometry/Translation2d.h>
+#include <frc2/command/SubsystemBase.h>
 
 #include "studica/AHRS.h"
 
@@ -37,16 +34,6 @@ class Drivetrain : frc2::SubsystemBase
 public:
     /// @brief Constructs the swerve drivetrain 
     Drivetrain();
-    
-    /// @brief Calculates the desired SwerveModuleStates for all of the SwerveModules
-    /// @param xSpeed Desired speed in the x-direction
-    /// @param ySpeed Desired speed in the y-direction
-    /// @param rot Desired rotational speed
-    /// @param fieldRelative True for field relative, false for robot relative
-    /// @param period RoboRio cycle period - typically 20ms
-    void Drive(units::meters_per_second_t xSpeed,
-             units::meters_per_second_t ySpeed, units::radians_per_second_t rot,
-             bool fieldRelative, units::second_t period);
 
     /// @brief Calculates the desired SwerveModuleStates for all of the Swerve Modules
     /// @param speeds The created ChassisSpeeds to run the bot - must be robot relative
@@ -76,6 +63,7 @@ public:
     void ResetGyro() { gyro.Reset(); }
     /// @brief Sets the gyro adjustment
     void SetGyroAdjustment(double angle) { gyro.SetAngleAdjustment(angle); };
+
     /// @brief Resets drive encoders to 0
     void ResetDriveDistances() 
     {
@@ -95,10 +83,10 @@ public:
 
     /// @brief Returns the acceleration in the x-direction
     /// @return Acceleration in meters per second squared
-    units::meters_per_second_squared_t GetXAcceleration() { return gyro.GetWorldLinearAccelX() * 9.80665_mps_sq; };
+    const units::meters_per_second_squared_t GetXAcceleration() { return gyro.GetWorldLinearAccelX() * 9.80665_mps_sq; };
     /// @brief Returns the acceleration in the y-direction
     /// @return Acceleration in meters per second squared
-    units::meters_per_second_squared_t GetYAcceleration() { return gyro.GetWorldLinearAccelY() * 9.80665_mps_sq; };
+    const units::meters_per_second_squared_t GetYAcceleration() { return gyro.GetWorldLinearAccelY() * 9.80665_mps_sq; };
 
 private:
     SwerveModule frontLeft{"Front Left", RobotMap::kFrontLeftDriveID, RobotMap::kFrontLeftTurnID, RobotMap::kFrontLeftCanCoderID, kFrontLeftMagnetOffset};
@@ -108,9 +96,10 @@ private:
 
     studica::AHRS gyro{studica::AHRS::NavXComType::kMXP_SPI};
 
-    frc::Field2d field{};
+    Field2d field{};
 
     frc::ChassisSpeeds robotRelativeSpeeds;
+
 
     frc::SwerveDriveKinematics<4> kinematics{
         kFrontLeftLocation,
@@ -118,10 +107,10 @@ private:
         kBackLeftLocation,
         kBackRightLocation};
 
-    frc::SwerveDrivePoseEstimator<4> odometry{
+    SwerveDrivePoseEstimator<4> odometry{
         kinematics,
         gyro.GetRotation2d(),
         {frontLeft.GetPosition(), frontRight.GetPosition(),
          backLeft.GetPosition(), backRight.GetPosition()},
-        frc::Pose2d()};
+        Pose2d()};
 };

@@ -1,6 +1,6 @@
 #include "subsystems/SwerveModule.h"
 
-SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, int canCoderID, units::turn_t canCoderMagnetOffset)
+SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, int canCoderID, turn_t canCoderMagnetOffset)
     : driveMotor(driveMotorID, "rio"),
       turnMotor(turnMotorID, "rio"),
       canCoder(canCoderID, "rio")
@@ -8,7 +8,6 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     this->name = name;
 
     SetEncoder(0_tr);
-    SetCanCoder(0_tr);
 
     driveMotor.GetConfigurator().Apply(configs::TalonFXConfiguration{});
     configs::TalonFXConfiguration driveMotorConfig{};
@@ -92,6 +91,7 @@ void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
     }
     controls::VelocityVoltage& driveVelocity = driveVelocityOut.WithVelocity(state.speed * (1 / kDriveDistanceRatio));
     driveMotor.SetControl(driveVelocity);
+    turn_t deltaAngle = state.angle.operator-(GetAngle()).Degrees() / 360;
 
     TelemetryHelperNumber("SetSpeed", state.speed.value());
     TelemetryHelperNumber("SetAngle", state.angle.Degrees().value());

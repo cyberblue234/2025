@@ -1,12 +1,9 @@
 #pragma once
 
 #include <frc/XboxController.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 #include "subsystems/Drivetrain.h"
 #include "subsystems/KitBotOutput.h"
 #include "Constants.h"
-
-#include <math.h>
 
 class Controls
 {
@@ -16,10 +13,11 @@ public:
     Controls(Drivetrain *, KitBotOutput*);
     /// @brief Runs all of the subsystems controls every cycle
     /// @param period
-    void Periodic(units::time::second_t period);
+    void Periodic(units::second_t period);
     /// @brief Drivetrain controls
     /// @param period
-    void DriveControls(units::time::second_t period);
+  
+    void DriveControls(units::second_t period);
     /// @brief KitBotOutput controls
     void KitBotControls();
 
@@ -33,9 +31,11 @@ public:
         return value;
     }
 
-    frc::XboxController gamepad{0};
+    XboxController gamepad{0};
 
 private:
     Drivetrain *swerve;
     KitBotOutput *kitBotOutput;
+
+    bool fieldRelative = true;
 };

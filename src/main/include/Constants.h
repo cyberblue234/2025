@@ -40,6 +40,8 @@
 #include <units/voltage.h>
 #include <units/volume.h>
 
+#include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
 #include <frc/controller/SimpleMotorFeedforward.h>
 
@@ -128,6 +130,22 @@ namespace DrivetrainConstants
     inline constexpr units::turn_t kFrontRightMagnetOffset = -0.846_tr;
     inline constexpr units::turn_t kBackLeftMagnetOffset   = -0.023_tr;
     inline constexpr units::turn_t kBackRightMagnetOffset  = -0.245_tr;
+}
+
+namespace PathPlannerConstants
+{
+    inline constexpr double kTranslationP = 5.0;
+    inline constexpr double kTranslationI = 0.0;
+    inline constexpr double kTranslationD = 0.0;
+    inline constexpr double kRotationP = 5.0;
+    inline constexpr double kRotationI = 0.0;
+    inline constexpr double kRotationD = 0.0;
+}
+
+namespace KitBotConstants
+{
+    inline constexpr double kMotorPower = 0.5;
+    inline constexpr double kMotorStop = 0.0;
 }
 
 template <typename T>

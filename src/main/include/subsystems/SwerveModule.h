@@ -3,15 +3,9 @@
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 
-#include <frc/geometry/Rotation2d.h>
-
 #include <frc/controller/SimpleMotorFeedforward.h>
 
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <wpi/sendable/SendableRegistry.h>
-
-#include <numbers>
-#include <string>
 
 #include <ctre/phoenix6/CANcoder.hpp>
 #include <ctre/phoenix6/TalonFX.hpp>
@@ -19,6 +13,7 @@
 
 #include <ctre/phoenix6/sim/CANcoderSimState.hpp>
 #include <ctre/phoenix6/sim/TalonFXSimState.hpp>
+
 #include <frc/system/plant/DCMotor.h>
 #include <frc/simulation/DCMotorSim.h>
 #include <frc/system/plant/LinearSystemId.h>
@@ -39,7 +34,7 @@ public:
     /// @param turnMotorID Can bus ID for the turn motor
     /// @param canCoderID Can bus ID for the CANcoder
     /// @param canCoderMagnetOffset Magnet offset for the CANcoder; ensures CANcoder is at 0 when facing straight ahead
-    SwerveModule(std::string name, int driveMotorID, int turnMotorID, int canCoderID, units::turn_t canCoderMagnetOffset);
+    SwerveModule(std::string name, int driveMotorID, int turnMotorID, int canCoderID, turn_t canCoderMagnetOffset);
 
     /// @brief Returns the state of the module. State is drive velocity and turn angle
     /// @return SwerveModuleState
