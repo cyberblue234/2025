@@ -6,13 +6,13 @@ Controls::Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput)
     this->kitBotOutput = kitBotOutput;
 }
 
-void Controls::Periodic(time::second_t period)
+void Controls::Periodic(units::second_t period)
 {
     DriveControls(period);
     KitBotControls();
 }
 
-void Controls::DriveControls(time::second_t period)
+void Controls::DriveControls(units::second_t period)
 {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
@@ -26,21 +26,21 @@ void Controls::DriveControls(time::second_t period)
     // Adds a speed adjusmtment based on the right trigger - the more it is pressed, the slower the bot will travel for a maximum reduction of 80%
     const double speedAdjust = 1 - 0.8 * gamepad.GetRightTriggerAxis(); 
 
-    const meters_per_second_t xSpeed = ApplyDeadband(x * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;
-    const meters_per_second_t ySpeed = ApplyDeadband(y * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;
+    const units::meters_per_second_t xSpeed = ApplyDeadband(x * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;
+    const units::meters_per_second_t ySpeed = ApplyDeadband(y * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    const radians_per_second_t rot = -ApplyDeadband(pow(gamepad.GetRightX(), 3), 0.05) *
+    const units::radians_per_second_t rot = -ApplyDeadband(pow(gamepad.GetRightX(), 3), 0.05) *
                      DrivetrainConstants::kMaxAngularSpeed;
 
-    SmartDashboard::PutNumber("xSpeed", xSpeed.value());
-    SmartDashboard::PutNumber("ySpeed", ySpeed.value());
-    SmartDashboard::PutNumber("rot", rot.value());
+    frc::SmartDashboard::PutNumber("xSpeed", xSpeed.value());
+    frc::SmartDashboard::PutNumber("ySpeed", ySpeed.value());
+    frc::SmartDashboard::PutNumber("rot", rot.value());
 
-    ChassisSpeeds setSpeeds = ChassisSpeeds::Discretize(ChassisSpeeds{xSpeed, ySpeed, rot}, period);
+    frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds::Discretize(frc::ChassisSpeeds{xSpeed, ySpeed, rot}, period);
     if (swerve) swerve->Drive(setSpeeds, fieldRelative);
 }
 

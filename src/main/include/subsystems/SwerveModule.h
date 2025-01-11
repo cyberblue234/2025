@@ -20,6 +20,8 @@
 #include <frc/RobotController.h>
 #include <frc/RobotBase.h>
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 #include "Constants.h"
 
 using namespace ctre::phoenix6;
@@ -34,7 +36,7 @@ public:
     /// @param turnMotorID Can bus ID for the turn motor
     /// @param canCoderID Can bus ID for the CANcoder
     /// @param canCoderMagnetOffset Magnet offset for the CANcoder; ensures CANcoder is at 0 when facing straight ahead
-    SwerveModule(std::string name, int driveMotorID, int turnMotorID, int canCoderID, turn_t canCoderMagnetOffset);
+    SwerveModule(std::string name, int driveMotorID, int turnMotorID, int canCoderID, units::turn_t canCoderMagnetOffset);
 
     /// @brief Returns the state of the module. State is drive velocity and turn angle
     /// @return SwerveModuleState

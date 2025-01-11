@@ -10,7 +10,7 @@
 #include "Controls.h"
 #include "Constants.h"
 
-class Robot : public TimedRobot
+class Robot : public frc::TimedRobot
 {
 
 public:
@@ -30,7 +30,7 @@ private:
     Drivetrain swerve;
     KitBotOutput kitBotOutput;
 
-	PowerDistribution pdp{1, PowerDistribution::ModuleType::kRev};
+	frc::PowerDistribution pdp{1, frc::PowerDistribution::ModuleType::kRev};
 
 	Controls controls{&swerve, &kitBotOutput};
 };

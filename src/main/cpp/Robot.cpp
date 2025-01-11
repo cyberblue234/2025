@@ -40,6 +40,6 @@ void Robot::SimulationPeriodic()
 #ifndef RUNNING_FRC_TESTS
 int main()
 {
-	return StartRobot<Robot>();
+	return frc::StartRobot<Robot>();
 }
 #endif

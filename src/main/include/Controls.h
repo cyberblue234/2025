@@ -3,6 +3,7 @@
 #include <frc/XboxController.h>
 #include "subsystems/Drivetrain.h"
 #include "subsystems/KitBotOutput.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 #include "Constants.h"
 
 class Controls
@@ -31,7 +32,7 @@ public:
         return value;
     }
 
-    XboxController gamepad{0};
+    frc::XboxController gamepad{0};
 
 private:
     Drivetrain *swerve;

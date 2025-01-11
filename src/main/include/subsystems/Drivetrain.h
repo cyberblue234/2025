@@ -4,6 +4,7 @@
 #include <frc/DriverStation.h>
 
 #include <frc/smartdashboard/Field2d.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
@@ -96,7 +97,7 @@ private:
 
     studica::AHRS gyro{studica::AHRS::NavXComType::kMXP_SPI};
 
-    Field2d field{};
+    frc::Field2d field{};
 
     frc::ChassisSpeeds robotRelativeSpeeds;
 
@@ -107,10 +108,10 @@ private:
         kBackLeftLocation,
         kBackRightLocation};
 
-    SwerveDrivePoseEstimator<4> odometry{
+    frc::SwerveDrivePoseEstimator<4> odometry{
         kinematics,
         gyro.GetRotation2d(),
         {frontLeft.GetPosition(), frontRight.GetPosition(),
          backLeft.GetPosition(), backRight.GetPosition()},
-        Pose2d()};
+        frc::Pose2d()};
 };
