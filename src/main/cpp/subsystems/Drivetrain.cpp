@@ -12,8 +12,8 @@ Drivetrain::Drivetrain()
         [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](auto speeds, auto feedforwards){ Drive(speeds, false); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
         std::make_shared<PPHolonomicDriveController>( // PPHolonomicController is the built in path following controller for holonomic drive trains
-            PIDConstants(PathPlannerConstants::kTranslationP, PathPlannerConstants::kTranslationI, PathPlannerConstants::kTranslationD), // Translation PID constants
-            PIDConstants(PathPlannerConstants::kRotationP, PathPlannerConstants::kRotationP, PathPlannerConstants::kRotationP) // Rotation PID constants
+            PIDConstants(kDriveP, kDriveI, kDriveD), // Translation PID constants
+            PIDConstants(kTurnP, kTurnP, kTurnP) // Rotation PID constants
         ),
         config, // The robot configuration
         []() {
@@ -21,9 +21,9 @@ Drivetrain::Drivetrain()
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            auto alliance = DriverStation::GetAlliance();
+            auto alliance = frc::DriverStation::GetAlliance();
             if (alliance) {
-                return alliance.value() == DriverStation::Alliance::kRed;
+                return alliance.value() == frc::DriverStation::Alliance::kRed;
             }
             return false;
         },
@@ -31,11 +31,12 @@ Drivetrain::Drivetrain()
     );
 }
 
-void Drivetrain::Drive(ChassisSpeeds speeds, bool fieldRelative)
+
+void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
 {
     SetRobotRelativeSpeeds(speeds); // Sets ChassisSpeeds before field relative translation for PPLib
-    if (fieldRelative) speeds = ChassisSpeeds::FromFieldRelativeSpeeds(speeds, GetGyroAngle());
-    wpi::array<SwerveModuleState, 4U> states = kinematics.ToSwerveModuleStates(speeds);
+    if (fieldRelative) speeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(speeds, GetGyroAngle());
+    wpi::array<frc::SwerveModuleState, 4U> states = kinematics.ToSwerveModuleStates(speeds);
     
     kinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
 
@@ -62,7 +63,11 @@ void Drivetrain::UpdateTelemetry()
     backLeft.UpdateTelemetry();
     backRight.UpdateTelemetry();
 
-    SmartDashboard::PutNumber("X Acceleration", GetXAcceleration().value());
-    SmartDashboard::PutNumber("Y Acceleration", GetYAcceleration().value());
-    SmartDashboard::PutNumber("Gyro Yaw", GetGyroAngle().Degrees().value());
+    frc::SmartDashboard::PutNumber("X Acceleration", GetXAcceleration().value());
+    frc::SmartDashboard::PutNumber("Y Acceleration", GetYAcceleration().value());
+    frc::SmartDashboard::PutNumber("Gyro Yaw", GetGyroAngle().Degrees().value());
+    frc::SmartDashboard::PutNumber("Odom X", odometry.GetEstimatedPosition().X().value());
+    frc::SmartDashboard::PutNumber("Odom Y", odometry.GetEstimatedPosition().Y().value());
+    frc::SmartDashboard::PutData("Field", &field);
 }
+

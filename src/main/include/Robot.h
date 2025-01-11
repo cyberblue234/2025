@@ -5,12 +5,17 @@
 #include <frc/TimedRobot.h>
 #include <frc/PowerDistribution.h>
 
+#include <frc2/command/CommandPtr.h>
+#include <frc2/command/CommandScheduler.h>
+
+#include <pathplanner/lib/commands/PathPlannerAuto.h>
+
 #include "subsystems/Drivetrain.h"
 #include "subsystems/KitBotOutput.h"
 #include "Controls.h"
 #include "Constants.h"
 
-class Robot : public TimedRobot
+class Robot : public frc::TimedRobot
 {
 
 public:
@@ -30,7 +35,9 @@ private:
     Drivetrain swerve;
     KitBotOutput kitBotOutput;
 
-	PowerDistribution pdp{1, PowerDistribution::ModuleType::kRev};
+	frc::PowerDistribution pdp{1, frc::PowerDistribution::ModuleType::kRev};
 
 	Controls controls{&swerve, &kitBotOutput};
+
+    std::optional<frc2::CommandPtr> autoCmd;
 };
