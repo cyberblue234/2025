@@ -126,10 +126,16 @@ namespace DrivetrainConstants
     inline constexpr units::meters_per_second_t kMaxSpeed = 4.74_mps;
     inline constexpr units::radians_per_second_t kMaxAngularSpeed = std::numbers::pi * 4_rad_per_s;
 
+    // R1 Chassis
     inline constexpr units::turn_t kFrontLeftMagnetOffset  = -0.547_tr;
     inline constexpr units::turn_t kFrontRightMagnetOffset = -0.846_tr;
     inline constexpr units::turn_t kBackLeftMagnetOffset   = -0.023_tr;
     inline constexpr units::turn_t kBackRightMagnetOffset  = -0.245_tr;
+    // R2 Chassis
+    // inline constexpr units::turn_t kFrontLeftMagnetOffset  = -0.414_tr;
+    // inline constexpr units::turn_t kFrontRightMagnetOffset = -0.047_tr;
+    // inline constexpr units::turn_t kBackLeftMagnetOffset   = -0.378_tr;
+    // inline constexpr units::turn_t kBackRightMagnetOffset  = -0.5134_tr;
 }
 
 namespace PathPlannerConstants

@@ -8,6 +8,7 @@ Controls::Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput)
 
 void Controls::Periodic(units::second_t period)
 {
+    if (gamepad.GetYButton()) swerve->ResetGyro();
     DriveControls(period);
     KitBotControls();
 }
@@ -46,6 +47,6 @@ void Controls::DriveControls(units::second_t period)
 
 void Controls::KitBotControls() 
 {
-    if (gamepad.GetYButton()) kitBotOutput->SetMotor(-0.4);
+    if (gamepad.GetBButton()) kitBotOutput->SetMotor(-0.4);
     else kitBotOutput->SetMotor(0.0);
 }

@@ -14,18 +14,22 @@ void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() {}
 
-void Robot::AutonomousInit() {}
-
-void Robot::AutonomousPeriodic() {}
-
-void Robot::TeleopInit() {
-	swerve.ResetGyro();
+void Robot::AutonomousInit() 
+{
+	autoCmd = pathplanner::PathPlannerAuto("Test Auto").ToPtr();
+	if (autoCmd) autoCmd->Schedule();
 }
+
+void Robot::AutonomousPeriodic() 
+{
+	frc2::CommandScheduler::GetInstance().Run();
+}
+
+void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic()
 {
 	controls.Periodic(GetPeriod());
-	swerve.UpdateOdometry();
 }
 
 void Robot::TestPeriodic() {}
