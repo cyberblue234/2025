@@ -26,8 +26,8 @@ void Controls::DriveControls(time::second_t period)
     // Adds a speed adjusmtment based on the right trigger - the more it is pressed, the slower the bot will travel for a maximum reduction of 80%
     const double speedAdjust = 1 - 0.8 * gamepad.GetRightTriggerAxis(); 
 
-    const meters_per_second_t xSpeed = ApplyDeadband(x * scalar, 0.075) * DrivetrainConstants::kMaxSpeed * speedAdjust;
-    const meters_per_second_t ySpeed = ApplyDeadband(y * scalar, 0.075) * DrivetrainConstants::kMaxSpeed * speedAdjust;
+    const meters_per_second_t xSpeed = ApplyDeadband(x * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;
+    const meters_per_second_t ySpeed = ApplyDeadband(y * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
@@ -46,12 +46,6 @@ void Controls::DriveControls(time::second_t period)
 
 void Controls::KitBotControls() 
 {
-    if(gamepad.GetYButton()) 
-    {
-        kitBotOutput->SetMotor(KitBotConstants::kMotorPower);
-    }
-    else
-    {
-        kitBotOutput->SetMotor(KitBotConstants::kMotorStop);
-    }
+    if (gamepad.GetYButton()) kitBotOutput->SetMotor(-0.4);
+    else kitBotOutput->SetMotor(0.0);
 }

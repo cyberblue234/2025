@@ -13,12 +13,13 @@ public:
     Controls(Drivetrain *, KitBotOutput*);
     /// @brief Runs all of the subsystems controls every cycle
     /// @param period
-    void Periodic(time::second_t period);
+    void Periodic(units::second_t period);
     /// @brief Drivetrain controls
     /// @param period
-    void DriveControls(time::second_t period);
-
-    void KitBotControls(); 
+  
+    void DriveControls(units::second_t period);
+    /// @brief KitBotOutput controls
+    void KitBotControls();
 
     /// @brief Applies a deadband around zero. Zone depends on deadband value. 
     /// @param value Value to apply the deadband to
