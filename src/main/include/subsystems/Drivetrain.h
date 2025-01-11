@@ -69,8 +69,13 @@ public:
     void UpdateOdometry();
     /// @brief Updates SmartDashboard values
     void UpdateTelemetry();
+    /// @brief Gets the gyro angle
+    /// @return Rotation2d of the current gyro angle
+    frc::Rotation2d GetGyroAngle() { return gyro.GetRotation2d(); };
     /// @brief Resets the gyro yaw
     void ResetGyro() { gyro.Reset(); }
+    /// @brief Sets the gyro adjustment
+    void SetGyroAdjustment(double angle) { gyro.SetAngleAdjustment(angle); };
     /// @brief Resets drive encoders to 0
     void ResetDriveDistances() 
     {
@@ -79,6 +84,14 @@ public:
         backLeft.SetEncoder(0_tr);
         backRight.SetEncoder(0_tr);
     };
+
+    void Sim() 
+    {
+        frontLeft.SimMode();
+        frontRight.SimMode();
+        backLeft.SimMode();
+        backRight.SimMode();
+    }
 
     /// @brief Returns the acceleration in the x-direction
     /// @return Acceleration in meters per second squared

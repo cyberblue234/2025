@@ -5,31 +5,31 @@ Drivetrain::Drivetrain()
 {
     gyro.Reset();
 
-    RobotConfig config = RobotConfig::fromGUISettings();
-    // Configure the AutoBuilder last
-    AutoBuilder::configure(
-        [this](){ return GetPose(); }, // Robot pose supplier
-        [this](frc::Pose2d pose){ ResetPose(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
-        [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        [this](auto speeds, auto feedforwards){ Drive(speeds, false); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-        std::make_shared<PPHolonomicDriveController>( // PPHolonomicController is the built in path following controller for holonomic drive trains
-            PIDConstants(kDriveP, kDriveI, kDriveD), // Translation PID constants
-            PIDConstants(kTurnP, kTurnP, kTurnP) // Rotation PID constants
-        ),
-        config, // The robot configuration
-        []() {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    // RobotConfig config = RobotConfig::fromGUISettings();
+    // // Configure the AutoBuilder last
+    // AutoBuilder::configure(
+    //     [this](){ return GetPose(); }, // Robot pose supplier
+    //     [this](frc::Pose2d pose){ ResetPose(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
+    //     [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+    //     [this](auto speeds, auto feedforwards){ Drive(speeds, false); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+    //     std::make_shared<PPHolonomicDriveController>( // PPHolonomicController is the built in path following controller for holonomic drive trains
+    //         PIDConstants(kDriveP, kDriveI, kDriveD), // Translation PID constants
+    //         PIDConstants(kTurnP, kTurnP, kTurnP) // Rotation PID constants
+    //     ),
+    //     config, // The robot configuration
+    //     []() {
+    //         // Boolean supplier that controls when the path will be mirrored for the red alliance
+    //         // This will flip the path being followed to the red side of the field.
+    //         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            auto alliance = frc::DriverStation::GetAlliance();
-            if (alliance) {
-                return alliance.value() == frc::DriverStation::Alliance::kRed;
-            }
-            return false;
-        },
-        this // Reference to this subsystem to set requirements
-    );
+    //         auto alliance = frc::DriverStation::GetAlliance();
+    //         if (alliance) {
+    //             return alliance.value() == frc::DriverStation::Alliance::kRed;
+    //         }
+    //         return false;
+    //     },
+    //     this // Reference to this subsystem to set requirements
+    // );
 }
 
 
@@ -45,13 +45,13 @@ void Drivetrain::Drive(units::meters_per_second_t xSpeed,
     auto states =
         kinematics.ToSwerveModuleStates(frc::ChassisSpeeds::Discretize(
             fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                                xSpeed, ySpeed, rot, gyro.GetRotation2d())
+                                xSpeed, ySpeed, rot, GetGyroAngle())
                           : frc::ChassisSpeeds{xSpeed, ySpeed, rot},
             period));
     // auto states =
     //     kinematics.ToSwerveModuleStates(
     //         fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-    //                             xSpeed, ySpeed, rot, gyro.GetRotation2d())
+    //                             xSpeed, ySpeed, rot, GetGyroAngle())
     //                       : frc::ChassisSpeeds{xSpeed, ySpeed, rot}
     //         );
 
@@ -70,7 +70,7 @@ void Drivetrain::Drive(units::meters_per_second_t xSpeed,
 void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
 {
     SetRobotRelativeSpeeds(speeds); // Sets ChassisSpeeds before field relative translation for PPLib
-    if (fieldRelative) speeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(speeds, gyro.GetRotation2d());
+    if (fieldRelative) speeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(speeds, GetGyroAngle());
     wpi::array<frc::SwerveModuleState, 4U> states = kinematics.ToSwerveModuleStates(speeds);
     
     kinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
@@ -85,7 +85,7 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
 
 void Drivetrain::UpdateOdometry()
 {
-    odometry.Update(gyro.GetRotation2d(),
+    odometry.Update(GetGyroAngle(),
                     {frontLeft.GetPosition(), frontRight.GetPosition(),
                      backLeft.GetPosition(), backRight.GetPosition()});
     field.SetRobotPose(odometry.GetEstimatedPosition());
@@ -100,5 +100,6 @@ void Drivetrain::UpdateTelemetry()
 
     frc::SmartDashboard::PutNumber("X Acceleration", GetXAcceleration().value());
     frc::SmartDashboard::PutNumber("Y Acceleration", GetYAcceleration().value());
-    frc::SmartDashboard::PutNumber("Gyro Yaw", gyro.GetRotation2d().Degrees().value());
+    frc::SmartDashboard::PutNumber("Gyro Yaw", GetGyroAngle().Degrees().value());
+    frc::SmartDashboard::PutData("Field", &field);
 }

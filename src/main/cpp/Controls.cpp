@@ -34,7 +34,6 @@ void Controls::DriveControls(units::time::second_t period)
     const units::radians_per_second_t rot = -ApplyDeadband(pow(gamepad.GetRightX(), 3), 0.01) *
                      DrivetrainConstants::kMaxAngularSpeed;
 
-
     if (swerve) swerve->Drive(xSpeed, ySpeed, rot, true, period);
 }
 

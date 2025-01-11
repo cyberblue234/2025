@@ -8,6 +8,7 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     this->name = name;
 
     SetEncoder(0_tr);
+    SetCanCoder(0_tr);
 
     driveMotor.GetConfigurator().Apply(configs::TalonFXConfiguration{});
     configs::TalonFXConfiguration driveMotorConfig{};
@@ -21,11 +22,12 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     driveMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.15_s;
     driveMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.15_s;
 
-    // driveMotorConfig.Feedback.SensorToMechanismRatio = kDriveGearRatio;
-
     driveMotorConfig.Slot0.kP = kDriveP;
     driveMotorConfig.Slot0.kI = kDriveI;
     driveMotorConfig.Slot0.kD = kDriveD;
+    driveMotorConfig.Slot0.kS = kDrive_kS.value();
+    driveMotorConfig.Slot0.kV = kDrive_kV.value();
+    driveMotorConfig.Slot0.kA = kDrive_kA.value();
 
     driveMotor.GetConfigurator().Apply(driveMotorConfig);
 
@@ -35,7 +37,6 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     turnMotorConfig.Feedback.FeedbackRemoteSensorID = canCoder.GetDeviceID();
     turnMotorConfig.Feedback.FeedbackSensorSource = signals::FeedbackSensorSourceValue::RemoteCANcoder;
     turnMotorConfig.Feedback.SensorToMechanismRatio = 1.0;
-    // turnMotorConfig.Feedback.RotorToSensorRatio = kTurnGearRatio;
 
     turnMotorConfig.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
 
@@ -45,10 +46,6 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     turnMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.15_s;
     turnMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.15_s;
     turnMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.15_s;
-
-    // TODO: find replacement -- try configs::MotorOutputConfigs::WithPeakForwardDutyCycle and configs::MotorOutputConfigs::WithPeakReverseDutyCycle
-    // turnMotor.ConfigVoltageCompSaturation(11.0);
-    // turnMotor.EnableVoltageCompensation(true);
 
     turnMotor.GetConfigurator().Apply(turnMotorConfig);
 
@@ -82,11 +79,19 @@ void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
 
     units::turn_t deltaAngle = units::turn_t(state.angle.operator-(GetAngle()).Degrees().value() / 360);
     // Calculate the turning motor output from the turning PID controller.
-    controls::PositionVoltage& turnPos = turnPositionOut.WithPosition(deltaAngle + GetCANcoderPosition());
-    turnMotor.SetControl(turnPos);
-    // Set the motor outputs.
-    units::volt_t setVoltage = (state.speed / DrivetrainConstants::kMaxSpeed) * kVoltageComp;
-    driveMotor.SetVoltage(setVoltage);
+    if (frc::RobotBase::IsReal())
+    {
+        controls::PositionVoltage& turnPos = turnPositionOut.WithPosition(deltaAngle + GetCANcoderPosition());
+        turnMotor.SetControl(turnPos);
+    }
+    else
+    {
+        ctre::phoenix6::sim::CANcoderSimState& canCoderSim = canCoder.GetSimState();
+        canCoderSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+        canCoderSim.AddPosition(deltaAngle);
+    }
+    controls::VelocityVoltage& driveVelocity = driveVelocityOut.WithVelocity(state.speed * (1 / kDriveDistanceRatio));
+    driveMotor.SetControl(driveVelocity);
 
     TelemetryHelperNumber("SetSpeed", state.speed.value());
     TelemetryHelperNumber("SetAngle", state.angle.Degrees().value());
@@ -111,4 +116,28 @@ void SwerveModule::UpdateTelemetry()
     TelemetryHelperNumber("Turn Motor Temp",  GetTurnTemp().value());
     TelemetryHelperNumber("Drive Processor Temp", GetDriveProcessorTemp().value());
     TelemetryHelperNumber("Turn Processor Temp",  GetTurnProcessorTemp().value());
+}
+
+
+void SwerveModule::SimMode()
+{
+    ctre::phoenix6::sim::TalonFXSimState& driveMotorSim = driveMotor.GetSimState();
+
+    // set the supply voltage of the TalonFX
+    driveMotorSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+
+    // get the motor voltage of the TalonFX
+    auto driveMotorVoltage = driveMotorSim.GetMotorVoltage();
+
+    // use the motor voltage to calculate new position and velocity
+    // using WPILib's DCMotorSim class for physics simulation
+    driveMotorSimModel.SetInputVoltage(driveMotorVoltage);
+    driveMotorSimModel.Update(20_ms); // assume 20 ms loop time
+
+    // apply the new rotor position and velocity to the TalonFX;
+    // note that this is rotor position/velocity (before gear ratio), but
+    // DCMotorSim returns mechanism position/velocity (after gear ratio)
+    driveMotorSim.SetRawRotorPosition(kDriveGearRatio.value() * driveMotorSimModel.GetAngularPosition());
+    driveMotorSim.SetRotorVelocity(kDriveGearRatio.value() * driveMotorSimModel.GetAngularVelocity());
+    
 }

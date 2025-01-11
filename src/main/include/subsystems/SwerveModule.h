@@ -23,6 +23,7 @@
 #include <frc/simulation/DCMotorSim.h>
 #include <frc/system/plant/LinearSystemId.h>
 #include <frc/RobotController.h>
+#include <frc/RobotBase.h>
 
 #include "Constants.h"
 
@@ -56,6 +57,8 @@ public:
     /// @param valueName Description of the value
     /// @param value Value to be printed
     void TelemetryHelperNumber(std::string valueName, double value) { frc::SmartDashboard::PutNumber(valueName + " " + name, value); }
+
+    void SimMode();
 
     /// @brief Returns the distance of the drive motor
     /// @return Distance in meters
@@ -141,4 +144,14 @@ private:
     hardware::CANcoder canCoder;
 
     controls::PositionVoltage turnPositionOut{0_tr};
+    controls::VelocityVoltage driveVelocityOut{0_tps};
+
+    frc::sim::DCMotorSim driveMotorSimModel{
+        frc::LinearSystemId::DCMotorSystem(
+            frc::DCMotor::KrakenX60(1),
+            0.001_kg_sq_m,
+            kDriveGearRatio.value()
+        ),
+        frc::DCMotor::KrakenX60(1)
+    };
 };

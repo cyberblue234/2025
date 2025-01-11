@@ -34,6 +34,7 @@ void Robot::SimulationInit() {}
 
 void Robot::SimulationPeriodic() 
 {
+	swerve.Sim();
 }
 
 #ifndef RUNNING_FRC_TESTS
