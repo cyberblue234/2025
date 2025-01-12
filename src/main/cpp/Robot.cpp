@@ -8,6 +8,7 @@ void Robot::RobotInit()
 void Robot::RobotPeriodic() 
 {
 	swerve.UpdateTelemetry();
+	swerve.UpdateOdometry();
 }
 
 void Robot::DisabledInit() {}

@@ -2,7 +2,7 @@
 
 Drivetrain::Drivetrain()
 {
-    gyro.Reset();
+    ResetGyro();
 
     RobotConfig config = RobotConfig::fromGUISettings();
     // Configure the AutoBuilder last
@@ -29,6 +29,11 @@ Drivetrain::Drivetrain()
         },
         this // Reference to this subsystem to set requirements
     );
+
+    pathplanner::PathPlannerLogging::setLogActivePathCallback([this](auto poses) {
+        this->field.GetObject("path")->SetPoses(poses);
+    });
+
 }
 
 

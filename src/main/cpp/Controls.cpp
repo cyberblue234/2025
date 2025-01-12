@@ -35,7 +35,7 @@ void Controls::DriveControls(units::second_t period)
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
     const units::radians_per_second_t rot = -ApplyDeadband(pow(gamepad.GetRightX(), 3), 0.05) *
-                     DrivetrainConstants::kMaxAngularSpeed;
+                     DrivetrainConstants::kMaxAngularSpeed * pow(speedAdjust, 0.5);
 
     frc::SmartDashboard::PutNumber("xSpeed", xSpeed.value());
     frc::SmartDashboard::PutNumber("ySpeed", ySpeed.value());

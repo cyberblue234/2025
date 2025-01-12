@@ -15,6 +15,7 @@
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/config/RobotConfig.h>
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
+#include <pathplanner/lib/util/PathPlannerLogging.h>
 
 #include <frc2/command/SubsystemBase.h>
 
