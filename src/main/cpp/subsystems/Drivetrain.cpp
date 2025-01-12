@@ -45,6 +45,8 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     
     kinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
 
+    if (frc::RobotBase::IsSimulation()) simYaw = GetGyroAngle() + frc::Rotation2d(speeds.omega * 0.02_s);
+
     auto [fl, fr, bl, br] = states;
 
     frontLeft.SetDesiredState(fl);

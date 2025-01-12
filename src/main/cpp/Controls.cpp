@@ -34,8 +34,8 @@ void Controls::DriveControls(units::second_t period)
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    const units::radians_per_second_t rot = -ApplyDeadband(pow(gamepad.GetRightX(), 3), 0.05) *
-                     DrivetrainConstants::kMaxAngularSpeed * pow(speedAdjust, 0.5);
+    const units::radians_per_second_t rot = abs(pow(gamepad.GetRightX(), 3)) > 0.05 ? -gamepad.GetRightX() *
+                     DrivetrainConstants::kMaxAngularSpeed * pow(speedAdjust, 0.5) : 0.0_rad_per_s;
 
     frc::SmartDashboard::PutNumber("xSpeed", xSpeed.value());
     frc::SmartDashboard::PutNumber("ySpeed", ySpeed.value());

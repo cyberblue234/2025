@@ -24,6 +24,7 @@
 #include <frc2/command/SubsystemBase.h>
 
 #include "studica/AHRS.h"
+#include <frc/simulation/SimDeviceSim.h>
 
 #include "subsystems/SwerveModule.h"
 #include "Constants.h"
@@ -60,11 +61,11 @@ public:
     void UpdateTelemetry();
     /// @brief Gets the gyro angle
     /// @return Rotation2d of the current gyro angle
-    frc::Rotation2d GetGyroAngle() { return gyro.GetRotation2d(); };
+    frc::Rotation2d GetGyroAngle() { return frc::RobotBase::IsReal() ?  gyro.GetRotation2d() : simYaw; };
     /// @brief Resets the gyro yaw
-    void ResetGyro() { gyro.Reset(); }
+    void ResetGyro() { if (frc::RobotBase::IsReal()) gyro.Reset(); else simYaw = frc::Rotation2d(0_deg); }
     /// @brief Sets the gyro adjustment
-    void SetGyroAdjustment(double angle) { gyro.SetAngleAdjustment(angle); };
+    void SetGyroAdjustment(double angle) { if (frc::RobotBase::IsReal()) gyro.SetAngleAdjustment(angle); else simYaw = simYaw + frc::Rotation2d(units::degree_t(angle)); };
 
     /// @brief Resets drive encoders to 0
     void ResetDriveDistances() 
@@ -97,6 +98,7 @@ private:
     SwerveModule backRight{"Back Right", RobotMap::kBackRightDriveID, RobotMap::kBackRightTurnID, RobotMap::kBackRightCanCoderID, kBackRightMagnetOffset};
 
     studica::AHRS gyro{studica::AHRS::NavXComType::kMXP_SPI};
+    frc::Rotation2d simYaw{0_deg};
 
     frc::Field2d field{};
 
@@ -111,8 +113,10 @@ private:
 
     frc::SwerveDrivePoseEstimator<4> odometry{
         kinematics,
-        gyro.GetRotation2d(),
+        GetGyroAngle(),
         {frontLeft.GetPosition(), frontRight.GetPosition(),
          backLeft.GetPosition(), backRight.GetPosition()},
         frc::Pose2d()};
+
+    
 };

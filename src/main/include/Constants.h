@@ -101,9 +101,6 @@ namespace SwerveModuleConstants
     inline constexpr units::meters_per_turn_t kDriveDistanceRatio = kWheelRadius * 2 * std::numbers::pi / kDriveGearRatio;
     inline constexpr units::radians_per_turn_t kTurnDistanceRatio = 2_rad * std::numbers::pi / 1_tr;
 
-    inline constexpr units::radians_per_second_t kModuleMaxAngularVelocity = std::numbers::pi * 2_rad_per_s;
-    inline constexpr units::radians_per_second_squared_t kModuleMaxAngularAcceleration = std::numbers::pi * 1_rad_per_s_sq;
-
     inline constexpr double kDriveP = 0.0;
     inline constexpr double kDriveI = 0.0;
     inline constexpr double kDriveD = 0.0;
