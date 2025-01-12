@@ -12,8 +12,8 @@ Drivetrain::Drivetrain()
         [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](auto speeds, auto feedforwards){ Drive(speeds, false); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
         std::make_shared<PPHolonomicDriveController>( // PPHolonomicController is the built in path following controller for holonomic drive trains
-            PIDConstants(kDriveP, kDriveI, kDriveD), // Translation PID constants
-            PIDConstants(kTurnP, kTurnP, kTurnP) // Rotation PID constants
+            PIDConstants(PathPlannerConstants::kTranslationP, PathPlannerConstants::kTranslationI, PathPlannerConstants::kTranslationD), // Translation PID constants
+            PIDConstants(PathPlannerConstants::kRotationP, PathPlannerConstants::kRotationI, PathPlannerConstants::kRotationD) // Rotation PID constants
         ),
         config, // The robot configuration
         []() {
@@ -53,6 +53,8 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     frontRight.SetDesiredState(fr);
     backLeft.SetDesiredState(bl);
     backRight.SetDesiredState(br);
+
+    frc::SmartDashboard::PutNumber("Set Speed Omega", speeds.omega.value() * 180 / std::numbers::pi);
 }
 
 void Drivetrain::UpdateOdometry()
@@ -76,5 +78,6 @@ void Drivetrain::UpdateTelemetry()
     frc::SmartDashboard::PutNumber("Odom X", odometry.GetEstimatedPosition().X().value());
     frc::SmartDashboard::PutNumber("Odom Y", odometry.GetEstimatedPosition().Y().value());
     frc::SmartDashboard::PutData("Field", &field);
+    
 }
 

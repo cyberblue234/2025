@@ -118,5 +118,4 @@ private:
          backLeft.GetPosition(), backRight.GetPosition()},
         frc::Pose2d()};
 
-    
 };
