@@ -11,10 +11,7 @@ Drivetrain::Drivetrain()
         [this](frc::Pose2d pose){ ResetPose(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
         [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](auto speeds, auto feedforwards){ Drive(speeds, false); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-        std::make_shared<PPHolonomicDriveController>( // PPHolonomicController is the built in path following controller for holonomic drive trains
-            PIDConstants(PathPlannerConstants::kTranslationP, PathPlannerConstants::kTranslationI, PathPlannerConstants::kTranslationD), // Translation PID constants
-            PIDConstants(PathPlannerConstants::kRotationP, PathPlannerConstants::kRotationI, PathPlannerConstants::kRotationD) // Rotation PID constants
-        ),
+        std::make_shared<PPHolonomicDriveController>(translationPIDs, rotationPIDs),
         config, // The robot configuration
         []() {
             // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -45,7 +42,7 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     
     kinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
 
-    if (frc::RobotBase::IsSimulation()) simYaw = GetGyroAngle() + frc::Rotation2d(speeds.omega * 0.02_s);
+    if (frc::RobotBase::IsSimulation()) simYaw = simYaw + frc::Rotation2d(speeds.omega * 0.02_s);
 
     auto [fl, fr, bl, br] = states;
 
@@ -53,13 +50,11 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     frontRight.SetDesiredState(fr);
     backLeft.SetDesiredState(bl);
     backRight.SetDesiredState(br);
-
-    frc::SmartDashboard::PutNumber("Set Speed Omega", speeds.omega.value() * 180 / std::numbers::pi);
 }
 
 void Drivetrain::UpdateOdometry()
 {
-    odometry.Update(GetGyroAngle(),
+    odometry.Update(frc::RobotBase::IsReal() ? GetGyroAngle() : simYaw,
                     {frontLeft.GetPosition(), frontRight.GetPosition(),
                      backLeft.GetPosition(), backRight.GetPosition()});
     field.SetRobotPose(odometry.GetEstimatedPosition());
@@ -75,6 +70,7 @@ void Drivetrain::UpdateTelemetry()
     frc::SmartDashboard::PutNumber("X Acceleration", GetXAcceleration().value());
     frc::SmartDashboard::PutNumber("Y Acceleration", GetYAcceleration().value());
     frc::SmartDashboard::PutNumber("Gyro Yaw", GetGyroAngle().Degrees().value());
+    frc::SmartDashboard::PutNumber("Gyro Sim Yaw", simYaw.Degrees().value());
     frc::SmartDashboard::PutNumber("Odom X", odometry.GetEstimatedPosition().X().value());
     frc::SmartDashboard::PutNumber("Odom Y", odometry.GetEstimatedPosition().Y().value());
     frc::SmartDashboard::PutData("Field", &field);

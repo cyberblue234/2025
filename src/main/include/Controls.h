@@ -10,8 +10,9 @@ class Controls
 {
 public:
     /// @brief Constructs the Controls object to control the provided subsystems 
-    /// @param drivetrain pointer to the drivetrain object
-    Controls(Drivetrain *, KitBotOutput*);
+    /// @param swerve pointer to the Drivetrain object
+    /// @param kitBotOutput pointer to the KitBotOutput object
+    Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput);
     /// @brief Runs all of the subsystems controls every cycle
     /// @param period
     void Periodic(units::second_t period);

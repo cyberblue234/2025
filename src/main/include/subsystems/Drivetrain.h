@@ -30,6 +30,7 @@
 #include "Constants.h"
 
 using namespace DrivetrainConstants;
+using namespace PathPlannerConstants;
 using namespace pathplanner;
 
 class Drivetrain : frc2::SubsystemBase
@@ -61,11 +62,11 @@ public:
     void UpdateTelemetry();
     /// @brief Gets the gyro angle
     /// @return Rotation2d of the current gyro angle
-    frc::Rotation2d GetGyroAngle() { return frc::RobotBase::IsReal() ?  gyro.GetRotation2d() : simYaw; };
+    frc::Rotation2d GetGyroAngle() { return frc::RobotBase::IsReal() ?  gyro.GetRotation2d() : simYaw.RotateBy(simOffset); };
     /// @brief Resets the gyro yaw
-    void ResetGyro() { if (frc::RobotBase::IsReal()) gyro.Reset(); else simYaw = frc::Rotation2d(0_deg); }
+    void ResetGyro() { if (frc::RobotBase::IsReal()) gyro.Reset(); else simOffset = -simYaw.Degrees(); }
     /// @brief Sets the gyro adjustment
-    void SetGyroAdjustment(double angle) { if (frc::RobotBase::IsReal()) gyro.SetAngleAdjustment(angle); else simYaw = simYaw + frc::Rotation2d(units::degree_t(angle)); };
+    void SetGyroAdjustment(double angle) { if (frc::RobotBase::IsReal()) gyro.SetAngleAdjustment(angle); else simOffset = units::degree_t(angle); };
 
     /// @brief Resets drive encoders to 0
     void ResetDriveDistances() 
@@ -99,10 +100,13 @@ private:
 
     studica::AHRS gyro{studica::AHRS::NavXComType::kMXP_SPI};
     frc::Rotation2d simYaw{0_deg};
+    units::degree_t simOffset;
 
     frc::Field2d field{};
 
     frc::ChassisSpeeds robotRelativeSpeeds;
+    PIDConstants translationPIDs{kTranslationP, kTranslationI, kTranslationD};
+    PIDConstants rotationPIDs{kRotationP, kRotationI, kRotationD};
 
 
     frc::SwerveDriveKinematics<4> kinematics{

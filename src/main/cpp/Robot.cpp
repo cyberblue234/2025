@@ -17,7 +17,7 @@ void Robot::DisabledPeriodic() {}
 
 void Robot::AutonomousInit() 
 {
-	autoCmd = pathplanner::PathPlannerAuto("Test Auto").ToPtr();
+	autoCmd = autonomous.GetAutoCommand();
 	if (autoCmd) autoCmd->Schedule();
 }
 

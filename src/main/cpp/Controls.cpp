@@ -8,13 +8,14 @@ Controls::Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput)
 
 void Controls::Periodic(units::second_t period)
 {
-    if (gamepad.GetYButton()) swerve->ResetGyro();
     DriveControls(period);
     KitBotControls();
 }
 
 void Controls::DriveControls(units::second_t period)
 {
+    if (gamepad.GetYButton()) swerve->ResetGyro();
+
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     const double x = -gamepad.GetLeftY();
@@ -34,8 +35,8 @@ void Controls::DriveControls(units::second_t period)
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    const units::radians_per_second_t rot = abs(pow(gamepad.GetRightX(), 3)) > 0.05 ? -gamepad.GetRightX() *
-                     DrivetrainConstants::kMaxAngularSpeed * pow(speedAdjust, 0.5) : 0.0_rad_per_s;
+    const units::radians_per_second_t rot = -ApplyDeadband(pow(gamepad.GetRightX(), 3), 0.05) *
+                     DrivetrainConstants::kMaxAngularSpeed * pow(speedAdjust, 0.5);
 
     frc::SmartDashboard::PutNumber("xSpeed", xSpeed.value());
     frc::SmartDashboard::PutNumber("ySpeed", ySpeed.value());
@@ -47,6 +48,7 @@ void Controls::DriveControls(units::second_t period)
 
 void Controls::KitBotControls() 
 {
-    if (gamepad.GetBButton()) kitBotOutput->SetMotor(-0.4);
+    frc::SmartDashboard::PutNumber("Kitbot Output Speed", 0.4);
+    if (gamepad.GetLeftTriggerAxis() > 0.5) kitBotOutput->SetMotor(-frc::SmartDashboard::GetNumber("Kitbot Output Speed", 0.4));
     else kitBotOutput->SetMotor(0.0);
 }

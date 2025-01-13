@@ -14,6 +14,7 @@
 #include "subsystems/KitBotOutput.h"
 #include "Controls.h"
 #include "Constants.h"
+#include "Autonomous.h"
 
 class Robot : public frc::TimedRobot
 {
@@ -31,13 +32,17 @@ public:
     void SimulationInit() override;
     void SimulationPeriodic() override;
 
+    Drivetrain *GetSwerve() { return &swerve; }; 
+    KitBotOutput *GetKitBotOutput() { return &kitBotOutput; };
+
 private:
     Drivetrain swerve;
     KitBotOutput kitBotOutput;
 
 	frc::PowerDistribution pdp{1, frc::PowerDistribution::ModuleType::kRev};
 
-	Controls controls{&swerve, &kitBotOutput};
+	Controls controls{GetSwerve(), GetKitBotOutput()};
+    Autonomous autonomous{GetSwerve(), GetKitBotOutput()};
 
     std::optional<frc2::CommandPtr> autoCmd;
 };
