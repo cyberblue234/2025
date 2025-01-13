@@ -145,12 +145,6 @@ namespace PathPlannerConstants
     inline constexpr double kRotationD = 0.0;
 }
 
-namespace KitBotConstants
-{
-    inline constexpr double kMotorPower = -0.5;
-    inline constexpr double kMotorStop = 0.0;
-}
-
 template <typename T>
 constexpr T clamp(T val, T low, T high) 
 {
