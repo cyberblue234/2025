@@ -7,31 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "KitBotOutput"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Path 2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Path 3"
+            "pathName": "New Path"
           }
         },
         {

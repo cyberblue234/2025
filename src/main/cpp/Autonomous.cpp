@@ -20,5 +20,10 @@ frc2::CommandPtr Autonomous::GetKitBotOutputCommand()
         {
             this->kitBotOutput->SetMotor(-0.4);
         }
-    ).WithTimeout(1_s);
+    ).WithDeadline(frc2::WaitCommand(0.35_s).ToPtr()).AndThen(
+        [this]
+        {
+            this->kitBotOutput->SetMotor(0.0);
+        }
+    );
 }

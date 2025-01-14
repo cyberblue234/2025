@@ -129,10 +129,10 @@ namespace DrivetrainConstants
     inline constexpr units::turn_t kBackLeftMagnetOffset   = -0.023_tr;
     inline constexpr units::turn_t kBackRightMagnetOffset  = -0.245_tr;
     // R2 Chassis
-    // inline constexpr units::turn_t kFrontLeftMagnetOffset  = -0.414_tr;
-    // inline constexpr units::turn_t kFrontRightMagnetOffset = -0.047_tr;
-    // inline constexpr units::turn_t kBackLeftMagnetOffset   = -0.378_tr;
-    // inline constexpr units::turn_t kBackRightMagnetOffset  = -0.5134_tr;
+    // inline constexpr units::turn_t kFrontLeftMagnetOffset  = -0.659_tr;
+    // inline constexpr units::turn_t kFrontRightMagnetOffset = -0.784_tr;
+    // inline constexpr units::turn_t kBackLeftMagnetOffset   = -0.117_tr;
+    // inline constexpr units::turn_t kBackRightMagnetOffset  = -0.24_tr;
 }
 
 namespace PathPlannerConstants
@@ -140,7 +140,7 @@ namespace PathPlannerConstants
     inline constexpr double kTranslationP = 2.0;
     inline constexpr double kTranslationI = 0.0;
     inline constexpr double kTranslationD = 0.0;
-    inline constexpr double kRotationP = 0.1;
+    inline constexpr double kRotationP = 0.3;
     inline constexpr double kRotationI = 0.0;
     inline constexpr double kRotationD = 0.0;
 }

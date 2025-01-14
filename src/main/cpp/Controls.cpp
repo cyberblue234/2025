@@ -4,6 +4,7 @@ Controls::Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput)
 {
     this->swerve = swerve;
     this->kitBotOutput = kitBotOutput;
+    frc::SmartDashboard::PutNumber("Kitbot Output Speed", 0.4);
 }
 
 void Controls::Periodic(units::second_t period)
@@ -48,7 +49,6 @@ void Controls::DriveControls(units::second_t period)
 
 void Controls::KitBotControls() 
 {
-    frc::SmartDashboard::PutNumber("Kitbot Output Speed", 0.4);
     if (gamepad.GetLeftTriggerAxis() > 0.5) kitBotOutput->SetMotor(-frc::SmartDashboard::GetNumber("Kitbot Output Speed", 0.4));
     else kitBotOutput->SetMotor(0.0);
 }
