@@ -9,7 +9,7 @@ Autonomous::Autonomous(Drivetrain *swerve, KitBotOutput *kitBotOutput)
 
 frc2::CommandPtr Autonomous::GetAutoCommand()
 {
-    return pathplanner::PathPlannerAuto("Test Auto").ToPtr();
+    return pathplanner::PathPlannerAuto("Right Auto").ToPtr();
 }
 
 frc2::CommandPtr Autonomous::GetKitBotOutputCommand()
@@ -18,7 +18,7 @@ frc2::CommandPtr Autonomous::GetKitBotOutputCommand()
     (
         [this]
         {
-            this->kitBotOutput->SetMotor(-0.4);
+            this->kitBotOutput->SetMotor(-0.375);
         }
     ).WithDeadline(frc2::WaitCommand(0.35_s).ToPtr()).AndThen(
         [this]

@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 1"
+            "pathName": "Right 1"
           }
         },
         {
@@ -19,19 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
+            "pathName": "Right 2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Path 3"
+            "pathName": "Right 3"
           }
         },
         {
