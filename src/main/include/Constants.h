@@ -148,5 +148,14 @@ namespace PathPlannerConstants
 template <typename T>
 constexpr T clamp(T val, T low, T high) 
 {
+    // if (val > low && val < high)
+    // {
+    //     return val;
+    // }
+    // else if (val <= low)
+    // {
+    //     return low;
+    // }
+    // else return high;
     return val > low && val < high ? val : val <= low ? low : high; 
 };

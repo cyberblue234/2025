@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "KitBotOutput"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "KitBotOutput"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

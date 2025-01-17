@@ -44,7 +44,7 @@ void Controls::DriveControls(units::second_t period)
     frc::SmartDashboard::PutNumber("rot", rot.value());
 
     frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds::Discretize(frc::ChassisSpeeds{xSpeed, ySpeed, rot}, period);
-    if (swerve) swerve->Drive(setSpeeds, fieldRelative);
+    swerve->Drive(setSpeeds, fieldRelative);
 }
 
 void Controls::KitBotControls() 

@@ -68,7 +68,6 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
 void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
 {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    // Deprecated!
     state.Optimize(GetAngle());
 
     // Scale speed by cosine of angle error. This scales down movement

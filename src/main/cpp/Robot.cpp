@@ -19,7 +19,6 @@ void Robot::AutonomousInit()
 {
 	autoCmd = autonomous.GetAutoCommand();
 	if (autoCmd) autoCmd->Schedule();
-	// swerve.SetGyroAdjustment(180);
 }
 
 void Robot::AutonomousPeriodic() 
