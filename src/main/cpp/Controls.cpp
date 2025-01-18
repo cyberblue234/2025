@@ -1,9 +1,10 @@
 #include "Controls.h"
 
-Controls::Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput)
+Controls::Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput, Limelight *limelight3)
 {
     this->swerve = swerve;
     this->kitBotOutput = kitBotOutput;
+    this->limelight3 = limelight3;
     frc::SmartDashboard::PutNumber("Kitbot Output Speed", 0.4);
 }
 

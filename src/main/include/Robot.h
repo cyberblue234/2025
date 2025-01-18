@@ -12,6 +12,7 @@
 
 #include "subsystems/Drivetrain.h"
 #include "subsystems/KitBotOutput.h"
+#include "subsystems/Limelight.h"
 #include "Controls.h"
 #include "Constants.h"
 #include "Autonomous.h"
@@ -32,16 +33,25 @@ public:
     void SimulationInit() override;
     void SimulationPeriodic() override;
 
+    void OdometryInit()
+	{
+		limelight3.UpdateLimelightTracking();
+		limelight3.UpdateTelemetry();
+        
+	};
+
     Drivetrain *GetSwerve() { return &swerve; }; 
     KitBotOutput *GetKitBotOutput() { return &kitBotOutput; };
 
 private:
     Drivetrain swerve;
     KitBotOutput kitBotOutput;
+    Limelight limelight3;
 
 	frc::PowerDistribution pdp{1, frc::PowerDistribution::ModuleType::kRev};
 
-	Controls controls{GetSwerve(), GetKitBotOutput()};
+    Limelight *GetLimelight3() { return &limelight3; };
+	Controls controls{GetSwerve(), GetKitBotOutput(), GetLimelight3()};
     Autonomous autonomous{GetSwerve(), GetKitBotOutput()};
 
     std::optional<frc2::CommandPtr> autoCmd;
