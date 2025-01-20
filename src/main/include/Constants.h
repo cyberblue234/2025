@@ -137,12 +137,12 @@ namespace DrivetrainConstants
 
 namespace PathPlannerConstants
 {
-    inline constexpr double kTranslationP = 2.0;
+    inline constexpr double kTranslationP = 5;
     inline constexpr double kTranslationI = 0.0;
     inline constexpr double kTranslationD = 0.1;
-    inline constexpr double kRotationP = 0.3;
+    inline constexpr double kRotationP = 5;
     inline constexpr double kRotationI = 0.0;
-    inline constexpr double kRotationD = 0.0;
+    inline constexpr double kRotationD = 0.1;
 }
 
 template <typename T>
