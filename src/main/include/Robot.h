@@ -33,24 +33,17 @@ public:
     void SimulationInit() override;
     void SimulationPeriodic() override;
 
-    void OdometryInit()
-	{
-		limelight3.UpdateLimelightTracking();
-		limelight3.UpdateTelemetry();
-        
-	};
-
     Drivetrain *GetSwerve() { return &swerve; }; 
     KitBotOutput *GetKitBotOutput() { return &kitBotOutput; };
+    Limelight *GetLimelight3() { return &limelight3; };
 
 private:
-    Drivetrain swerve;
+    Drivetrain swerve{GetLimelight3()};
     KitBotOutput kitBotOutput;
     Limelight limelight3;
 
 	frc::PowerDistribution pdp{1, frc::PowerDistribution::ModuleType::kRev};
-
-    Limelight *GetLimelight3() { return &limelight3; };
+    
 	Controls controls{GetSwerve(), GetKitBotOutput(), GetLimelight3()};
     Autonomous autonomous{GetSwerve(), GetKitBotOutput()};
 

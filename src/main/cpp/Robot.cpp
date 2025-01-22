@@ -3,15 +3,12 @@
 void Robot::RobotInit() 
 {
 	EnableLiveWindowInTest(true);
-
-	OdometryInit();
 }
 
 void Robot::RobotPeriodic() 
 {
 	swerve.UpdateTelemetry();
 	swerve.UpdateOdometry();
-	OdometryInit();
 }
 
 void Robot::DisabledInit() {}
@@ -22,7 +19,6 @@ void Robot::AutonomousInit()
 {
 	autoCmd = autonomous.GetAutoCommand();
 	if (autoCmd) autoCmd->Schedule();
-	OdometryInit();
 }
 
 void Robot::AutonomousPeriodic() 
@@ -30,10 +26,7 @@ void Robot::AutonomousPeriodic()
 	frc2::CommandScheduler::GetInstance().Run();
 }
 
-void Robot::TeleopInit() 
-{
-	OdometryInit();
-}
+void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic()
 {

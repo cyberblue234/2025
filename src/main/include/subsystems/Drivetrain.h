@@ -27,6 +27,7 @@
 #include <frc/simulation/SimDeviceSim.h>
 
 #include "subsystems/SwerveModule.h"
+#include "subsystems/Limelight.h"
 #include "Constants.h"
 
 using namespace DrivetrainConstants;
@@ -37,7 +38,7 @@ class Drivetrain : frc2::SubsystemBase
 {
 public:
     /// @brief Constructs the swerve drivetrain 
-    Drivetrain();
+    Drivetrain(Limelight *limelight);
 
     /// @brief Calculates the desired SwerveModuleStates for all of the Swerve Modules
     /// @param speeds The created ChassisSpeeds to run the bot - must be robot relative
@@ -63,6 +64,7 @@ public:
     /// @brief Gets the gyro angle
     /// @return Rotation2d of the current gyro angle
     frc::Rotation2d GetGyroAngle() { return frc::RobotBase::IsReal() ?  gyro.GetRotation2d() : simYaw.RotateBy(simOffset); };
+    
     /// @brief Resets the gyro yaw
     void ResetGyro() { if (frc::RobotBase::IsReal()) gyro.Reset(); else simOffset = -simYaw.Degrees(); }
     /// @brief Sets the gyro adjustment
@@ -101,6 +103,8 @@ private:
     studica::AHRS gyro{studica::AHRS::NavXComType::kMXP_SPI};
     frc::Rotation2d simYaw{0_deg};
     units::degree_t simOffset;
+
+    Limelight *limelight;
 
     frc::Field2d field{};
 

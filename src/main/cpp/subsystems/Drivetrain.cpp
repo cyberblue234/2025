@@ -1,7 +1,9 @@
 #include "subsystems/Drivetrain.h"
 
-Drivetrain::Drivetrain()
+Drivetrain::Drivetrain(Limelight *limelight)
 {
+    this->limelight = limelight;
+
     ResetGyro();
 
     RobotConfig config = RobotConfig::fromGUISettings();
@@ -57,6 +59,8 @@ void Drivetrain::UpdateOdometry()
     odometry.Update(frc::RobotBase::IsReal() ? GetGyroAngle() : simYaw,
                     {frontLeft.GetPosition(), frontRight.GetPosition(),
                      backLeft.GetPosition(), backRight.GetPosition()});
+    frc::SmartDashboard::PutNumber("Yaw ", gyro.GetYaw());
+    limelight->GetBotPoseBlue(GetGyroAngle().Degrees(), units::degrees_per_second_t(gyro.GetRate()));
     field.SetRobotPose(odometry.GetEstimatedPosition());
 }
 
