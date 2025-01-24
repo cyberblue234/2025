@@ -467,7 +467,7 @@ namespace LimelightHelpers
 
         std::vector<RawFiducial> rawFiducials;
         int valsPerFiducial = 7;
-        int expectedTotalVals = 11 + valsPerFiducial * tagCount;
+        unsigned int expectedTotalVals = 11 + valsPerFiducial * tagCount;
         
         if (poseArray.size() == expectedTotalVals) 
         {

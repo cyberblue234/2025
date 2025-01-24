@@ -64,6 +64,12 @@ public:
     /// @brief Gets the gyro angle
     /// @return Rotation2d of the current gyro angle
     frc::Rotation2d GetGyroAngle() { return frc::RobotBase::IsReal() ?  gyro.GetRotation2d() : simYaw.RotateBy(simOffset); };
+    /// @brief Gets the gyro yaw
+    /// @return Gyro yaw in degrees
+    units::degree_t GetYaw() { return units::degree_t{gyro.GetYaw()}; };
+    /// @brief Gets the rate of the gyro yaw
+    /// @return Rate of gyro yaw in degrees per second
+    units::degrees_per_second_t GetYawRate() { return units::degrees_per_second_t{gyro.GetRate()}; };
     
     /// @brief Resets the gyro yaw
     void ResetGyro() { if (frc::RobotBase::IsReal()) gyro.Reset(); else simOffset = -simYaw.Degrees(); }
