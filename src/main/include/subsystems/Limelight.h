@@ -1,5 +1,6 @@
 #pragma once
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include "LimelightHelpers.h"
 #include "Constants.h"
 #include "networktables/NetworkTable.h"
@@ -12,13 +13,18 @@ using namespace LimelightHelpers;
 class Limelight
 {
 public:
-    // Constructors
+    /// @brief Constructor for the limelight object that sets the name of the limelight to the parameter
+    /// @param name Name of the limelight
     Limelight(std::string name);
+    /// @brief Constructor for the limelight object that sets the name of the limelight to ""
     Limelight();
+    /// @brief Sets the pipeline for the limelight
+    /// @param id Id of the pipeline
     void SetAprilTagPipeline(int id) { setPipelineIndex(name, id); };
     double GetTargetID() { return getFiducialID(); };
     PoseEstimate GetBotPoseBlue(units::degree_t yaw, units::degrees_per_second_t yawRate);
     double GetDistanceFromTarget();
+    void UpdateTelemetry();
 
 private:
     std::string name;

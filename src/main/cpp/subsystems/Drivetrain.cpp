@@ -35,7 +35,6 @@ Drivetrain::Drivetrain(Limelight *limelight)
 
 }
 
-
 void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
 {
     SetRobotRelativeSpeeds(speeds); // Sets ChassisSpeeds before field relative translation for PPLib
@@ -54,14 +53,34 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     backRight.SetDesiredState(br);
 }
 
+void Drivetrain::PathFindToPoint(frc::Pose2d pose)
+{
+    
+}
+
 void Drivetrain::UpdateOdometry()
 {
     odometry.Update(frc::RobotBase::IsReal() ? GetGyroAngle() : simYaw,
                     {frontLeft.GetPosition(), frontRight.GetPosition(),
                      backLeft.GetPosition(), backRight.GetPosition()});
-    odometry.AddVisionMeasurement(
-        limelight->GetBotPoseBlue(GetYaw(), GetYawRate()).pose, 
-        frc::Timer::GetFPGATimestamp());
+
+    PoseEstimate vision = limelight->GetBotPoseBlue(GetYaw(), GetYawRate());
+
+    bool rejectVision = abs(GetYawRate().value()) > 720 || vision.tagCount == 0;
+    if (rejectVision == false)
+    {
+        odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
+        odometry.AddVisionMeasurement(
+            vision.pose,
+            frc::Timer::GetFPGATimestamp()
+    );
+    }
+    // units::second_t timeDif = accelTimer.Get();
+    // accelTimer.Reset();
+    // odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 0.0});
+    // odometry.AddVisionMeasurement(GetPose().TransformBy(frc::Transform2d{GetXAcceleration() * (timeDif * timeDif), GetYAcceleration() * (timeDif * timeDif), frc::Rotation2d()}), frc::Timer::GetFPGATimestamp());
+
+    
     field.SetRobotPose(odometry.GetEstimatedPosition());
 }
 
@@ -75,8 +94,6 @@ void Drivetrain::UpdateTelemetry()
     frc::SmartDashboard::PutNumber("X Acceleration", GetXAcceleration().value());
     frc::SmartDashboard::PutNumber("Y Acceleration", GetYAcceleration().value());
     frc::SmartDashboard::PutNumber("Gyro Yaw", GetGyroAngle().Degrees().value());
-    frc::SmartDashboard::PutNumber("Gyro Yaw 2", GetYaw().value());
-    frc::SmartDashboard::PutNumber("Gyro Sim Yaw", simYaw.Degrees().value());
     frc::SmartDashboard::PutNumber("Odom X", odometry.GetEstimatedPosition().X().value());
     frc::SmartDashboard::PutNumber("Odom Y", odometry.GetEstimatedPosition().Y().value());
     frc::SmartDashboard::PutNumber("Odom Rot", odometry.GetEstimatedPosition().Rotation().Degrees().value());

@@ -18,13 +18,20 @@ PoseEstimate Limelight::GetBotPoseBlue(units::degree_t yaw, units::degrees_per_s
 
 double Limelight::GetDistanceFromTarget()
 {
+    std::vector<double> targetPoseRobotSpace = getTargetPose_RobotSpace();
+    if (targetPoseRobotSpace.empty() == true) return -1;
     // Grabs the distance to target on the x and z planes (forward/back, left/right)
-    double xDist = getTargetPose_RobotSpace().at(0);
-    double zDist = getTargetPose_RobotSpace().at(2);
+    double xDist = targetPoseRobotSpace.at(0);
+    double zDist = targetPoseRobotSpace.at(2);
 
     // Find hypotenuse (total distance) of x and z planes
     double distance = sqrt((xDist * xDist) + (zDist * zDist));
 
     // Return the total distance
     return distance;
+}
+
+void Limelight::UpdateTelemetry()
+{
+    frc::SmartDashboard::PutNumber("Distance from Apriltag", GetDistanceFromTarget());
 }

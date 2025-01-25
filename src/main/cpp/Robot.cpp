@@ -9,6 +9,7 @@ void Robot::RobotPeriodic()
 {
 	swerve.UpdateTelemetry();
 	swerve.UpdateOdometry();
+	limelight3.UpdateTelemetry();
 }
 
 void Robot::DisabledInit() {}

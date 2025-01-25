@@ -57,6 +57,8 @@ public:
     /// @return ChassisSpeeds of the current speeds
     frc::ChassisSpeeds GetRobotRelativeSpeeds() { return robotRelativeSpeeds; };
 
+    void PathFindToPoint(frc::Pose2d pose);
+
     /// @brief Calls odometry update
     void UpdateOdometry();
     /// @brief Updates SmartDashboard values
@@ -66,10 +68,10 @@ public:
     frc::Rotation2d GetGyroAngle() { return frc::RobotBase::IsReal() ?  gyro.GetRotation2d() : simYaw.RotateBy(simOffset); };
     /// @brief Gets the gyro yaw
     /// @return Gyro yaw in degrees
-    units::degree_t GetYaw() { return units::degree_t{gyro.GetYaw()}; };
+    units::degree_t GetYaw() { return units::degree_t{-gyro.GetYaw()}; };
     /// @brief Gets the rate of the gyro yaw
     /// @return Rate of gyro yaw in degrees per second
-    units::degrees_per_second_t GetYawRate() { return units::degrees_per_second_t{gyro.GetRate()}; };
+    units::degrees_per_second_t GetYawRate() { return units::degrees_per_second_t{-gyro.GetRate()}; };
     
     /// @brief Resets the gyro yaw
     void ResetGyro() { if (frc::RobotBase::IsReal()) gyro.Reset(); else simOffset = -simYaw.Degrees(); }
@@ -118,6 +120,7 @@ private:
     PIDConstants translationPIDs{kTranslationP, kTranslationI, kTranslationD};
     PIDConstants rotationPIDs{kRotationP, kRotationI, kRotationD};
 
+    frc::Timer accelTimer;
 
     frc::SwerveDriveKinematics<4> kinematics{
         kFrontLeftLocation,
