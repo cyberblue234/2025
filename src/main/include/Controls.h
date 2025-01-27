@@ -41,5 +41,8 @@ private:
     KitBotOutput *kitBotOutput;
     Limelight *limelight3;
 
+    int branch = 0;
+    std::optional<frc2::CommandPtr> path;
+
     bool fieldRelative = true;
 };

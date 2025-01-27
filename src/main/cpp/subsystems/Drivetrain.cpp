@@ -16,8 +16,8 @@ Drivetrain::Drivetrain(Limelight *limelight)
         std::make_shared<PPHolonomicDriveController>(translationPIDs, rotationPIDs),
         config, // The robot configuration
         []() {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
+            // Boolean supplier that controls when the path will be mirrored for the blue alliance
+            // This will flip the path being followed to the blue side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
             auto alliance = frc::DriverStation::GetAlliance();
@@ -33,6 +33,7 @@ Drivetrain::Drivetrain(Limelight *limelight)
         this->field.GetObject("path")->SetPoses(poses);
     });
 
+    frc::SmartDashboard::PutData("Field", &field);
 }
 
 void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
@@ -53,9 +54,23 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     backRight.SetDesiredState(br);
 }
 
-void Drivetrain::PathFindToPoint(frc::Pose2d pose)
+std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(int branch)
 {
-    
+    auto pose = FormatBranch(branch);
+    if (!pose) return std::nullopt;
+    std::vector<frc::Pose2d> poses 
+    {
+        frc::Pose2d(GetPose().X(), GetPose().Y(), pose.value().Rotation()), 
+        pose.value()
+    };
+    auto path = std::make_shared<PathPlannerPath>(
+        PathPlannerPath::waypointsFromPoses(poses),
+        PathConstraints(2_mps, 2_mps_sq, 720_deg_per_s, 720_deg_per_s_sq),
+        std::nullopt,
+        GoalEndState(0.0_mps, pose->Rotation())
+    );
+    path->preventFlipping = false;
+    return AutoBuilder::followPath(path);
 }
 
 void Drivetrain::UpdateOdometry()
@@ -97,7 +112,4 @@ void Drivetrain::UpdateTelemetry()
     frc::SmartDashboard::PutNumber("Odom X", odometry.GetEstimatedPosition().X().value());
     frc::SmartDashboard::PutNumber("Odom Y", odometry.GetEstimatedPosition().Y().value());
     frc::SmartDashboard::PutNumber("Odom Rot", odometry.GetEstimatedPosition().Rotation().Degrees().value());
-    frc::SmartDashboard::PutData("Field", &field);
-    
 }
-

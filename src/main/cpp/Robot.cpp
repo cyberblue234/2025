@@ -10,6 +10,8 @@ void Robot::RobotPeriodic()
 	swerve.UpdateTelemetry();
 	swerve.UpdateOdometry();
 	limelight3.UpdateTelemetry();
+
+	frc2::CommandScheduler::GetInstance().Run();
 }
 
 void Robot::DisabledInit() {}
@@ -22,10 +24,7 @@ void Robot::AutonomousInit()
 	if (autoCmd) autoCmd->Schedule();
 }
 
-void Robot::AutonomousPeriodic() 
-{
-	frc2::CommandScheduler::GetInstance().Run();
-}
+void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {}
 

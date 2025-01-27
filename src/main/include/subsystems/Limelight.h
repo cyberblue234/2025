@@ -2,11 +2,8 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include "LimelightHelpers.h"
+
 #include "Constants.h"
-#include "networktables/NetworkTable.h"
-#include "networktables/NetworkTableInstance.h"
-#include "networktables/NetworkTableEntry.h"
-#include "networktables/NetworkTableValue.h"
 
 using namespace LimelightHelpers;
 
@@ -25,6 +22,8 @@ public:
     PoseEstimate GetBotPoseBlue(units::degree_t yaw, units::degrees_per_second_t yawRate);
     double GetDistanceFromTarget();
     void UpdateTelemetry();
+
+    
 
 private:
     std::string name;
