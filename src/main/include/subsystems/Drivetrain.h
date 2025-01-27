@@ -12,6 +12,7 @@
 
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 
+#include <frc2/command/CommandPtr.h>
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/config/RobotConfig.h>
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
@@ -57,7 +58,7 @@ public:
     /// @return ChassisSpeeds of the current speeds
     frc::ChassisSpeeds GetRobotRelativeSpeeds() { return robotRelativeSpeeds; };
 
-    void PathFindToPoint(frc::Pose2d pose);
+    std::optional<frc2::CommandPtr> PathfindToBranch(int reefPoint);
 
     /// @brief Calls odometry update
     void UpdateOdometry();
@@ -76,7 +77,8 @@ public:
     /// @brief Resets the gyro yaw
     void ResetGyro() { if (frc::RobotBase::IsReal()) gyro.Reset(); else simOffset = -simYaw.Degrees(); }
     /// @brief Sets the gyro adjustment
-    void SetGyroAdjustment(double angle) { if (frc::RobotBase::IsReal()) gyro.SetAngleAdjustment(angle); else simOffset = units::degree_t(angle); };
+    /// @param angle Angle to adjust by in degrees
+    void SetGyroAdjustment(units::degree_t angle) { if (frc::RobotBase::IsReal()) gyro.SetAngleAdjustment(angle.value()); else simOffset = angle; };
 
     /// @brief Resets drive encoders to 0
     void ResetDriveDistances() 
@@ -128,11 +130,37 @@ private:
         kBackLeftLocation,
         kBackRightLocation};
 
-    frc::SwerveDrivePoseEstimator<4> odometry{
+    frc::SwerveDrivePoseEstimator<4> odometry
+    {
         kinematics,
         GetGyroAngle(),
-        {frontLeft.GetPosition(), frontRight.GetPosition(),
-         backLeft.GetPosition(), backRight.GetPosition()},
-        frc::Pose2d()};
+        {
+            frontLeft.GetPosition(), frontRight.GetPosition(),
+            backLeft.GetPosition(), backRight.GetPosition()
+        },
+        frc::Pose2d()
+    };
+
+    std::optional<frc::Pose2d> FormatBranch(int branch)
+    {
+        switch(branch)
+        {
+            case 0:  return frc::Pose2d(14.40_m, 3.87_m, frc::Rotation2d(180_deg)); break;
+            case 1:  return frc::Pose2d(14.40_m, 4.19_m, frc::Rotation2d(180_deg)); break;
+            case 6:  return frc::Pose2d(11.74_m, 4.19_m, frc::Rotation2d(0_deg)); break;
+            case 7:  return frc::Pose2d(11.74_m, 3.87_m, frc::Rotation2d(0_deg)); break;
+
+            case 2:  return frc::Pose2d(13.88_m, 5.09_m, frc::Rotation2d(-120_deg)); break;
+            case 3:  return frc::Pose2d(13.59_m, 5.25_m, frc::Rotation2d(-120_deg)); break;
+            case 4:  return frc::Pose2d(12.55_m, 5.25_m, frc::Rotation2d(-60_deg)); break;
+            case 5:  return frc::Pose2d(12.26_m, 5.09_m, frc::Rotation2d(-60_deg)); break;
+            case 8:  return frc::Pose2d(12.26_m, 2.96_m, frc::Rotation2d(60_deg)); break;
+            case 9:  return frc::Pose2d(12.55_m, 2.79_m, frc::Rotation2d(60_deg)); break;
+            case 10: return frc::Pose2d(13.59_m, 2.79_m, frc::Rotation2d(120_deg)); break;
+            case 11: return frc::Pose2d(13.88_m, 2.96_m, frc::Rotation2d(120_deg)); break;
+
+            default: return std::nullopt; break;
+        }
+    }
 
 };
