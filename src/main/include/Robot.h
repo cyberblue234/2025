@@ -35,16 +35,19 @@ public:
 
     Drivetrain *GetSwerve() { return &swerve; }; 
     KitBotOutput *GetKitBotOutput() { return &kitBotOutput; };
-    Limelight *GetLimelight3() { return &limelight3; };
+    Limelight *GetLimelightHigh() { return &limelightHigh; };
+    Limelight *GetLimelightLow() { return &limelightLow; };
+
 
 private:
-    Drivetrain swerve{GetLimelight3()};
+    Drivetrain swerve{GetLimelightHigh(), GetLimelightLow()};
     KitBotOutput kitBotOutput;
-    Limelight limelight3;
+    Limelight limelightHigh{"limelight-high"};
+    Limelight limelightLow{"limelight-low"};
 
 	frc::PowerDistribution pdp{1, frc::PowerDistribution::ModuleType::kRev};
     
-	Controls controls{GetSwerve(), GetKitBotOutput(), GetLimelight3()};
+	Controls controls{GetSwerve(), GetKitBotOutput(), GetLimelightHigh(), GetLimelightLow()};
     Autonomous autonomous{GetSwerve(), GetKitBotOutput()};
 
     std::optional<frc2::CommandPtr> autoCmd;

@@ -39,7 +39,7 @@ class Drivetrain : frc2::SubsystemBase
 {
 public:
     /// @brief Constructs the swerve drivetrain 
-    Drivetrain(Limelight *limelight);
+    Drivetrain(Limelight *limelightHigh, Limelight *limelightLow);
 
     /// @brief Calculates the desired SwerveModuleStates for all of the Swerve Modules
     /// @param speeds The created ChassisSpeeds to run the bot - must be robot relative
@@ -114,7 +114,9 @@ private:
     frc::Rotation2d simYaw{0_deg};
     units::degree_t simOffset;
 
-    Limelight *limelight;
+    Limelight *limelightHigh;
+    Limelight *limelightLow;
+
 
     frc::Field2d field{};
 
@@ -146,8 +148,8 @@ private:
         switch(branch)
         {
             case 0:  return frc::Pose2d(14.40_m, 3.87_m, frc::Rotation2d(180_deg)); break;
-            case 1:  return frc::Pose2d(14.40_m, 4.19_m, frc::Rotation2d(180_deg)); break;
-            case 6:  return frc::Pose2d(11.74_m, 4.19_m, frc::Rotation2d(0_deg)); break;
+            case 1:  return frc::Pose2d(14.40_m, 4.16_m, frc::Rotation2d(180_deg)); break;
+            case 6:  return frc::Pose2d(11.74_m, 4.16_m, frc::Rotation2d(0_deg)); break;
             case 7:  return frc::Pose2d(11.74_m, 3.87_m, frc::Rotation2d(0_deg)); break;
 
             case 2:  return frc::Pose2d(13.88_m, 5.09_m, frc::Rotation2d(-120_deg)); break;

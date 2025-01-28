@@ -1,8 +1,9 @@
 #include "subsystems/Drivetrain.h"
 
-Drivetrain::Drivetrain(Limelight *limelight)
+Drivetrain::Drivetrain(Limelight *limelightHigh, Limelight *limelightLow)
 {
-    this->limelight = limelight;
+    this->limelightHigh = limelightHigh;
+    this->limelightLow = limelightLow;
 
     ResetGyro();
 
@@ -65,7 +66,7 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(int branch)
     };
     auto path = std::make_shared<PathPlannerPath>(
         PathPlannerPath::waypointsFromPoses(poses),
-        PathConstraints(2_mps, 2_mps_sq, 720_deg_per_s, 720_deg_per_s_sq),
+        PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq),
         std::nullopt,
         GoalEndState(0.0_mps, pose->Rotation())
     );
@@ -79,14 +80,21 @@ void Drivetrain::UpdateOdometry()
                     {frontLeft.GetPosition(), frontRight.GetPosition(),
                      backLeft.GetPosition(), backRight.GetPosition()});
 
-    PoseEstimate vision = limelight->GetBotPoseBlue(GetYaw(), GetYawRate());
-
-    bool rejectVision = abs(GetYawRate().value()) > 720 || vision.tagCount == 0;
-    if (rejectVision == false)
+    PoseEstimate visionHigh = limelightHigh->GetBotPoseBlue(GetYaw(), GetYawRate());
+    if ((abs(GetYawRate().value()) > 720 || visionHigh.tagCount == 0) == false)
     {
         odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
         odometry.AddVisionMeasurement(
-            vision.pose,
+            visionHigh.pose,
+            frc::Timer::GetFPGATimestamp()
+    );
+    }
+    PoseEstimate visionLow = limelightLow->GetBotPoseBlue(GetYaw(), GetYawRate());
+    if ((abs(GetYawRate().value()) > 720 || visionLow.tagCount == 0) == false)
+    {
+        odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
+        odometry.AddVisionMeasurement(
+            visionLow.pose,
             frc::Timer::GetFPGATimestamp()
     );
     }

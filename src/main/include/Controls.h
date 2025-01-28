@@ -13,7 +13,7 @@ public:
     /// @brief Constructs the Controls object to control the provided subsystems 
     /// @param swerve pointer to the Drivetrain object
     /// @param kitBotOutput pointer to the KitBotOutput object
-    Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput, Limelight *limelight3);
+    Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput, Limelight *limelightHigh, Limelight *limelightLow);
     /// @brief Runs all of the subsystems controls every cycle
     /// @param period
     void Periodic(units::second_t period);
@@ -39,7 +39,8 @@ public:
 private:
     Drivetrain *swerve;
     KitBotOutput *kitBotOutput;
-    Limelight *limelight3;
+    Limelight *limelightHigh;
+    Limelight *limelightLow;
 
     int branch = 0;
     std::optional<frc2::CommandPtr> path;

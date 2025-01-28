@@ -9,7 +9,7 @@ void Robot::RobotPeriodic()
 {
 	swerve.UpdateTelemetry();
 	swerve.UpdateOdometry();
-	limelight3.UpdateTelemetry();
+	limelightHigh.UpdateTelemetry();
 
 	frc2::CommandScheduler::GetInstance().Run();
 }
