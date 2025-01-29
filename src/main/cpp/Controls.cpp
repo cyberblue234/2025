@@ -24,11 +24,12 @@ void Controls::DriveControls(units::second_t period)
         else branch += 1;
     }
     frc::SmartDashboard::PutNumber("Selected Branch", branch);
-    if (gamepad.GetAButton()) 
+    if (gamepad.GetAButtonPressed()) 
     { 
         path = swerve->PathfindToBranch(branch);
-        path->Schedule();
+        if (path) path->Schedule();
     }
+    else if (gamepad.GetAButtonReleased()) if (path) path->Cancel();
 
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
@@ -57,14 +58,6 @@ void Controls::DriveControls(units::second_t period)
     frc::SmartDashboard::PutNumber("rot", rot.value());
 
     frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds::Discretize(frc::ChassisSpeeds{xSpeed, ySpeed, rot}, period);
-    if (path)
-    {
-        if (path->IsScheduled())
-        {
-            if (setSpeeds.vx > 0.0_mps || setSpeeds.vy > 0.0_mps || setSpeeds.omega > 0.0_rad_per_s) path->Cancel();
-            else return;
-        }
-    }
     swerve->Drive(setSpeeds, fieldRelative);
 }
 

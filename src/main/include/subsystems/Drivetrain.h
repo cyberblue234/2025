@@ -152,14 +152,14 @@ private:
             case 6:  return frc::Pose2d(11.74_m, 4.16_m, frc::Rotation2d(0_deg)); break;
             case 7:  return frc::Pose2d(11.74_m, 3.87_m, frc::Rotation2d(0_deg)); break;
 
-            case 2:  return frc::Pose2d(13.88_m, 5.09_m, frc::Rotation2d(-120_deg)); break;
-            case 3:  return frc::Pose2d(13.59_m, 5.25_m, frc::Rotation2d(-120_deg)); break;
-            case 4:  return frc::Pose2d(12.55_m, 5.25_m, frc::Rotation2d(-60_deg)); break;
-            case 5:  return frc::Pose2d(12.26_m, 5.09_m, frc::Rotation2d(-60_deg)); break;
-            case 8:  return frc::Pose2d(12.26_m, 2.96_m, frc::Rotation2d(60_deg)); break;
-            case 9:  return frc::Pose2d(12.55_m, 2.79_m, frc::Rotation2d(60_deg)); break;
-            case 10: return frc::Pose2d(13.59_m, 2.79_m, frc::Rotation2d(120_deg)); break;
-            case 11: return frc::Pose2d(13.88_m, 2.96_m, frc::Rotation2d(120_deg)); break;
+            case 2:  return frc::Pose2d(13.85_m, 5.05_m, frc::Rotation2d(-120_deg)); break;
+            case 3:  return frc::Pose2d(13.59_m, 5.22_m, frc::Rotation2d(-120_deg)); break;
+            case 4:  return frc::Pose2d(12.58_m, 5.22_m, frc::Rotation2d(-60_deg)); break;
+            case 5:  return frc::Pose2d(12.28_m, 5.06_m, frc::Rotation2d(-60_deg)); break;
+            case 8:  return frc::Pose2d(12.28_m, 2.97_m, frc::Rotation2d(60_deg)); break;
+            case 9:  return frc::Pose2d(12.58_m, 2.84_m, frc::Rotation2d(60_deg)); break;
+            case 10: return frc::Pose2d(13.58_m, 2.84_m, frc::Rotation2d(120_deg)); break;
+            case 11: return frc::Pose2d(13.85_m, 2.97_m, frc::Rotation2d(120_deg)); break;
 
             default: return std::nullopt; break;
         }

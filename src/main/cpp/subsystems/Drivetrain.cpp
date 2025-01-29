@@ -59,9 +59,17 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(int branch)
 {
     auto pose = FormatBranch(branch);
     if (!pose) return std::nullopt;
+    frc::Pose2d flippedPose;
+    auto alliance = frc::DriverStation::GetAlliance();
+    if (alliance) {
+        if (alliance.value() == frc::DriverStation::Alliance::kBlue) flippedPose = pathplanner::FlippingUtil::flipFieldPose(GetPose());
+        else flippedPose = GetPose();
+    }
+    else flippedPose = GetPose();
+    
     std::vector<frc::Pose2d> poses 
     {
-        frc::Pose2d(GetPose().X(), GetPose().Y(), pose.value().Rotation()), 
+        frc::Pose2d(flippedPose.X(), flippedPose.Y(), pose.value().Rotation()), 
         pose.value()
     };
     auto path = std::make_shared<PathPlannerPath>(

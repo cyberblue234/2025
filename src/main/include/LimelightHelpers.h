@@ -740,10 +740,6 @@ namespace LimelightHelpers
         {
            return jsonData.at(key).template get<T>();
         }
-        catch (wpi::json::exception& e)
-        {
-            return defaultValue;
-        }
         catch (...)
         {
             return defaultValue;
@@ -847,7 +843,7 @@ namespace LimelightHelpers
         {
             data = wpi::json::parse(jsonString);
         }
-        catch(const std::exception& e)
+        catch(...)
         {
            return LimelightResultsClass();
         }
