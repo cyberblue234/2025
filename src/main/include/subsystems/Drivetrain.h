@@ -175,7 +175,7 @@ private:
         }
         else return std::nullopt;
         
-        if (pose == GetPose()) return std::nullopt;
+        if (pose.value() == GetPose()) return std::nullopt;
         return pose;
     }
 
