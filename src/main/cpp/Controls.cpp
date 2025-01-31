@@ -23,6 +23,11 @@ void Controls::DriveControls(units::second_t period)
         if (branch == 11) branch = 0;
         else branch += 1;
     }
+    else if (gamepad.GetRightBumperButtonPressed()) 
+    {
+        if (branch == 0) branch = 11;
+        else branch -= 1;
+    }
     frc::SmartDashboard::PutNumber("Selected Branch", branch);
     if (gamepad.GetAButtonPressed()) 
     { 

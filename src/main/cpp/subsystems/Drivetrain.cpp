@@ -57,28 +57,25 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
 
 std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(int branch)
 {
-    auto pose = FormatBranch(branch);
-    if (!pose) return std::nullopt;
-    frc::Pose2d flippedPose;
-    auto alliance = frc::DriverStation::GetAlliance();
-    if (alliance) {
-        if (alliance.value() == frc::DriverStation::Alliance::kBlue) flippedPose = pathplanner::FlippingUtil::flipFieldPose(GetPose());
-        else flippedPose = GetPose();
-    }
-    else flippedPose = GetPose();
+    auto tmpPose = FormatBranch(branch);
+    if (!tmpPose) return std::nullopt;
+    frc::Pose2d pose = tmpPose.value();
     
+    double xDiff = pose.X().value() - GetPose().X().value();
+    double yDiff = pose.Y().value() - GetPose().Y().value();
+    units::radian_t heading = units::radian_t(sgn(yDiff) * acos((xDiff) / (pow(pow(xDiff, 2) + pow(yDiff, 2), 0.5))));
     std::vector<frc::Pose2d> poses 
     {
-        frc::Pose2d(flippedPose.X(), flippedPose.Y(), pose.value().Rotation()), 
-        pose.value()
+        frc::Pose2d(GetPose().X(), GetPose().Y(), frc::Rotation2d(heading)), 
+        pose
     };
     auto path = std::make_shared<PathPlannerPath>(
         PathPlannerPath::waypointsFromPoses(poses),
         PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq),
         std::nullopt,
-        GoalEndState(0.0_mps, pose->Rotation())
+        GoalEndState(0.0_mps, pose.Rotation())
     );
-    path->preventFlipping = false;
+    path->preventFlipping = true;
     return AutoBuilder::followPath(path);
 }
 

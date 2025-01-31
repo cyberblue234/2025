@@ -154,3 +154,8 @@ constexpr T clamp(T val, T low, T high)
     // else return high;
     return val > low && val < high ? val : val <= low ? low : high; 
 };
+
+constexpr double sgn(double val)
+{
+    return val == 0 ? 0 : val > 0 ? 1 : -1;
+}
