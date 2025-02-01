@@ -58,7 +58,19 @@ public:
     /// @return ChassisSpeeds of the current speeds
     frc::ChassisSpeeds GetRobotRelativeSpeeds() { return robotRelativeSpeeds; };
 
-    std::optional<frc2::CommandPtr> PathfindToBranch(int reefPoint);
+    enum ReefBranches
+    {
+        A, B, C, D, E, F, G, H, I, J, K, L
+    };
+    std::optional<frc2::CommandPtr> PathfindToBranch(ReefBranches branch);
+    enum CoralStations
+    {
+        Left, Right
+    };
+    std::optional<frc2::CommandPtr> PathfindToCoralStation(CoralStations station);
+    std::optional<frc2::CommandPtr> PathfindToProcessor();
+    
+    std::optional<frc2::CommandPtr> PathfindToPose(frc::Pose2d pose, frc::Rotation2d endHeading, bool preventFlipping);
 
     /// @brief Calls odometry update
     void UpdateOdometry();
@@ -117,7 +129,6 @@ private:
     Limelight *limelightHigh;
     Limelight *limelightLow;
 
-
     frc::Field2d field{};
 
     frc::ChassisSpeeds robotRelativeSpeeds;
@@ -143,9 +154,9 @@ private:
         frc::Pose2d()
     };
 
-    std::optional<frc::Pose2d> FormatBranch(int branch)
+    static std::optional<frc::Pose2d> FormatBranch(ReefBranches branch)
     {
-        std::optional<frc::Pose2d> pose;
+        frc::Pose2d pose;
         switch(branch)
         {
             case 0:  pose = frc::Pose2d(14.40_m, 3.87_m, frc::Rotation2d(180_deg)); break;
@@ -164,19 +175,39 @@ private:
 
             default: return std::nullopt; break;
         }
+        return FlipPose(pose);
+    }
 
+    static std::optional<frc::Pose2d> FormatStation(CoralStations station)
+    {
+        frc::Pose2d pose;
+        switch(station)
+        {
+            case CoralStations::Left: pose = frc::Pose2d(16.15_m, 1.29_m, frc::Rotation2d(126.0_deg)); break;
+            case CoralStations::Right: pose = frc::Pose2d(16.15_m, 6.82_m, frc::Rotation2d(-126_deg)); break;
+
+            default: return std::nullopt; break;
+        }
+        return FlipPose(pose);
+    }
+
+    static std::optional<frc::Pose2d> FormatProcessor()
+    {
+        frc::Pose2d pose = frc::Pose2d(11.52_m, 7.59_m, frc::Rotation2d(90_deg));
+        return FlipPose(pose);
+    }
+
+    static std::optional<frc::Pose2d> FlipPose(frc::Pose2d pose)
+    {
         auto alliance = frc::DriverStation::GetAlliance();
         if (alliance) 
         {
             if (alliance.value() == frc::DriverStation::Alliance::kBlue)
             {
-                pose = pathplanner::FlippingUtil::flipFieldPose(pose.value());
-            } 
+                return pathplanner::FlippingUtil::flipFieldPose(pose);
+            }
+            return pose;
         }
         else return std::nullopt;
-        
-        if (pose.value() == GetPose()) return std::nullopt;
-        return pose;
     }
-
 };

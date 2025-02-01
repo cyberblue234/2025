@@ -55,19 +55,40 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     backRight.SetDesiredState(br);
 }
 
-std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(int branch)
+std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(ReefBranches branch)
 {
     auto tmpPose = FormatBranch(branch);
     if (!tmpPose) return std::nullopt;
     frc::Pose2d pose = tmpPose.value();
-    
+    return PathfindToPose(pose, pose.Rotation(), true);
+}
+
+std::optional<frc2::CommandPtr> Drivetrain::PathfindToCoralStation(CoralStations station)
+{
+    auto tmpPose = FormatStation(station);
+    if (!tmpPose) return std::nullopt;
+    frc::Pose2d pose = tmpPose.value();
+    return PathfindToPose(pose, pose.Rotation().RotateBy(180_deg), true);
+}
+
+std::optional<frc2::CommandPtr> Drivetrain::PathfindToProcessor()
+{
+    auto tmpPose = FormatProcessor();
+    if (!tmpPose) return std::nullopt;
+    frc::Pose2d pose = tmpPose.value();
+    return PathfindToPose(pose, pose.Rotation(), true);
+}
+
+std::optional<frc2::CommandPtr> Drivetrain::PathfindToPose(frc::Pose2d pose, frc::Rotation2d endHeading, bool preventFlipping)
+{
+    if (GetPose().X().value() == pose.X().value() && GetPose().Y().value() == pose.Y().value()) return std::nullopt;
     double xDiff = pose.X().value() - GetPose().X().value();
     double yDiff = pose.Y().value() - GetPose().Y().value();
     units::radian_t heading = units::radian_t(sgn(yDiff) * acos((xDiff) / (pow(pow(xDiff, 2) + pow(yDiff, 2), 0.5))));
     std::vector<frc::Pose2d> poses 
     {
         frc::Pose2d(GetPose().X(), GetPose().Y(), frc::Rotation2d(heading)), 
-        pose
+        frc::Pose2d(pose.X(), pose.Y(), endHeading)
     };
     auto path = std::make_shared<PathPlannerPath>(
         PathPlannerPath::waypointsFromPoses(poses),
@@ -75,7 +96,7 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(int branch)
         std::nullopt,
         GoalEndState(0.0_mps, pose.Rotation())
     );
-    path->preventFlipping = true;
+    path->preventFlipping = preventFlipping;
     return AutoBuilder::followPath(path);
 }
 

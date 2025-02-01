@@ -31,10 +31,24 @@ void Controls::DriveControls(units::second_t period)
     frc::SmartDashboard::PutNumber("Selected Branch", branch);
     if (gamepad.GetAButtonPressed()) 
     { 
-        path = swerve->PathfindToBranch(branch);
+        path = swerve->PathfindToBranch(Drivetrain::ReefBranches(branch));
         if (path) path->Schedule();
     }
     else if (gamepad.GetAButtonReleased()) if (path) path->Cancel();
+    
+    if (gamepad.GetBButtonPressed()) 
+    { 
+        path = swerve->PathfindToCoralStation(Drivetrain::CoralStations::Right);
+        if (path) path->Schedule();
+    }
+    else if (gamepad.GetBButtonReleased()) if (path) path->Cancel();
+
+    if (gamepad.GetXButtonPressed()) 
+    { 
+        path = swerve->PathfindToProcessor();
+        if (path) path->Schedule();
+    }
+    else if (gamepad.GetXButtonReleased()) if (path) path->Cancel();
 
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
