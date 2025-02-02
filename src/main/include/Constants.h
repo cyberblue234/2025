@@ -115,6 +115,8 @@ namespace SwerveModuleConstants
 
 namespace DrivetrainConstants
 {
+    //A common error is to use an incorrect coordinate system where the positive Y axis points forward on the robot. 
+    //The correct coordinate system has the positive X axis pointing forward.
     inline constexpr frc::Translation2d kFrontLeftLocation{+0.2254_m, +0.2699_m};
     inline constexpr frc::Translation2d kFrontRightLocation{+0.2254_m, -0.2699_m};
     inline constexpr frc::Translation2d kBackLeftLocation{-0.3016_m, +0.2699_m};

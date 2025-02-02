@@ -9,13 +9,13 @@ Controls::Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput, Limelight *li
     frc::SmartDashboard::PutNumber("Kitbot Output Speed", 0.4);
 }
 
-void Controls::Periodic(units::second_t period)
+void Controls::Periodic()
 {
-    DriveControls(period);
+    DriveControls();
     KitBotControls();
 }
 
-void Controls::DriveControls(units::second_t period)
+void Controls::DriveControls()
 {
     if (gamepad.GetYButton()) swerve->ResetGyro();
     if (gamepad.GetLeftBumperButtonPressed()) 
@@ -31,24 +31,29 @@ void Controls::DriveControls(units::second_t period)
     frc::SmartDashboard::PutNumber("Selected Branch", branch);
     if (gamepad.GetAButtonPressed()) 
     { 
-        path = swerve->PathfindToBranch(Drivetrain::ReefBranches(branch));
+        path = swerve->PathfindToBranch(Drivetrain::ReefBranches(branch), gamepad.GetLeftTriggerAxis() > 0.5);
         if (path) path->Schedule();
     }
     else if (gamepad.GetAButtonReleased()) if (path) path->Cancel();
     
     if (gamepad.GetBButtonPressed()) 
     { 
-        path = swerve->PathfindToCoralStation(Drivetrain::CoralStations::Right);
+        path = swerve->PathfindToCoralStation(Drivetrain::CoralStations::Right, gamepad.GetLeftTriggerAxis() > 0.5);
         if (path) path->Schedule();
     }
     else if (gamepad.GetBButtonReleased()) if (path) path->Cancel();
 
     if (gamepad.GetXButtonPressed()) 
     { 
-        path = swerve->PathfindToProcessor();
+        path = swerve->PathfindToProcessor(gamepad.GetLeftTriggerAxis() > 0.5);
         if (path) path->Schedule();
     }
     else if (gamepad.GetXButtonReleased()) if (path) path->Cancel();
+
+    if (path)
+    {
+        if (path->IsScheduled()) return;
+    }
 
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
@@ -69,14 +74,15 @@ void Controls::DriveControls(units::second_t period)
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    const units::radians_per_second_t rot = -ApplyDeadband(pow(gamepad.GetRightX(), 3), 0.05) *
+    const double omega = -gamepad.GetRightX();
+    const units::radians_per_second_t omegaSpeed = ApplyDeadband(pow(omega, 3), 0.05) *
                      DrivetrainConstants::kMaxAngularSpeed * pow(speedAdjust, 0.5);
 
     frc::SmartDashboard::PutNumber("xSpeed", xSpeed.value());
     frc::SmartDashboard::PutNumber("ySpeed", ySpeed.value());
-    frc::SmartDashboard::PutNumber("rot", rot.value());
+    frc::SmartDashboard::PutNumber("omegaSpeed", omegaSpeed.value());
 
-    frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds::Discretize(frc::ChassisSpeeds{xSpeed, ySpeed, rot}, period);
+    frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds{xSpeed, ySpeed, omegaSpeed};
     swerve->Drive(setSpeeds, fieldRelative);
 }
 

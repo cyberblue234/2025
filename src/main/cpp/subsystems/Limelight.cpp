@@ -33,5 +33,5 @@ double Limelight::GetDistanceFromTarget()
 
 void Limelight::UpdateTelemetry()
 {
-    frc::SmartDashboard::PutNumber("Distance from Apriltag", GetDistanceFromTarget());
+    TelemetryHelperNumber("Distance from Apriltag", GetDistanceFromTarget());
 }

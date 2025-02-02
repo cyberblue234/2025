@@ -50,7 +50,7 @@ public:
 
     /// @brief Updates the SmartDashboard with the module information
     void UpdateTelemetry();
-     /// @brief Quick SmartDashboard helper tool for printing diagnostics
+    /// @brief Quick SmartDashboard helper tool for printing diagnostics
     /// @param valueName Description of the value
     /// @param value Value to be printed
     void TelemetryHelperNumber(std::string valueName, double value) { frc::SmartDashboard::PutNumber(valueName + " " + name, value); }

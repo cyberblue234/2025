@@ -3,6 +3,8 @@
 #include <frc/XboxController.h>
 #include <frc/DriverStation.h>
 
+#include <frc/TimedRobot.h>
+
 #include <frc/smartdashboard/Field2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
@@ -62,13 +64,13 @@ public:
     {
         A, B, C, D, E, F, G, H, I, J, K, L
     };
-    std::optional<frc2::CommandPtr> PathfindToBranch(ReefBranches branch);
+    std::optional<frc2::CommandPtr> PathfindToBranch(ReefBranches branch, bool usePPLibPathfinding);
     enum CoralStations
     {
         Left, Right
     };
-    std::optional<frc2::CommandPtr> PathfindToCoralStation(CoralStations station);
-    std::optional<frc2::CommandPtr> PathfindToProcessor();
+    std::optional<frc2::CommandPtr> PathfindToCoralStation(CoralStations station, bool usePPLibPathfinding);
+    std::optional<frc2::CommandPtr> PathfindToProcessor(bool usePPLibPathfinding);
     
     std::optional<frc2::CommandPtr> PathfindToPose(frc::Pose2d pose, frc::Rotation2d endHeading, bool preventFlipping);
 

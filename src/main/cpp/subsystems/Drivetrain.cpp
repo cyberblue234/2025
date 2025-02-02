@@ -55,33 +55,35 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     backRight.SetDesiredState(br);
 }
 
-std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(ReefBranches branch)
+std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(ReefBranches branch, bool usePPLibPathfinding)
 {
     auto tmpPose = FormatBranch(branch);
     if (!tmpPose) return std::nullopt;
     frc::Pose2d pose = tmpPose.value();
+    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq));
     return PathfindToPose(pose, pose.Rotation(), true);
 }
 
-std::optional<frc2::CommandPtr> Drivetrain::PathfindToCoralStation(CoralStations station)
+std::optional<frc2::CommandPtr> Drivetrain::PathfindToCoralStation(CoralStations station, bool usePPLibPathfinding)
 {
     auto tmpPose = FormatStation(station);
     if (!tmpPose) return std::nullopt;
     frc::Pose2d pose = tmpPose.value();
+    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq));
     return PathfindToPose(pose, pose.Rotation().RotateBy(180_deg), true);
 }
 
-std::optional<frc2::CommandPtr> Drivetrain::PathfindToProcessor()
+std::optional<frc2::CommandPtr> Drivetrain::PathfindToProcessor(bool usePPLibPathfinding)
 {
     auto tmpPose = FormatProcessor();
     if (!tmpPose) return std::nullopt;
     frc::Pose2d pose = tmpPose.value();
+    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq));
     return PathfindToPose(pose, pose.Rotation(), true);
 }
 
 std::optional<frc2::CommandPtr> Drivetrain::PathfindToPose(frc::Pose2d pose, frc::Rotation2d endHeading, bool preventFlipping)
 {
-    if (GetPose().X().value() == pose.X().value() && GetPose().Y().value() == pose.Y().value()) return std::nullopt;
     double xDiff = pose.X().value() - GetPose().X().value();
     double yDiff = pose.Y().value() - GetPose().Y().value();
     units::radian_t heading = units::radian_t(sgn(yDiff) * acos((xDiff) / (pow(pow(xDiff, 2) + pow(yDiff, 2), 0.5))));

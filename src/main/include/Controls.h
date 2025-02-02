@@ -16,11 +16,11 @@ public:
     Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput, Limelight *limelightHigh, Limelight *limelightLow);
     /// @brief Runs all of the subsystems controls every cycle
     /// @param period
-    void Periodic(units::second_t period);
+    void Periodic();
     /// @brief Drivetrain controls
     /// @param period
   
-    void DriveControls(units::second_t period);
+    void DriveControls();
     /// @brief KitBotOutput controls
     void KitBotControls();
 

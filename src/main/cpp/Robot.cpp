@@ -10,6 +10,7 @@ void Robot::RobotPeriodic()
 	swerve.UpdateTelemetry();
 	swerve.UpdateOdometry();
 	limelightHigh.UpdateTelemetry();
+	limelightLow.UpdateTelemetry();
 
 	frc2::CommandScheduler::GetInstance().Run();
 }
@@ -30,7 +31,7 @@ void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic()
 {
-	controls.Periodic(GetPeriod());
+	controls.Periodic();
 }
 
 void Robot::TestPeriodic() {}
