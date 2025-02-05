@@ -80,6 +80,11 @@ namespace RobotMap
     constexpr int kBackRightTurnID = 5;
     // CANCoder
     constexpr int kBackRightCanCoderID = 24;
+
+    //TalonFX
+    constexpr int kMotor1ID = 100;
+    //TalonFX
+    constexpr int kMotor2ID = 101;
 }
 
 namespace units
@@ -141,6 +146,18 @@ namespace PathPlannerConstants
     inline constexpr double kRotationI = 0.0;
     inline constexpr double kRotationD = 0.1;
 }
+
+namespace ElevatorConstants
+{
+    inline constexpr double kP = 0;
+    inline constexpr double kI = 0;
+    inline constexpr double kD = 0;
+    inline constexpr units::volt_t kS = 0.24_V;
+    inline constexpr units::volts_per_tps_t kV = 2.46_V / 1_tps;
+}
+
+
+
 
 template <typename T>
 constexpr T clamp(T val, T low, T high) 
