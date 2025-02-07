@@ -55,6 +55,7 @@ public:
     /// @param value Value to be printed
     void TelemetryHelperNumber(std::string valueName, double value) { frc::SmartDashboard::PutNumber(valueName + " " + name, value); }
 
+    /// @brief Runs a simulation of the swerve module based on the inputs of SetDesiredState()
     void SimMode();
 
     /// @brief Returns the distance of the drive motor
@@ -134,15 +135,25 @@ public:
     void SetCanCoder(units::turn_t value) { canCoder.SetPosition(value); }
 
 private:
+    // The name of the swerve module, helps with telemetry
     std::string name;
 
+    // Creates the drive and turn motor and the cancoder objects
     hardware::TalonFX driveMotor;
     hardware::TalonFX turnMotor;
     hardware::CANcoder canCoder;
 
+    /*
+     * CTRE uses classes from the controls namespace to control the motors in more complex manners.
+     * In this case, we are using PositionVoltage and VelocityVoltage for the 
+     * turn/angle motor and the drive motor respectfully.
+     * PositionVoltage allows us to run the turn/angle motor to a position using voltages.
+     * VelocityVoltage allows us to run the drive motor at a velocity using voltages.
+     */
     controls::PositionVoltage turnPositionOut{0_tr};
     controls::VelocityVoltage driveVelocityOut{0_tps};
 
+    // Creates a simluation tool for the drive motor
     frc::sim::DCMotorSim driveMotorSimModel{
         frc::LinearSystemId::DCMotorSystem(
             frc::DCMotor::KrakenX60(1),

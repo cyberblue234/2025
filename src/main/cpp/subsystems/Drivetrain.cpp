@@ -2,11 +2,14 @@
 
 Drivetrain::Drivetrain(Limelight *limelightHigh, Limelight *limelightLow)
 {
+    // Sets the class variables to the given inputs
     this->limelightHigh = limelightHigh;
     this->limelightLow = limelightLow;
 
+    // Resets gyro to ensure proper initialization
     ResetGyro();
 
+    // Gets the settings from PathPlanner GUI
     RobotConfig config = RobotConfig::fromGUISettings();
     // Configure the AutoBuilder last
     AutoBuilder::configure(
@@ -30,25 +33,32 @@ Drivetrain::Drivetrain(Limelight *limelightHigh, Limelight *limelightLow)
         this // Reference to this subsystem to set requirements
     );
 
+    // The field will draw the current path
     pathplanner::PathPlannerLogging::setLogActivePathCallback([this](auto poses) {
         this->field.GetObject("path")->SetPoses(poses);
     });
 
+    // Gives a reference to the field object, which allows it to update without a periodic call
     frc::SmartDashboard::PutData("Field", &field);
 }
 
 void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
 {
-    SetRobotRelativeSpeeds(speeds); // Sets ChassisSpeeds before field relative translation for PPLib
+    // Sets ChassisSpeeds before field relative translation for PPLib
+    SetRobotRelativeSpeeds(speeds);
+    // Converts to a field relative drive system if fieldRelative is true
     if (fieldRelative) speeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(speeds, GetGyroAngle());
+    // Turns the ChassisSpeeds to four states to set the SwerveModules to
     wpi::array<frc::SwerveModuleState, 4U> states = kinematics.ToSwerveModuleStates(speeds);
-    
+    // Ensures no module has a set velocity above the theoretically maximum velocity the modules can achieve
     kinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
 
+    // Changes the simulation gyro tools
     if (frc::RobotBase::IsSimulation()) simYaw = simYaw + frc::Rotation2d(speeds.omega * 0.02_s);
 
+    // Splits the vector into four individual states
     auto [fl, fr, bl, br] = states;
-
+    // Calls the funcitons to set the states
     frontLeft.SetDesiredState(fl);
     frontRight.SetDesiredState(fr);
     backLeft.SetDesiredState(bl);
@@ -57,57 +67,86 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
 
 std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(ReefBranches branch, bool usePPLibPathfinding)
 {
+    // Gets the possible setpose
     auto tmpPose = FormatBranch(branch);
+    // Returns nothing if the temperary pose does not exist
     if (!tmpPose) return std::nullopt;
+    // If the temp pose does exist, get rid of the std::optional container and create a pose to pathfind to
     frc::Pose2d pose = tmpPose.value();
+    // Uses PPLib pathfinding with given constraints
     if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq));
+    // Uses internal pathfinding
     return PathfindToPose(pose, pose.Rotation(), true);
 }
 
 std::optional<frc2::CommandPtr> Drivetrain::PathfindToCoralStation(CoralStations station, bool usePPLibPathfinding)
 {
+    // Gets the possible setpose
     auto tmpPose = FormatStation(station);
+    // Returns nothing if the temperary pose does not exist
     if (!tmpPose) return std::nullopt;
+    // If the temp pose does exist, get rid of the std::optional container and create a pose to pathfind to
     frc::Pose2d pose = tmpPose.value();
+    // Uses PPLib pathfinding with given constraints
     if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq));
+    // Uses internal pathfinding
     return PathfindToPose(pose, pose.Rotation().RotateBy(180_deg), true);
 }
 
 std::optional<frc2::CommandPtr> Drivetrain::PathfindToProcessor(bool usePPLibPathfinding)
 {
+    // Gets the possible setpose
     auto tmpPose = FormatProcessor();
+    // Returns nothing if the temperary pose does not exist
     if (!tmpPose) return std::nullopt;
+    // If the temp pose does exist, get rid of the std::optional container and create a pose to pathfind to
     frc::Pose2d pose = tmpPose.value();
+    // Uses PPLib pathfinding with given constraints
     if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq));
+    // Uses internal pathfinding
     return PathfindToPose(pose, pose.Rotation(), true);
 }
 
 std::optional<frc2::CommandPtr> Drivetrain::PathfindToPose(frc::Pose2d pose, frc::Rotation2d endHeading, bool preventFlipping)
 {
+    // Finds the difference of the two x and the two y values
     double xDiff = pose.X().value() - GetPose().X().value();
     double yDiff = pose.Y().value() - GetPose().Y().value();
+    /*
+     * cos(x) is equal to the lengh of the adjacent side divided by the length of the hypotenuse.
+     * The inverse of cos will give you the angle to drive at, in quadrants one and two. 
+     * If you multiply that by the sign of the yDiff, you will get the final hedaing in radians
+     */
     units::radian_t heading = units::radian_t(sgn(yDiff) * acos((xDiff) / (pow(pow(xDiff, 2) + pow(yDiff, 2), 0.5))));
+    // Creates a vector of two poses with the rotation being the heading to drive at
+    // The first pose is the current pose, and the second is the pose to drive to
     std::vector<frc::Pose2d> poses 
     {
         frc::Pose2d(GetPose().X(), GetPose().Y(), frc::Rotation2d(heading)), 
         frc::Pose2d(pose.X(), pose.Y(), endHeading)
     };
+    // Creates a path based on the vector of poses and PathPlanner constraints
     auto path = std::make_shared<PathPlannerPath>(
         PathPlannerPath::waypointsFromPoses(poses),
         PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq),
         std::nullopt,
         GoalEndState(0.0_mps, pose.Rotation())
     );
+    // If preventFlipping is true, it stops the path from flipping automatically 
+    // because we have already flipped the desired poses
     path->preventFlipping = preventFlipping;
-    return AutoBuilder::followPath(path);
+    // Creates and returns the command to follow the path
+    return AutoBuilder::followPath(path)
 }
 
 void Drivetrain::UpdateOdometry()
 {
+    // Updates the odometry with the gyro angle and the wheel positions (drive distance and turn angle)
     odometry.Update(frc::RobotBase::IsReal() ? GetGyroAngle() : simYaw,
                     {frontLeft.GetPosition(), frontRight.GetPosition(),
                      backLeft.GetPosition(), backRight.GetPosition()});
 
+    
     PoseEstimate visionHigh = limelightHigh->GetBotPoseBlue(GetYaw(), GetYawRate());
     if ((abs(GetYawRate().value()) > 720 || visionHigh.tagCount == 0) == false)
     {

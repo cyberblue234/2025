@@ -33,6 +33,7 @@
 #include "subsystems/Limelight.h"
 #include "Constants.h"
 
+// This file uses Drivetrain and PathPlanner a lot
 using namespace DrivetrainConstants;
 using namespace PathPlannerConstants;
 using namespace pathplanner;
@@ -40,7 +41,9 @@ using namespace pathplanner;
 class Drivetrain : frc2::SubsystemBase
 {
 public:
-    /// @brief Constructs the swerve drivetrain 
+    /// @brief Constructs the swerve drivetrain
+    /// @param limlightHigh Pointer to the higher limelight object
+    /// @param limlightLow Pointer to the lower limelight object
     Drivetrain(Limelight *limelightHigh, Limelight *limelightLow);
 
     /// @brief Calculates the desired SwerveModuleStates for all of the Swerve Modules
@@ -49,29 +52,50 @@ public:
     void Drive(frc::ChassisSpeeds speeds, bool fieldRelative);
 
     /// @brief Sets current robot pose
-    /// @warning might be an issue - before it was .ResetPosition(...)
+    /// @param pose Pose to reset the pose to
+    /// @warning Might be an issue - before it was .ResetPosition(...)
     void ResetPose(frc::Pose2d pose) { odometry.ResetPose(pose); };
     /// @brief Returns current robot pose
     /// @return Pose2d of current robot pose
     frc::Pose2d GetPose() { return odometry.GetEstimatedPosition(); };
     /// @brief Sets the current chassis speeds
+    /// @param newSpeeds The new robot relative chassis speeds
     void SetRobotRelativeSpeeds(frc::ChassisSpeeds newSpeeds) { robotRelativeSpeeds = newSpeeds; };
     /// @brief Returns the current chassis speeds
     /// @return ChassisSpeeds of the current speeds
     frc::ChassisSpeeds GetRobotRelativeSpeeds() { return robotRelativeSpeeds; };
 
+    /// @brief List of the branches of the reef. A is the left branch at the face closets to the driver station wall
     enum ReefBranches
     {
         A, B, C, D, E, F, G, H, I, J, K, L
     };
+    /// @brief Pathfind to thealliance-specific specified branch
+    /// @param branch Branch to pathfind to
+    /// @param usePPLibPathFinding Set true to use PPLib pathfinding, false for internal pathfinding (temp)
+    /// @return CommandPtr of the path to run - std::nullopt if the path can not exist
     std::optional<frc2::CommandPtr> PathfindToBranch(ReefBranches branch, bool usePPLibPathfinding);
+
+    /// @brief Lists the left and right coral stations from the perspective of the driver station
     enum CoralStations
     {
         Left, Right
     };
+    /// @brief Pathfind to the alliance-specific specified coral loading station
+    /// @param station Station to pathfind to
+    /// @param usePPLibPathFinding Set true to use PPLib pathfinding, false for internal pathfinding (temp)
+    /// @return CommandPtr of the path to run - std::nullopt if the path can not exist
     std::optional<frc2::CommandPtr> PathfindToCoralStation(CoralStations station, bool usePPLibPathfinding);
+
+    /// @brief Pathfind to alliance-specific processor
+    /// @param usePPLibPathFinding Set true to use PPLib pathfinding, false for internal pathfinding (temp)
+    /// @return CommandPtr of the path to run - std::nullopt if the path can not exist
     std::optional<frc2::CommandPtr> PathfindToProcessor(bool usePPLibPathfinding);
     
+    /// @brief Internal pathfinding
+    /// @param pose Pose to pathfind to
+    /// @param endHeading The heading to drive at of the end pose. Note, this is NOT the same as the end goal state - that should be included in @param pose
+    /// @return CommandPtr of the path to run - std::nullopt if the path can not exist
     std::optional<frc2::CommandPtr> PathfindToPose(frc::Pose2d pose, frc::Rotation2d endHeading, bool preventFlipping);
 
     /// @brief Calls odometry update
@@ -103,6 +127,7 @@ public:
         backRight.SetEncoder(0_tr);
     };
 
+    /// @brief Simulation periodic
     void Sim() 
     {
         frontLeft.SimMode();
@@ -119,32 +144,41 @@ public:
     const units::meters_per_second_squared_t GetYAcceleration() { return gyro.GetWorldLinearAccelY() * 9.80665_mps_sq; };
 
 private:
+    // Creates the four swerve modules - see SwerveModule.h
     SwerveModule frontLeft{"Front Left", RobotMap::kFrontLeftDriveID, RobotMap::kFrontLeftTurnID, RobotMap::kFrontLeftCanCoderID, kFrontLeftMagnetOffset};
     SwerveModule frontRight{"Front Right", RobotMap::kFrontRightDriveID, RobotMap::kFrontRightTurnID, RobotMap::kFrontRightCanCoderID, kFrontRightMagnetOffset};
     SwerveModule backLeft{"Back Left", RobotMap::kBackLeftDriveID, RobotMap::kBackLeftTurnID, RobotMap::kBackLeftCanCoderID, kBackLeftMagnetOffset};
     SwerveModule backRight{"Back Right", RobotMap::kBackRightDriveID, RobotMap::kBackRightTurnID, RobotMap::kBackRightCanCoderID, kBackRightMagnetOffset};
 
+    // Creates the gyro object in the MXP SPI port, or the port on the middle of the roborio
     studica::AHRS gyro{studica::AHRS::NavXComType::kMXP_SPI};
+    // Gyro simulation tools
     frc::Rotation2d simYaw{0_deg};
     units::degree_t simOffset;
 
+    // Creates the two limelight objects, one is higher on the robot and one is lower
     Limelight *limelightHigh;
     Limelight *limelightLow;
-
+    
+    // Creates a field object for use of odometry and PathPlanner debugging
     frc::Field2d field{};
 
+    // Container for the current relative robot speeds
     frc::ChassisSpeeds robotRelativeSpeeds;
+    // Creates the translation and rotation PIDs for PathPlanner
     PIDConstants translationPIDs{kTranslationP, kTranslationI, kTranslationD};
     PIDConstants rotationPIDs{kRotationP, kRotationI, kRotationD};
 
-    frc::Timer accelTimer;
-
-    frc::SwerveDriveKinematics<4> kinematics{
+    // FRC kinematics to determine individual wheel speeds based on the desired chassis speeds
+    frc::SwerveDriveKinematics<4> kinematics
+    {
         kFrontLeftLocation,
         kFrontRightLocation,
         kBackLeftLocation,
-        kBackRightLocation};
+        kBackRightLocation
+    };
 
+    // Odometry object that allows for vision input with a standard deviation
     frc::SwerveDrivePoseEstimator<4> odometry
     {
         kinematics,
@@ -155,7 +189,10 @@ private:
         },
         frc::Pose2d()
     };
-
+    
+    /// @brief Gets the pose of the different branches - will flip the pose if on the blue alliance
+    /// @param branch Branch to get the pose of
+    /// @return Pose2d of the branch pose
     static std::optional<frc::Pose2d> FormatBranch(ReefBranches branch)
     {
         frc::Pose2d pose;
@@ -180,6 +217,9 @@ private:
         return FlipPose(pose);
     }
 
+    /// @brief Gets the pose of the left or right station - will flip the pose if on the blue alliance
+    /// @param station Station to get the pose of
+    /// @return Pose2d of the station
     static std::optional<frc::Pose2d> FormatStation(CoralStations station)
     {
         frc::Pose2d pose;
@@ -193,12 +233,17 @@ private:
         return FlipPose(pose);
     }
 
+    /// @brief Gets the pose of the processor - will flip the pose if on the blue alliance
+    /// @return Pose2d of the processor
     static std::optional<frc::Pose2d> FormatProcessor()
     {
         frc::Pose2d pose = frc::Pose2d(11.52_m, 7.59_m, frc::Rotation2d(90_deg));
         return FlipPose(pose);
     }
 
+    /// @brief Flips the given pose if the alliance is blue
+    /// @param pose Pose to flip based on conditional
+    /// @return Pose2d of the possibly flipped pose - std::nullopt if the alliance doesn't exist
     static std::optional<frc::Pose2d> FlipPose(frc::Pose2d pose)
     {
         auto alliance = frc::DriverStation::GetAlliance();
