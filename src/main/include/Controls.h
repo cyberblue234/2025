@@ -2,7 +2,7 @@
 
 #include <frc/XboxController.h>
 #include "subsystems/Drivetrain.h"
-#include "subsystems/KitBotOutput.h"
+#include "subsystems/Elevator.h"
 #include "subsystems/Limelight.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 #include "Constants.h"
@@ -12,8 +12,8 @@ class Controls
 public:
     /// @brief Constructs the Controls object to control the provided subsystems 
     /// @param swerve pointer to the Drivetrain object
-    /// @param kitBotOutput pointer to the KitBotOutput object
-    Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput, Limelight *limelightHigh, Limelight *limelightLow);
+    /// @param elevator pointer to the Elevator object
+    Controls(Drivetrain *swerve, Elevator *elevator, Limelight *limelightHigh, Limelight *limelightLow);
     /// @brief Runs all of the subsystems controls every cycle
     /// @param period
     void Periodic();
@@ -21,8 +21,8 @@ public:
     /// @param period
   
     void DriveControls();
-    /// @brief KitBotOutput controls
-    void KitBotControls();
+    /// @brief Elevator controls
+    void ElevatorControls();
 
     /// @brief Applies a deadband around zero. Zone depends on deadband value. 
     /// @param value Value to apply the deadband to
@@ -38,7 +38,7 @@ public:
 
 private:
     Drivetrain *swerve;
-    KitBotOutput *kitBotOutput;
+    Elevator *elevator;
     Limelight *limelightHigh;
     Limelight *limelightLow;
 

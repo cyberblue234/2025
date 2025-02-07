@@ -1,9 +1,9 @@
 #include "Controls.h"
 
-Controls::Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput, Limelight *limelightHigh, Limelight *limelightLow)
+Controls::Controls(Drivetrain *swerve, Elevator *elevator, Limelight *limelightHigh, Limelight *limelightLow)
 {
     this->swerve = swerve;
-    this->kitBotOutput = kitBotOutput;
+    this->elevator = elevator;
     this->limelightHigh = limelightHigh;
     this->limelightLow = limelightLow;
     frc::SmartDashboard::PutNumber("Kitbot Output Speed", 0.4);
@@ -12,7 +12,7 @@ Controls::Controls(Drivetrain *swerve, KitBotOutput *kitBotOutput, Limelight *li
 void Controls::Periodic()
 {
     DriveControls();
-    KitBotControls();
+    ElevatorControls();
 }
 
 void Controls::DriveControls()
@@ -86,8 +86,19 @@ void Controls::DriveControls()
     swerve->Drive(setSpeeds, fieldRelative);
 }
 
-void Controls::KitBotControls() 
+void Controls::ElevatorControls() 
 {
-    if (gamepad.GetLeftTriggerAxis() > 0.5) kitBotOutput->SetMotor(-frc::SmartDashboard::GetNumber("Kitbot Output Speed", 0.4));
-    else kitBotOutput->SetMotor(0.0);
+    int dPadControl = gamepad.GetPOV();
+    if (dPadControl == 0) 
+    {
+        elevator->SetMotors(0.4);
+    }
+    else if (dPadControl == 180)
+    {
+        elevator->SetMotors(-0.4);
+    }
+    else
+    {
+        elevator->SetMotors(0);
+    }
 }

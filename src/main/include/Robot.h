@@ -11,7 +11,7 @@
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
 
 #include "subsystems/Drivetrain.h"
-#include "subsystems/KitBotOutput.h"
+#include "subsystems/Elevator.h"
 #include "subsystems/Limelight.h"
 #include "Controls.h"
 #include "Constants.h"
@@ -34,21 +34,21 @@ public:
     void SimulationPeriodic() override;
 
     Drivetrain *GetSwerve() { return &swerve; }; 
-    KitBotOutput *GetKitBotOutput() { return &kitBotOutput; };
+    Elevator *GetElevator() { return &elevator; };
     Limelight *GetLimelightHigh() { return &limelightHigh; };
     Limelight *GetLimelightLow() { return &limelightLow; };
 
 
 private:
     Drivetrain swerve{GetLimelightHigh(), GetLimelightLow()};
-    KitBotOutput kitBotOutput;
+    Elevator elevator;
     Limelight limelightHigh{"limelight-high"};
     Limelight limelightLow{"limelight-low"};
 
 	frc::PowerDistribution pdp{1, frc::PowerDistribution::ModuleType::kRev};
     
-	Controls controls{GetSwerve(), GetKitBotOutput(), GetLimelightHigh(), GetLimelightLow()};
-    Autonomous autonomous{GetSwerve(), GetKitBotOutput()};
+	Controls controls{GetSwerve(), GetElevator(), GetLimelightHigh(), GetLimelightLow()};
+    Autonomous autonomous{GetSwerve()};
 
     std::optional<frc2::CommandPtr> autoCmd;
 };

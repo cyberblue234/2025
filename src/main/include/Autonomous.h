@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/Commands.h>
 #include <frc2/command/StartEndCommand.h>
@@ -15,7 +14,6 @@
 #include <pathplanner/lib/auto/NamedCommands.h>
 
 #include "subsystems/Drivetrain.h"
-#include "subsystems/KitBotOutput.h"
 #include "Constants.h"
 
 using namespace pathplanner;
@@ -23,10 +21,8 @@ using namespace pathplanner;
 class Autonomous
 {
 public:
-    Autonomous(Drivetrain *swerve, KitBotOutput *kitBotOutput);
+    Autonomous(Drivetrain *swerve);
     frc2::CommandPtr GetAutoCommand();
-	frc2::CommandPtr GetKitBotOutputCommand();
 private:
     Drivetrain *swerve;
-    KitBotOutput *kitBotOutput;
 };

@@ -139,25 +139,31 @@ namespace DrivetrainConstants
 
 namespace PathPlannerConstants
 {
-    inline constexpr double kTranslationP = 5;
+    inline constexpr double kTranslationP = 5.0;
     inline constexpr double kTranslationI = 0.0;
     inline constexpr double kTranslationD = 0.1;
-    inline constexpr double kRotationP = 5;
+    inline constexpr double kRotationP = 5.0;
     inline constexpr double kRotationI = 0.0;
     inline constexpr double kRotationD = 0.1;
 }
 
 namespace ElevatorConstants
 {
-    inline constexpr double kP = 0;
-    inline constexpr double kI = 0;
-    inline constexpr double kD = 0;
-    inline constexpr units::volt_t kS = 0.24_V;
-    inline constexpr units::volts_per_tps_t kV = 2.46_V / 1_tps;
+    inline constexpr double kP = 0.0;
+    inline constexpr double kI = 0.0;
+    inline constexpr double kD = 0.0;
+    inline constexpr units::volt_t kS = 0.0_V;
+    inline constexpr units::volts_per_tps_t kV = 0_V / 1_tps;
+
+    inline constexpr units::turn_t PositionL1 = 0_tr;
+    inline constexpr units::turn_t PositionL2 = 0_tr;
+    inline constexpr units::turn_t PositionL3 = 0_tr;
+    inline constexpr units::turn_t PositionL4 = 0_tr;
+    inline constexpr units::turn_t PositionPickup = 0_tr;
+    inline constexpr units::turn_t PositionProcessor = 0_tr;
+    inline constexpr units::turn_t PositionBarge = 0_tr;
+    inline constexpr units::turn_t PositionFloor = 0_tr;
 }
-
-
-
 
 template <typename T>
 constexpr T clamp(T val, T low, T high) 
