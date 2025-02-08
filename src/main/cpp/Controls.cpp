@@ -2,15 +2,16 @@
 
 Controls::Controls(Drivetrain *swerve, Elevator *elevator, Limelight *limelightHigh, Limelight *limelightLow)
 {
+    // Sets all of the class pointers to the arguments for later use
     this->swerve = swerve;
     this->elevator = elevator;
     this->limelightHigh = limelightHigh;
     this->limelightLow = limelightLow;
-    frc::SmartDashboard::PutNumber("Kitbot Output Speed", 0.4);
 }
 
 void Controls::Periodic()
 {
+    // Runs the different controls
     DriveControls();
     ElevatorControls();
 }
@@ -18,6 +19,7 @@ void Controls::Periodic()
 void Controls::DriveControls()
 {
     if (gamepad.GetYButton()) swerve->ResetGyro();
+    /// @deprecated will be removed once the control board is finalized
     if (gamepad.GetLeftBumperButtonPressed()) 
     {
         if (branch == 11) branch = 0;
@@ -50,6 +52,7 @@ void Controls::DriveControls()
     }
     else if (gamepad.GetXButtonReleased()) if (path) path->Cancel();
 
+    // Ensures driver control is disabled while pathfinding is occuring
     if (path)
     {
         if (path->IsScheduled()) return;

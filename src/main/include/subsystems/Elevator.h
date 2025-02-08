@@ -25,11 +25,11 @@ public:
 
 private:
 
-    hardware::TalonFX motor1{RobotMap::kMotor1ID, "rio"};
-    hardware::TalonFX motor2{RobotMap::kMotor2ID, "rio"};
+    hardware::TalonFX motor1{RobotMap::Elevator::kMotor1ID, "rio"};
+    hardware::TalonFX motor2{RobotMap::Elevator::kMotor2ID, "rio"};
 
     bool followerInverted = true;
-    controls::Follower follower{RobotMap::kMotor1ID, followerInverted};
+    controls::Follower follower{RobotMap::Elevator::kMotor1ID, followerInverted};
 
     controls::PositionVoltage positionOut{0_tr};
 };

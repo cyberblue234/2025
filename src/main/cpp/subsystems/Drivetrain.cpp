@@ -112,11 +112,9 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToPose(frc::Pose2d pose, frc
     // Finds the difference of the two x and the two y values
     double xDiff = pose.X().value() - GetPose().X().value();
     double yDiff = pose.Y().value() - GetPose().Y().value();
-    /*
-     * cos(x) is equal to the lengh of the adjacent side divided by the length of the hypotenuse.
-     * The inverse of cos will give you the angle to drive at, in quadrants one and two. 
-     * If you multiply that by the sign of the yDiff, you will get the final hedaing in radians
-     */
+    // cos(x) is equal to the lengh of the adjacent side divided by the length of the hypotenuse
+    // The inverse of cos will give you the angle to drive at, in quadrants one and two
+    // If you multiply that by the sign of the yDiff, you will get the final hedaing in radians
     units::radian_t heading = units::radian_t(sgn(yDiff) * acos((xDiff) / (pow(pow(xDiff, 2) + pow(yDiff, 2), 0.5))));
     // Creates a vector of two poses with the rotation being the heading to drive at
     // The first pose is the current pose, and the second is the pose to drive to
@@ -136,7 +134,7 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToPose(frc::Pose2d pose, frc
     // because we have already flipped the desired poses
     path->preventFlipping = preventFlipping;
     // Creates and returns the command to follow the path
-    return AutoBuilder::followPath(path)
+    return AutoBuilder::followPath(path);
 }
 
 void Drivetrain::UpdateOdometry()
@@ -146,30 +144,21 @@ void Drivetrain::UpdateOdometry()
                     {frontLeft.GetPosition(), frontRight.GetPosition(),
                      backLeft.GetPosition(), backRight.GetPosition()});
 
-    
+    // Gets the estimated pose from the limelight
+    // Uses MegaTag 2 which utilizes current gyro rotation in order to ensure better quality estimations
     PoseEstimate visionHigh = limelightHigh->GetBotPoseBlue(GetYaw(), GetYawRate());
+    // Rejects the estimation if the rotation rate is too great or if the limelight doesn't see any tags
     if ((abs(GetYawRate().value()) > 720 || visionHigh.tagCount == 0) == false)
     {
         odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
-        odometry.AddVisionMeasurement(
-            visionHigh.pose,
-            frc::Timer::GetFPGATimestamp()
-    );
+        odometry.AddVisionMeasurement(visionHigh.pose, frc::Timer::GetFPGATimestamp());
     }
     PoseEstimate visionLow = limelightLow->GetBotPoseBlue(GetYaw(), GetYawRate());
     if ((abs(GetYawRate().value()) > 720 || visionLow.tagCount == 0) == false)
     {
         odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
-        odometry.AddVisionMeasurement(
-            visionLow.pose,
-            frc::Timer::GetFPGATimestamp()
-    );
+        odometry.AddVisionMeasurement(visionLow.pose, frc::Timer::GetFPGATimestamp());
     }
-    // units::second_t timeDif = accelTimer.Get();
-    // accelTimer.Reset();
-    // odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 0.0});
-    // odometry.AddVisionMeasurement(GetPose().TransformBy(frc::Transform2d{GetXAcceleration() * (timeDif * timeDif), GetYAcceleration() * (timeDif * timeDif), frc::Rotation2d()}), frc::Timer::GetFPGATimestamp());
-
     
     field.SetRobotPose(odometry.GetEstimatedPosition());
 }

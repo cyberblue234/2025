@@ -91,10 +91,10 @@ public:
     /// @param usePPLibPathFinding Set true to use PPLib pathfinding, false for internal pathfinding (temp)
     /// @return CommandPtr of the path to run - std::nullopt if the path can not exist
     std::optional<frc2::CommandPtr> PathfindToProcessor(bool usePPLibPathfinding);
-    
+
     /// @brief Internal pathfinding
     /// @param pose Pose to pathfind to
-    /// @param endHeading The heading to drive at of the end pose. Note, this is NOT the same as the end goal state - that should be included in @param pose
+    /// @param endHeading The heading to drive at of the end pose. Note, this is NOT the same as the end goal state - that should be included in pose
     /// @return CommandPtr of the path to run - std::nullopt if the path can not exist
     std::optional<frc2::CommandPtr> PathfindToPose(frc::Pose2d pose, frc::Rotation2d endHeading, bool preventFlipping);
 
@@ -145,10 +145,10 @@ public:
 
 private:
     // Creates the four swerve modules - see SwerveModule.h
-    SwerveModule frontLeft{"Front Left", RobotMap::kFrontLeftDriveID, RobotMap::kFrontLeftTurnID, RobotMap::kFrontLeftCanCoderID, kFrontLeftMagnetOffset};
-    SwerveModule frontRight{"Front Right", RobotMap::kFrontRightDriveID, RobotMap::kFrontRightTurnID, RobotMap::kFrontRightCanCoderID, kFrontRightMagnetOffset};
-    SwerveModule backLeft{"Back Left", RobotMap::kBackLeftDriveID, RobotMap::kBackLeftTurnID, RobotMap::kBackLeftCanCoderID, kBackLeftMagnetOffset};
-    SwerveModule backRight{"Back Right", RobotMap::kBackRightDriveID, RobotMap::kBackRightTurnID, RobotMap::kBackRightCanCoderID, kBackRightMagnetOffset};
+    SwerveModule frontLeft{"Front Left", RobotMap::Drivetrain::kFrontLeftDriveID, RobotMap::Drivetrain::kFrontLeftTurnID, RobotMap::Drivetrain::kFrontLeftCanCoderID, kFrontLeftMagnetOffset};
+    SwerveModule frontRight{"Front Right", RobotMap::Drivetrain::kFrontRightDriveID, RobotMap::Drivetrain::kFrontRightTurnID, RobotMap::Drivetrain::kFrontRightCanCoderID, kFrontRightMagnetOffset};
+    SwerveModule backLeft{"Back Left", RobotMap::Drivetrain::kBackLeftDriveID, RobotMap::Drivetrain::kBackLeftTurnID, RobotMap::Drivetrain::kBackLeftCanCoderID, kBackLeftMagnetOffset};
+    SwerveModule backRight{"Back Right", RobotMap::Drivetrain::kBackRightDriveID, RobotMap::Drivetrain::kBackRightTurnID, RobotMap::Drivetrain::kBackRightCanCoderID, kBackRightMagnetOffset};
 
     // Creates the gyro object in the MXP SPI port, or the port on the middle of the roborio
     studica::AHRS gyro{studica::AHRS::NavXComType::kMXP_SPI};
