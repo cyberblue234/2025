@@ -4,6 +4,7 @@
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Elevator.h"
 #include "subsystems/Limelight.h"
+#include "subsystems/Claw.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 #include "Constants.h"
 
@@ -15,13 +16,15 @@ public:
     /// @param elevator pointer to the Elevator object
     /// @param limelightHigh pointer to one of the Limelight objects
     /// @param limelightLow pointer to one of the Limelight objects
-    Controls(Drivetrain *swerve, Elevator *elevator, Limelight *limelightHigh, Limelight *limelightLow);
+    Controls(Drivetrain *swerve, Elevator *elevator, Claw *claw, Limelight *limelightHigh, Limelight *limelightLow);
     /// @brief Runs all of the subsystems controls every cycle
     void Periodic();
     /// @brief Drivetain controls
     void DriveControls();
     /// @brief Elevator controls
     void ElevatorControls();
+    /// @brief Claw controls
+    void ClawControls();
 
     /// @brief Applies a deadband around zero. Zone depends on deadband value. 
     /// @param value Value to apply the deadband to
@@ -35,12 +38,14 @@ public:
     }
 
     frc::XboxController gamepad{0};
+    frc::XboxController gamepad2{1};
 
 private:
     Drivetrain *swerve;
     Elevator *elevator;
+    Claw *claw;
     Limelight *limelightHigh;
-    Limelight *limelightLow;
+    Limelight *limelightLow;  
 
     int branch = 0;
     std::optional<frc2::CommandPtr> path;

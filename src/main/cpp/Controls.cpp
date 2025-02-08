@@ -1,10 +1,11 @@
 #include "Controls.h"
 
-Controls::Controls(Drivetrain *swerve, Elevator *elevator, Limelight *limelightHigh, Limelight *limelightLow)
+Controls::Controls(Drivetrain *swerve, Elevator *elevator, Claw *claw, Limelight *limelightHigh, Limelight *limelightLow)
 {
     // Sets all of the class pointers to the arguments for later use
     this->swerve = swerve;
     this->elevator = elevator;
+    this->claw = claw;
     this->limelightHigh = limelightHigh;
     this->limelightLow = limelightLow;
 }
@@ -14,6 +15,7 @@ void Controls::Periodic()
     // Runs the different controls
     DriveControls();
     ElevatorControls();
+    ClawControls();
 }
 
 void Controls::DriveControls()
@@ -91,7 +93,7 @@ void Controls::DriveControls()
 
 void Controls::ElevatorControls() 
 {
-    int dPadControl = gamepad.GetPOV();
+    int dPadControl = gamepad2.GetPOV();
     if (dPadControl == 0) 
     {
         elevator->SetMotors(0.4);
@@ -103,5 +105,34 @@ void Controls::ElevatorControls()
     else
     {
         elevator->SetMotors(0);
+    }
+}
+
+void Controls::ClawControls()
+{
+    if (gamepad2.GetRightBumperButton())
+    {
+        claw->SetWristPower(0.3);
+    }
+    else if (gamepad2.GetLeftBumperButton())
+    {
+        claw->SetWristPower(-0.3);
+    }
+    else
+    {
+        claw->SetWristPower(0.0);
+    }
+
+    if (gamepad2.GetRightTriggerAxis() >= 0.5)
+    {
+        claw->SetIntakePower(0.7);
+    }
+    else if (gamepad2.GetLeftTriggerAxis() >= 0.5)
+    {
+        claw->SetIntakePower(-0.7);
+    }
+    else
+    {
+        claw->SetIntakePower(0);
     }
 }

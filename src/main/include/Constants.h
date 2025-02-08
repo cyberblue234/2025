@@ -58,41 +58,53 @@ namespace RobotMap
     namespace Drivetrain
     {
         // TalonFX
-        constexpr int kFrontLeftDriveID = 8;
+        constexpr int kFrontLeftDriveID = 1;
         // TalonFX
-        constexpr int kFrontLeftTurnID = 9;
+        constexpr int kFrontLeftTurnID = 2;
         // CANCoder
-        constexpr int kFrontLeftCanCoderID = 21;
+        constexpr int kFrontLeftCanCoderID = 1;
 
         // TalonFX
-        constexpr int kFrontRightDriveID = 2;
+        constexpr int kFrontRightDriveID = 3;
         // TalonFX
-        constexpr int kFrontRightTurnID = 3;
+        constexpr int kFrontRightTurnID = 4;
         // CANCoder
-        constexpr int kFrontRightCanCoderID = 22;
+        constexpr int kFrontRightCanCoderID = 2;
 
         // TalonFX
-        constexpr int kBackLeftDriveID = 7;
+        constexpr int kBackLeftDriveID = 5;
         // TalonFX
         constexpr int kBackLeftTurnID = 6;
         // CANCoder
-        constexpr int kBackLeftCanCoderID = 23;
+        constexpr int kBackLeftCanCoderID = 3;
 
         // TalonFX
-        constexpr int kBackRightDriveID = 4;
+        constexpr int kBackRightDriveID = 7;
         // TalonFX
-        constexpr int kBackRightTurnID = 5;
+        constexpr int kBackRightTurnID = 8;
         // CANCoder
-        constexpr int kBackRightCanCoderID = 24;
+        constexpr int kBackRightCanCoderID = 4;
     }
 
     /// @brief The Elevator IDs
     namespace Elevator
     {
         //TalonFX
-        constexpr int kMotor1ID = 0;
+        constexpr int kMotor1ID = 9;
         //TalonFX
-        constexpr int kMotor2ID = 1;
+        constexpr int kMotor2ID = 10;
+        //DIO
+        constexpr int kBottomLimitSwitchID = 0;
+    }
+
+    namespace Claw
+    {
+        //TalonFX
+        constexpr int kWristMotorID = 11;
+        //SparkFlex
+        constexpr int kIntakeMotorID = 1;
+        //CANcoder
+        constexpr int kCanCoderID = 5;
     }
 }
 
@@ -185,14 +197,28 @@ namespace ElevatorConstants
     inline constexpr units::volts_per_tps_t kV = 0_V / 1_tps;
 
     // The encoder readings at the different possible elevator positions
-    inline constexpr units::turn_t PositionL1 = 0_tr;
-    inline constexpr units::turn_t PositionL2 = 0_tr;
-    inline constexpr units::turn_t PositionL3 = 0_tr;
-    inline constexpr units::turn_t PositionL4 = 0_tr;
-    inline constexpr units::turn_t PositionPickup = 0_tr;
-    inline constexpr units::turn_t PositionProcessor = 0_tr;
-    inline constexpr units::turn_t PositionBarge = 0_tr;
-    inline constexpr units::turn_t PositionFloor = 0_tr;
+    inline constexpr units::turn_t kPositionL1 = 0_tr;
+    inline constexpr units::turn_t kPositionL2 = 0_tr;
+    inline constexpr units::turn_t kPositionL3 = 0_tr;
+    inline constexpr units::turn_t kPositionL4 = 0_tr;
+    inline constexpr units::turn_t kPositionPickup = 0_tr;
+    inline constexpr units::turn_t kPositionProcessor = 0_tr;
+    inline constexpr units::turn_t kPositionBarge = 0_tr;
+    inline constexpr units::turn_t kPositionFloor = 0_tr;
+
+    inline constexpr units::turn_t kMaxEncoderValue = 0_tr;
+}
+
+namespace ClawConstants
+{
+    inline constexpr double kPWrist = 0.0;
+    inline constexpr double kIWrist = 0.0;
+    inline constexpr double kDWrist = 0.0;
+    inline constexpr units::volt_t kSWrist = 0.0_V;
+    inline constexpr units::volts_per_tps_t kVWrist = 0_V / 1_tps;
+
+    inline constexpr units::turn_t canCoderMagnetOffset = 0_tr;
+
 }
 
 /// @brief Clamps the input to a specifed range

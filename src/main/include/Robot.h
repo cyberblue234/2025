@@ -12,6 +12,7 @@
 
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Elevator.h"
+#include "subsystems/Claw.h"
 #include "subsystems/Limelight.h"
 #include "Controls.h"
 #include "Constants.h"
@@ -35,6 +36,7 @@ public:
 
     Drivetrain *GetSwerve() { return &swerve; }; 
     Elevator *GetElevator() { return &elevator; };
+    Claw *GetClaw() { return &claw; };
     Limelight *GetLimelightHigh() { return &limelightHigh; };
     Limelight *GetLimelightLow() { return &limelightLow; };
 
@@ -42,12 +44,13 @@ public:
 private:
     Drivetrain swerve{GetLimelightHigh(), GetLimelightLow()};
     Elevator elevator;
+    Claw claw;
     Limelight limelightHigh{"limelight-high"};
     Limelight limelightLow{"limelight-low"};
 
 	frc::PowerDistribution pdp{1, frc::PowerDistribution::ModuleType::kRev};
     
-	Controls controls{GetSwerve(), GetElevator(), GetLimelightHigh(), GetLimelightLow()};
+	Controls controls{GetSwerve(), GetElevator(), GetClaw(), GetLimelightHigh(), GetLimelightLow()};
     Autonomous autonomous{GetSwerve()};
 
     std::optional<frc2::CommandPtr> autoCmd;
