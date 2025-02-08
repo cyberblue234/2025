@@ -293,8 +293,6 @@ namespace LimelightHelpers
         setLimelightNTDoubleArray(limelightName, "fiducial_id_filters_set", validIDsDouble);
     }
 
-    /////
-    /////
 
     /**
      * Sets the camera pose in robotspace. The UI camera pose must be set to zeros
@@ -664,59 +662,6 @@ namespace LimelightHelpers
         inline const std::string _key_colorRGB{"cRGB"};
         inline const std::string _key_colorHSV{"cHSV"};
     }
-
-    // inline void PhoneHome() 
-    // {
-    //     static int sockfd = -1;
-    //     static struct sockaddr_in servaddr, cliaddr;
-
-    //     if (sockfd == -1) {
-    //         sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-    //         if (sockfd < 0) {
-    //             std::cerr << "Socket creation failed" << std::endl;
-    //             return;
-    //         }
-
-    //         memset(&servaddr, 0, sizeof(servaddr));
-    //         servaddr.sin_family = AF_INET;
-    //         servaddr.sin_addr.s_addr = inet_addr("255.255.255.255");
-    //         servaddr.sin_port = htons(5809);
-
-    //         // Set socket for broadcast
-    //         int broadcast = 1;
-    //         if (setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast)) < 0) {
-    //             std::cerr << "Error in setting Broadcast option" << std::endl;
-    //             close(sockfd);
-    //             sockfd = -1;
-    //             return;
-    //         }
-
-    //         // Set socket to non-blocking
-    //         if (fcntl(sockfd, F_SETFL, O_NONBLOCK) < 0) {
-    //             std::cerr << "Error setting socket to non-blocking" << std::endl;
-    //             close(sockfd);
-    //             sockfd = -1;
-    //             return;
-    //         }
-
-    //         const char *msg = "LLPhoneHome";
-    //         sendto(sockfd, msg, strlen(msg), 0, (const struct sockaddr *) &servaddr, sizeof(servaddr));
-    //     }
-
-    //     char receiveData[1024];
-    //     socklen_t len = sizeof(cliaddr);
-
-    //     ssize_t n = recvfrom(sockfd, (char *)receiveData, 1024, 0, (struct sockaddr *) &cliaddr, &len);
-    //     if (n > 0) {
-    //         receiveData[n] = '\0'; // Null-terminate the received string
-    //         std::string received(receiveData, n);
-    //         std::cout << "Received response: " << received << std::endl;
-    //     } else if (n < 0 && errno != EWOULDBLOCK && errno != EAGAIN) {
-    //         std::cerr << "Error receiving data" << std::endl;
-    //         close(sockfd);
-    //         sockfd = -1;
-    //     }
-    // }
 
     inline void SetupPortForwarding(const std::string& limelightName) 
     {

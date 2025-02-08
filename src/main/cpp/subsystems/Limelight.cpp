@@ -3,11 +3,12 @@
 Limelight::Limelight(std::string name)
 {
     this->name = name;
+    SetupPortForwarding(name);
 }
 
 Limelight::Limelight()
 {
-    this->name = "";
+    Limelight("");
 }
 
 PoseEstimate Limelight::GetBotPoseBlue(units::degree_t yaw, units::degrees_per_second_t yawRate)
