@@ -18,7 +18,7 @@ void Controls::Periodic()
 
 void Controls::DriveControls()
 {
-    if (gamepad.GetYButton()) swerve->ResetGyro();
+    if (gamepad.GetYButton()) swerve->ResetDrivingGyro();
     /// @deprecated will be removed once the control board is finalized
     if (gamepad.GetLeftBumperButtonPressed()) 
     {

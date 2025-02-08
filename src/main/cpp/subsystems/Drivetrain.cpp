@@ -40,6 +40,8 @@ Drivetrain::Drivetrain(Limelight *limelightHigh, Limelight *limelightLow)
 
     // Gives a reference to the field object, which allows it to update without a periodic call
     frc::SmartDashboard::PutData("Field", &field);
+
+    
 }
 
 void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
@@ -47,7 +49,7 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     // Sets ChassisSpeeds before field relative translation for PPLib
     SetRobotRelativeSpeeds(speeds);
     // Converts to a field relative drive system if fieldRelative is true
-    if (fieldRelative) speeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(speeds, GetGyroAngle());
+    if (fieldRelative) speeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(speeds, GetDriverGyroAngle());
     // Turns the ChassisSpeeds to four states to set the SwerveModules to
     wpi::array<frc::SwerveModuleState, 4U> states = kinematics.ToSwerveModuleStates(speeds);
     // Ensures no module has a set velocity above the theoretically maximum velocity the modules can achieve
@@ -85,7 +87,7 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToCoralStation(CoralStations
     auto tmpPose = FormatStation(station);
     // Returns nothing if the temperary pose does not exist
     if (!tmpPose) return std::nullopt;
-    // If the temp pose does exist, get rid of the std::optional container and create a pose to pathfind to
+    // If the temp pose does exist, get rid of the std::optional contYepainer and create a pose to pathfind to
     frc::Pose2d pose = tmpPose.value();
     // Uses PPLib pathfinding with given constraints
     if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq));
@@ -140,20 +142,20 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToPose(frc::Pose2d pose, frc
 void Drivetrain::UpdateOdometry()
 {
     // Updates the odometry with the gyro angle and the wheel positions (drive distance and turn angle)
-    odometry.Update(frc::RobotBase::IsReal() ? GetGyroAngle() : simYaw,
+    odometry.Update(frc::RobotBase::IsReal() ? GetRobotGyroAngle() : simYaw,
                     {frontLeft.GetPosition(), frontRight.GetPosition(),
                      backLeft.GetPosition(), backRight.GetPosition()});
 
     // Gets the estimated pose from the limelight
     // Uses MegaTag 2 which utilizes current gyro rotation in order to ensure better quality estimations
-    PoseEstimate visionHigh = limelightHigh->GetBotPoseBlue(GetYaw(), GetYawRate());
+    PoseEstimate visionHigh = limelightHigh->GetBotPoseBlue(GetBlueOriginGyroAngle().Degrees(), GetYawRate());
     // Rejects the estimation if the rotation rate is too great or if the limelight doesn't see any tags
     if ((abs(GetYawRate().value()) > 720 || visionHigh.tagCount == 0) == false)
     {
         odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
         odometry.AddVisionMeasurement(visionHigh.pose, frc::Timer::GetFPGATimestamp());
     }
-    PoseEstimate visionLow = limelightLow->GetBotPoseBlue(GetYaw(), GetYawRate());
+    PoseEstimate visionLow = limelightLow->GetBotPoseBlue(GetBlueOriginGyroAngle().Degrees(), GetYawRate());
     if ((abs(GetYawRate().value()) > 720 || visionLow.tagCount == 0) == false)
     {
         odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
@@ -172,7 +174,9 @@ void Drivetrain::UpdateTelemetry()
 
     frc::SmartDashboard::PutNumber("X Acceleration", GetXAcceleration().value());
     frc::SmartDashboard::PutNumber("Y Acceleration", GetYAcceleration().value());
-    frc::SmartDashboard::PutNumber("Gyro Yaw", GetGyroAngle().Degrees().value());
+    frc::SmartDashboard::PutNumber("Gyro Robot Yaw", GetRobotGyroAngle().Degrees().value());
+    frc::SmartDashboard::PutNumber("Gyro Driver Yaw", GetDriverGyroAngle().Degrees().value());
+    frc::SmartDashboard::PutNumber("Gyro Blue Origin Yaw", GetBlueOriginGyroAngle().Degrees().value());
     frc::SmartDashboard::PutNumber("Odom X", odometry.GetEstimatedPosition().X().value());
     frc::SmartDashboard::PutNumber("Odom Y", odometry.GetEstimatedPosition().Y().value());
     frc::SmartDashboard::PutNumber("Odom Rot", odometry.GetEstimatedPosition().Rotation().Degrees().value());

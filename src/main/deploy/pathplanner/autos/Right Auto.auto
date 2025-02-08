@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "KitBotOutput"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Right 2"
@@ -26,12 +20,6 @@
           "type": "path",
           "data": {
             "pathName": "Right 3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "KitBotOutput"
           }
         }
       ]

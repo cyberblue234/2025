@@ -102,21 +102,31 @@ public:
     void UpdateOdometry();
     /// @brief Updates SmartDashboard values
     void UpdateTelemetry();
-    /// @brief Gets the gyro angle
+    /// @brief Gets the gyro angle from the robot perspective
     /// @return Rotation2d of the current gyro angle
-    frc::Rotation2d GetGyroAngle() { return frc::RobotBase::IsReal() ?  gyro.GetRotation2d() : simYaw.RotateBy(simOffset); };
-    /// @brief Gets the gyro yaw
-    /// @return Gyro yaw in degrees
-    units::degree_t GetYaw() { return units::degree_t{-gyro.GetYaw()}; };
+    frc::Rotation2d GetRobotGyroAngle() { return frc::RobotBase::IsReal() ?  gyro.GetRotation2d() : simYaw.RotateBy(simOffset); };
+    /// @brief Gets the gyro angle from the driver's perspective
+    /// @return Rotation2d of the current gyro angle
+    frc::Rotation2d GetDriverGyroAngle() { return GetRobotGyroAngle().RotateBy(drivingOffset); };
+    /// @brief Gets the gyro angle from the perspective of a blue origin
+    /// @return Rotation2d of the current gyro angle
+    frc::Rotation2d GetBlueOriginGyroAngle() { return GetRobotGyroAngle().RotateBy(blueOriginOffset); };
     /// @brief Gets the rate of the gyro yaw
     /// @return Rate of gyro yaw in degrees per second
     units::degrees_per_second_t GetYawRate() { return units::degrees_per_second_t{-gyro.GetRate()}; };
     
-    /// @brief Resets the gyro yaw
-    void ResetGyro() { if (frc::RobotBase::IsReal()) gyro.Reset(); else simOffset = -simYaw.Degrees(); }
-    /// @brief Sets the gyro adjustment
-    /// @param angle Angle to adjust by in degrees
-    void SetGyroAdjustment(units::degree_t angle) { if (frc::RobotBase::IsReal()) gyro.SetAngleAdjustment(angle.value()); else simOffset = angle; };
+    /// @brief Resets the gyro angles
+    void ResetGyro() { if (frc::RobotBase::IsReal()) gyro.Reset(); else simOffset = -GetRobotGyroAngle().Degrees(); };
+    /// @brief Sets the driving offset to the negated current angle
+    void ResetDrivingGyro() { drivingOffset = -GetRobotGyroAngle().Degrees(); };
+
+    void ConfigureBlueOriginOffset() 
+    {
+        auto alliance = frc::DriverStation::GetAlliance();
+        if (alliance) {
+            if (alliance.value() == frc::DriverStation::Alliance::kBlue) blueOriginOffset = 180_deg;
+        }
+    };
 
     /// @brief Resets drive encoders to 0
     void ResetDriveDistances() 
@@ -152,9 +162,11 @@ private:
 
     // Creates the gyro object in the MXP SPI port, or the port on the middle of the roborio
     studica::AHRS gyro{studica::AHRS::NavXComType::kMXP_SPI};
+    units::degree_t drivingOffset = 180_deg;
+    units::degree_t blueOriginOffset = 0_deg;
     // Gyro simulation tools
     frc::Rotation2d simYaw{0_deg};
-    units::degree_t simOffset;
+    units::degree_t simOffset = 0_deg;
 
     // Creates the two limelight objects, one is higher on the robot and one is lower
     Limelight *limelightHigh;
@@ -182,7 +194,7 @@ private:
     frc::SwerveDrivePoseEstimator<4> odometry
     {
         kinematics,
-        GetGyroAngle(),
+        GetRobotGyroAngle(),
         {
             frontLeft.GetPosition(), frontRight.GetPosition(),
             backLeft.GetPosition(), backRight.GetPosition()

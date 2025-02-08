@@ -15,9 +15,15 @@ void Robot::RobotPeriodic()
 	frc2::CommandScheduler::GetInstance().Run();
 }
 
-void Robot::DisabledInit() {}
+void Robot::DisabledInit() 
+{
+	swerve.ResetGyro();
+}
 
-void Robot::DisabledPeriodic() {}
+void Robot::DisabledPeriodic() 
+{
+	swerve.ConfigureBlueOriginOffset();
+}
 
 void Robot::AutonomousInit() 
 {
