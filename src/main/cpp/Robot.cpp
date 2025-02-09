@@ -7,10 +7,9 @@ void Robot::RobotInit()
 
 void Robot::RobotPeriodic() 
 {
-	swerve.UpdateTelemetry();
+	UpdateTelemetry();
 	swerve.UpdateOdometry();
-	limelightHigh.UpdateTelemetry();
-	limelightLow.UpdateTelemetry();
+	elevator.UpdateElevator();
 
 	frc2::CommandScheduler::GetInstance().Run();
 }
@@ -47,6 +46,17 @@ void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() 
 {
 	swerve.Sim();
+	elevator.SimMode();
+}
+
+void Robot::UpdateTelemetry()
+{
+	frc::SmartDashboard::PutNumber("Battery Voltage", frc::RobotController::GetBatteryVoltage().value());
+
+	swerve.UpdateTelemetry();
+	elevator.UpdateTelemtry();
+	limelightHigh.UpdateTelemetry();
+	limelightLow.UpdateTelemetry();
 }
 
 #ifndef RUNNING_FRC_TESTS

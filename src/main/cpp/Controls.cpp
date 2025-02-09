@@ -93,14 +93,37 @@ void Controls::DriveControls()
 
 void Controls::ElevatorControls() 
 {
-    int dPadControl = gamepad2.GetPOV();
-    if (dPadControl == 0) 
+    if (gamepad2.GetAButton())
     {
-        elevator->SetMotors(0.4);
+        elevator->GoToPosition(Elevator::Positions::L1);
     }
-    else if (dPadControl == 180)
+    else if (gamepad2.GetBButton())
     {
-        elevator->SetMotors(-0.4);
+        elevator->GoToPosition(Elevator::Positions::L2);
+    }
+    else if (gamepad2.GetXButton())
+    {
+        elevator->GoToPosition(Elevator::Positions::L3);
+    }
+    else if (gamepad2.GetYButton())
+    {
+        elevator->GoToPosition(Elevator::Positions::L4);
+    }
+    else if (gamepad2.GetRightBumperButton())
+    {
+        elevator->GoToPosition(Elevator::Positions::Barge);
+    }
+    else if (gamepad2.GetLeftBumperButton())
+    {
+        elevator->GoToPosition(Elevator::Positions::Processor);
+    }
+    else if (gamepad2.GetPOV() == 0) 
+    {
+        elevator->SetMotors(1);
+    }
+    else if (gamepad2.GetPOV() == 180)
+    {
+        elevator->SetMotors(-1);
     }
     else
     {
@@ -118,12 +141,7 @@ void Controls::ClawControls()
     {
         claw->SetWristPower(-0.3);
     }
-    else
-    {
-        claw->SetWristPower(0.0);
-    }
-
-    if (gamepad2.GetRightTriggerAxis() >= 0.5)
+    else if (gamepad2.GetRightTriggerAxis() >= 0.5)
     {
         claw->SetIntakePower(0.7);
     }

@@ -40,6 +40,8 @@ public:
     Limelight *GetLimelightHigh() { return &limelightHigh; };
     Limelight *GetLimelightLow() { return &limelightLow; };
 
+    void UpdateTelemetry();
+
 
 private:
     Drivetrain swerve{GetLimelightHigh(), GetLimelightLow()};

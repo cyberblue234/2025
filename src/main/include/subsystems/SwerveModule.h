@@ -154,6 +154,7 @@ private:
     controls::VelocityVoltage driveVelocityOut{0_tps};
 
     // Creates a simluation tool for the drive motor
+    /// @todo Think about doing kV and kA
     frc::sim::DCMotorSim driveMotorSimModel{
         frc::LinearSystemId::DCMotorSystem(
             frc::DCMotor::KrakenX60(1),

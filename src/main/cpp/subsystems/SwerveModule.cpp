@@ -23,11 +23,6 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     driveMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     driveMotorConfig.CurrentLimits.StatorCurrentLimit = 120.0_A;
 
-    // Stops the motors from changing velocities too quickly
-    driveMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.15_s;
-    driveMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.15_s;
-    driveMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.15_s;
-
     // Configures PID and feedforward values
     driveMotorConfig.Slot0.kP = kDriveP;
     driveMotorConfig.Slot0.kI = kDriveI;
@@ -51,10 +46,6 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
 
     turnMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     turnMotorConfig.CurrentLimits.StatorCurrentLimit = 120.0_A;
-
-    turnMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.15_s;
-    turnMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.15_s;
-    turnMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.15_s;
 
     turnMotor.GetConfigurator().Apply(turnMotorConfig);
 
@@ -142,7 +133,7 @@ void SwerveModule::SimMode()
     driveMotorSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
 
     // get the motor voltage of the TalonFX
-    auto driveMotorVoltage = driveMotorSim.GetMotorVoltage();
+    units::volt_t driveMotorVoltage = driveMotorSim.GetMotorVoltage();
 
     // use the motor voltage to calculate new position and velocity
     // using WPILib's DCMotorSim class for physics simulation

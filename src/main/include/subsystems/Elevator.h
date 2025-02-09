@@ -1,8 +1,20 @@
 #pragma once
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 #include <ctre/phoenix6/TalonFX.hpp>
 #include <ctre/phoenix6/configs/Configurator.hpp>
 #include <ctre/phoenix6/controls/Follower.hpp>
+
+#include <ctre/phoenix6/sim/CANcoderSimState.hpp>
+#include <ctre/phoenix6/sim/TalonFXSimState.hpp>
+
+#include <frc/system/plant/DCMotor.h>
+#include <frc/simulation/ElevatorSim.h>
+#include <frc/system/plant/LinearSystemId.h>
+#include <frc/RobotController.h>
+#include <frc/RobotBase.h>
+
 #include <frc/DigitalInput.h>
 
 #include "Constants.h"
@@ -19,7 +31,7 @@ public:
 
     enum Positions
     {
-        L1, L2, L3, L4, Pickup, Processor, Barge, Floor
+        L1, L2, L3, L4, Pickup, Processor, Barge
     };
     void GoToPosition(Positions pos);
 
@@ -29,7 +41,11 @@ public:
 
     units::turn_t GetTurnsToPosition(Positions pos);
 
-    bool GetBottomLimitSwitch() { return bottomLimitSwitch.Get(); };
+    void UpdateTelemtry();
+
+    bool GetBottomLimitSwitch() { return bottomLimitSwitch.Get() || simLimSwitch; };
+
+    void SimMode();
 
 private:
 
@@ -37,6 +53,7 @@ private:
     hardware::TalonFX motor2{RobotMap::Elevator::kMotor2ID, "rio"};
 
     frc::DigitalInput bottomLimitSwitch{RobotMap::Elevator::kBottomLimitSwitchID};
+    bool simLimSwitch = false;
 
     bool isElevatorRegistered = false;
 
@@ -44,4 +61,20 @@ private:
     controls::Follower follower{RobotMap::Elevator::kMotor1ID, followerInverted};
 
     controls::PositionVoltage positionOut{0_tr};
+
+    frc::sim::ElevatorSim elevatorSim
+    {
+        frc::LinearSystemId::ElevatorSystem
+        (
+            frc::DCMotor::KrakenX60(2),
+            9.07_kg,
+            kSpoolRadius,
+            kMotorGearing.value()
+        ),
+        frc::DCMotor::KrakenX60(2),
+        0.051_m,
+        1.7_m,
+        false,
+        0.051_m
+    };
 };

@@ -190,23 +190,24 @@ namespace PathPlannerConstants
 namespace ElevatorConstants
 {
     // PIDs and feedforward values
-    inline constexpr double kP = 0.0;
+    inline constexpr double kP = 1.0;
     inline constexpr double kI = 0.0;
     inline constexpr double kD = 0.0;
-    inline constexpr units::volt_t kS = 0.0_V;
-    inline constexpr units::volts_per_tps_t kV = 0_V / 1_tps;
+
+    inline constexpr units::turn_t kMotorGearing = 7.75_tr;
+    inline constexpr units::meter_t kSpoolRadius = 0.0208025_m;
+    inline constexpr units::meters_per_turn_t kMetersPerMotorTurn = (kSpoolRadius * 2 * std::numbers::pi) / kMotorGearing;
 
     // The encoder readings at the different possible elevator positions
-    inline constexpr units::turn_t kPositionL1 = 0_tr;
-    inline constexpr units::turn_t kPositionL2 = 0_tr;
-    inline constexpr units::turn_t kPositionL3 = 0_tr;
-    inline constexpr units::turn_t kPositionL4 = 0_tr;
+    inline constexpr units::turn_t kPositionL1 = 20_tr;
+    inline constexpr units::turn_t kPositionL2 = 30_tr;
+    inline constexpr units::turn_t kPositionL3 = 40_tr;
+    inline constexpr units::turn_t kPositionL4 = 50_tr;
     inline constexpr units::turn_t kPositionPickup = 0_tr;
     inline constexpr units::turn_t kPositionProcessor = 0_tr;
-    inline constexpr units::turn_t kPositionBarge = 0_tr;
-    inline constexpr units::turn_t kPositionFloor = 0_tr;
+    inline constexpr units::turn_t kPositionBarge = 90_tr;
 
-    inline constexpr units::turn_t kMaxEncoderValue = 0_tr;
+    inline constexpr units::turn_t kMaxEncoderValue = 100_tr;
 }
 
 namespace ClawConstants
@@ -239,7 +240,8 @@ constexpr T clamp(T val, T low, T high)
 /// @retval 0 if val == 0
 /// @retval -1 if val < 0
 /// @retval 1 if val > 0
-constexpr double sgn(double val)
+template <typename T>
+constexpr T sgn(T val)
 {
-    return val == 0 ? 0 : val > 0 ? 1 : -1;
+    return val == T{0} ? T{0} : val > T{0} ? T{1} : T{-1};
 }
