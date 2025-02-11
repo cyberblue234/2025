@@ -19,6 +19,8 @@ public:
 
     void SetWristPower(double power);
     void GoToAngle(units::degree_t angle);
+    void GoToPosition(Positions pos);
+    units::degree_t GetAngleToPosition(Positions pos);
 
     void SetIntakePower(double power);
 

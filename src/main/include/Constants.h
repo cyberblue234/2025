@@ -186,6 +186,11 @@ namespace PathPlannerConstants
     inline constexpr double kRotationD = 0.1;
 }
 
+enum Positions
+{
+    L1, L2, L3, L4, Pickup, Processor, Barge
+};
+
 /// @brief Constants for the Elevator Class
 namespace ElevatorConstants
 {
@@ -212,14 +217,20 @@ namespace ElevatorConstants
 
 namespace ClawConstants
 {
-    inline constexpr double kPWrist = 0.0;
+    inline constexpr double kPWrist = 1.0;
     inline constexpr double kIWrist = 0.0;
     inline constexpr double kDWrist = 0.0;
-    inline constexpr units::volt_t kSWrist = 0.0_V;
-    inline constexpr units::volts_per_tps_t kVWrist = 0_V / 1_tps;
 
     inline constexpr units::turn_t canCoderMagnetOffset = 0_tr;
 
+    // The encoder readings at the different possible claw angles
+    inline constexpr units::degree_t kAngleL1 = 15_deg;
+    inline constexpr units::degree_t kAngleL2 = 30_deg;
+    inline constexpr units::degree_t kAngleL3 = 30_deg;
+    inline constexpr units::degree_t kAngleL4 = 90_deg;
+    inline constexpr units::degree_t kAnglePickup = 0_deg;
+    inline constexpr units::degree_t kAngleProcessor = -45_deg;
+    inline constexpr units::degree_t kAngleBarge = 0_deg;
 }
 
 /// @brief Clamps the input to a specifed range

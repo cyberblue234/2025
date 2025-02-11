@@ -95,35 +95,35 @@ void Controls::ElevatorControls()
 {
     if (gamepad2.GetAButton())
     {
-        elevator->GoToPosition(Elevator::Positions::L1);
+        elevator->GoToPosition(Positions::L1);
     }
     else if (gamepad2.GetBButton())
     {
-        elevator->GoToPosition(Elevator::Positions::L2);
+        elevator->GoToPosition(Positions::L2);
     }
     else if (gamepad2.GetXButton())
     {
-        elevator->GoToPosition(Elevator::Positions::L3);
+        elevator->GoToPosition(Positions::L3);
     }
     else if (gamepad2.GetYButton())
     {
-        elevator->GoToPosition(Elevator::Positions::L4);
+        elevator->GoToPosition(Positions::L4);
     }
     else if (gamepad2.GetRightBumperButton())
     {
-        elevator->GoToPosition(Elevator::Positions::Barge);
+        elevator->GoToPosition(Positions::Barge);
     }
     else if (gamepad2.GetLeftBumperButton())
     {
-        elevator->GoToPosition(Elevator::Positions::Processor);
+        elevator->GoToPosition(Positions::Processor);
     }
     else if (gamepad2.GetPOV() == 0) 
     {
-        elevator->SetMotors(1);
+        elevator->SetMotors(0.4);
     }
     else if (gamepad2.GetPOV() == 180)
     {
-        elevator->SetMotors(-1);
+        elevator->SetMotors(-0.4);
     }
     else
     {
@@ -133,7 +133,31 @@ void Controls::ElevatorControls()
 
 void Controls::ClawControls()
 {
-    if (gamepad2.GetRightBumperButton())
+    if (gamepad2.GetAButton())
+    {
+        claw->GoToPosition(Positions::L1);
+    }
+    else if (gamepad2.GetBButton())
+    {
+        claw->GoToPosition(Positions::L2);
+    }
+    else if (gamepad2.GetXButton())
+    {
+        claw->GoToPosition(Positions::L3);
+    }
+    else if (gamepad2.GetYButton())
+    {
+        claw->GoToPosition(Positions::L4);
+    }
+    else if (gamepad2.GetRightBumperButton())
+    {
+        claw->GoToPosition(Positions::Barge);
+    }
+    else if (gamepad2.GetLeftBumperButton())
+    {
+        claw->GoToPosition(Positions::Processor);
+    }
+    else if (gamepad2.GetRightBumperButton())
     {
         claw->SetWristPower(0.3);
     }
@@ -141,7 +165,12 @@ void Controls::ClawControls()
     {
         claw->SetWristPower(-0.3);
     }
-    else if (gamepad2.GetRightTriggerAxis() >= 0.5)
+    else
+    {
+        claw->SetWristPower(0.0);
+    }
+    
+    if (gamepad2.GetRightTriggerAxis() >= 0.5)
     {
         claw->SetIntakePower(0.7);
     }

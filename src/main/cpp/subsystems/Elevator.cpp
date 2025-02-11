@@ -38,25 +38,31 @@ void Elevator::SetMotors(double power)
     motor1.Set(power);
 }
 
-void Elevator::GoToPosition(Positions pos)
+void Elevator::GoToTurns(units::turn_t turns)
 {
-    units::turn_t setTurns = GetTurnsToPosition(pos);
-    units::turn_t deltaTurns = setTurns - GetElevatorEncoder();
-    if ((GetBottomLimitSwitch() == true && deltaTurns < 0_tr) || (GetElevatorEncoder() >= kMaxEncoderValue && deltaTurns > 0_tr) || isElevatorRegistered == false)
+    // If delta turns is postitive, the elevator is going up - vice versa for negative delta turns
+    units::turn_t deltaTurns = turns - GetElevatorEncoder();
+    if ((IsBottomLimitSwitchClosed() == true && deltaTurns < 0_tr) || (GetElevatorEncoder() >= kMaxEncoderValue && deltaTurns > 0_tr) || isElevatorRegistered == false)
     {
         SetMotors(0);
     }
     else
     {
-        frc::SmartDashboard::PutNumber("Elevator Set Turns", setTurns.value());
-        controls::PositionVoltage &turnPos = positionOut.WithPosition(setTurns);
+        frc::SmartDashboard::PutNumber("Elevator Set Turns", turns.value());
+        controls::PositionVoltage &turnPos = positionOut.WithPosition(turns);
         motor1.SetControl(turnPos);
     }
 }
 
+void Elevator::GoToPosition(Positions pos)
+{
+    units::turn_t setTurns = GetTurnsToPosition(pos);
+    GoToTurns(setTurns);
+}
+
 void Elevator::UpdateElevator()
 {
-    if (GetBottomLimitSwitch() == true && ((GetElevatorEncoder() > 0.025_tr || GetElevatorEncoder() < -0.025_tr) || isElevatorRegistered == false))
+    if (IsBottomLimitSwitchClosed() == true && ((GetElevatorEncoder() > 0.025_tr || GetElevatorEncoder() < -0.025_tr) || isElevatorRegistered == false))
     {
         ResetElevatorEncoders();
         isElevatorRegistered = true;
@@ -116,7 +122,7 @@ units::turn_t Elevator::GetTurnsToPosition(Positions pos)
 void Elevator::UpdateTelemtry()
 {
     frc::SmartDashboard::PutNumber("Elevator Encoder", GetElevatorEncoder().value());
-    frc::SmartDashboard::PutBoolean("Elevator Bottom Limit Switch", GetBottomLimitSwitch());
+    frc::SmartDashboard::PutBoolean("Elevator Bottom Limit Switch", IsBottomLimitSwitchClosed());
     frc::SmartDashboard::PutBoolean("Elevator Is Registered", isElevatorRegistered);
     frc::SmartDashboard::PutNumber("Elevator M1 Pos", motor1.GetRotorPosition().GetValueAsDouble());
     frc::SmartDashboard::PutNumber("Elevator M2 Pos", motor2.GetRotorPosition().GetValueAsDouble());
@@ -134,6 +140,8 @@ void Elevator::SimMode()
     // get the motor voltage of the TalonFX
     units::volt_t motorVoltage = motor1Sim.GetMotorVoltage();
 
+    frc::SmartDashboard::PutNumber("Elevator M1 Sim Voltage", motorVoltage.value());
+
     // use the motor voltage to calculate new position and velocity
     // using WPILib's DCMotorSim class for physics simulation
     elevatorSim.SetInputVoltage(motorVoltage);
@@ -143,8 +151,9 @@ void Elevator::SimMode()
 
     motor1Sim.SetRawRotorPosition((elevatorSim.GetPosition() - 0.051_m) / kMetersPerMotorTurn);
     motor2Sim.SetRawRotorPosition((elevatorSim.GetPosition() - 0.051_m) / kMetersPerMotorTurn);
+    motor1Sim.SetRotorVelocity(elevatorSim.GetVelocity() / kMetersPerMotorTurn);
+    motor2Sim.SetRotorVelocity(elevatorSim.GetVelocity() / kMetersPerMotorTurn);
     
     frc::SmartDashboard::PutBoolean("Simulated Elevator Has Hit Lower Limit", elevatorSim.HasHitLowerLimit());
     frc::SmartDashboard::PutNumber("Simulated Elevator Height", elevatorSim.GetPosition().value());
-    
 }

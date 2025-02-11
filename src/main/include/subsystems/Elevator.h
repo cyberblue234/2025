@@ -28,11 +28,7 @@ public:
     Elevator();
 
     void SetMotors(double power);
-
-    enum Positions
-    {
-        L1, L2, L3, L4, Pickup, Processor, Barge
-    };
+    void GoToTurns(units::turn_t);
     void GoToPosition(Positions pos);
 
     void UpdateElevator();
@@ -43,7 +39,10 @@ public:
 
     void UpdateTelemtry();
 
-    bool GetBottomLimitSwitch() { return bottomLimitSwitch.Get() || simLimSwitch; };
+    /// @brief Gets the state of the bottom limit switch
+    /// @retval true if the limit switch is closed (pressed)
+    /// @retval false if the limit switch is open
+    bool IsBottomLimitSwitchClosed() { return !bottomLimitSwitch.Get() || simLimSwitch; };
 
     void SimMode();
 
