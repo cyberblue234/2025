@@ -25,6 +25,8 @@ public:
     void GoToPosition(Positions pos);
     units::degree_t GetAngleToPosition(Positions pos);
 
+    units::degree_t GetCurrentAngle() { return canCoderWrist.GetAbsolutePosition().GetValue(); };
+
     void SetIntakePower(double power);
     void IntakeCoral();
     void OutputCoral(Positions pos);
@@ -33,6 +35,8 @@ public:
     units::meter_t GetDistance() { return proxSensor.GetDistance().GetValue(); };
 
     void UpdateTelemetry();
+
+    void SimMode();
 
 private:
     hardware::TalonFX wristMotor{RobotMap::Claw::kWristMotorID, "rio"};

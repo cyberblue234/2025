@@ -56,7 +56,12 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     kinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
 
     // Changes the simulation gyro tools
-    if (frc::RobotBase::IsSimulation()) simYaw = simYaw + frc::Rotation2d(speeds.omega * 0.02_s);
+    if (frc::RobotBase::IsSimulation())
+    {
+        ctre::phoenix6::sim::Pigeon2SimState& gyroSim = gyro.GetSimState();
+        gyroSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+        gyroSim.AddYaw(speeds.omega * 0.02_s);
+    }
 
     // Splits the vector into four individual states
     auto [fl, fr, bl, br] = states;

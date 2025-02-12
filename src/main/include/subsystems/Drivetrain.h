@@ -27,7 +27,7 @@
 #include <frc2/command/SubsystemBase.h>
 
 #include <ctre/phoenix6/Pigeon2.hpp>
-#include <frc/simulation/SimDeviceSim.h>
+#include <ctre/phoenix6/sim/Pigeon2SimState.hpp>
 
 #include "subsystems/SwerveModule.h"
 #include "subsystems/Limelight.h"
@@ -105,7 +105,7 @@ public:
     void UpdateTelemetry();
     /// @brief Gets the gyro angle from the robot perspective
     /// @return Rotation2d of the current gyro angle
-    frc::Rotation2d GetRobotGyroAngle() { return frc::RobotBase::IsReal() ?  gyro.GetRotation2d() : simYaw.RotateBy(simOffset); };
+    frc::Rotation2d GetRobotGyroAngle() { return gyro.GetRotation2d(); };
     /// @brief Gets the gyro angle from the driver's perspective
     /// @return Rotation2d of the current gyro angle
     frc::Rotation2d GetDriverGyroAngle() { return GetRobotGyroAngle().RotateBy(drivingOffset); };
@@ -117,7 +117,7 @@ public:
     units::degrees_per_second_t GetYawRate() { return units::degrees_per_second_t{-gyro.GetRate()}; };
     
     /// @brief Resets the gyro angles
-    void ResetGyro() { if (frc::RobotBase::IsReal()) gyro.Reset(); else simOffset = -GetRobotGyroAngle().Degrees(); };
+    void ResetGyro() { gyro.Reset(); };
     /// @brief Sets the driving offset to the negated current angle
     void ResetDrivingGyro() { drivingOffset = -GetRobotGyroAngle().Degrees(); };
 
@@ -165,9 +165,6 @@ private:
     hardware::Pigeon2 gyro{RobotMap::Drivetrain::kGyroID, "rio"};
     units::degree_t drivingOffset = 180_deg;
     units::degree_t blueOriginOffset = 0_deg;
-    // Gyro simulation tools
-    frc::Rotation2d simYaw{0_deg};
-    units::degree_t simOffset = 0_deg;
 
     // Creates the two limelight objects, one is higher on the robot and one is lower
     Limelight *limelightHigh;

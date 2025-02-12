@@ -54,16 +54,17 @@ void Claw::SetWristPower(double power)
 void Claw::GoToAngle(units::degree_t angle)
 {
     // Constrains the angle to [-180, 180)
-    if (angle < 180_deg && angle >= -180_deg)
+    if (angle >= -180_deg && angle < 180_deg)
     {
-        units::turn_t turns = angle * (1_tr / 360_deg);
-        controls::PositionVoltage &anglePos = angleOut.WithPosition(turns);
+        controls::PositionVoltage &anglePos = angleOut.WithPosition(angle);
         wristMotor.SetControl(anglePos);
     }
     else
     {
         wristMotor.Set(0);
     }
+    // Returns true if the change in angle is less than the deadzone
+    return units::math::abs(angle - GetCurrentAngle()) < kDeadzone;
 }
 
 void Claw::GoToPosition(Positions pos)
@@ -88,8 +89,8 @@ units::degree_t Claw::GetAngleToPosition(Positions pos)
     case Positions::L4:
         return kAngleL4;
         break;
-    case Positions::Pickup:
-        return kAnglePickup;
+    case Positions::Intake:
+        return kAngleIntake;
         break;
     case Positions::Processor:
         return kAngleProcessor;
@@ -144,4 +145,35 @@ void Claw::UpdateTelemetry()
 {
     frc::SmartDashboard::PutBoolean("Is Coral in Claw?", IsCoralInClaw());
     frc::SmartDashboard::PutNumber("Proximity Sensor Distance", units::inch_t(GetDistance()).value());
+}
+
+
+void Claw::SimMode()
+{
+    ctre::phoenix6::sim::TalonFXSimState& wristMotorSim = wristMotor.GetSimState();
+    // ctre::phoenix6::sim::TalonFXSimState& motor2Sim = motor2.GetSimState();
+    
+    // // set the supply voltage of the TalonFX
+    // motor1Sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+    // motor2Sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+
+    // // get the motor voltage of the TalonFX
+    // units::volt_t motorVoltage = motor1Sim.GetMotorVoltage();
+
+    // frc::SmartDashboard::PutNumber("Elevator M1 Sim Voltage", motorVoltage.value());
+
+    // // use the motor voltage to calculate new position and velocity
+    // // using WPILib's DCMotorSim class for physics simulation
+    // elevatorSim.SetInputVoltage(motorVoltage);
+    // elevatorSim.Update(20_ms); // assume 20 ms loop time
+
+    // simLimSwitch = elevatorSim.HasHitLowerLimit();
+
+    // motor1Sim.SetRawRotorPosition((elevatorSim.GetPosition() - 0.051_m) / kMetersPerMotorTurn);
+    // motor2Sim.SetRawRotorPosition((elevatorSim.GetPosition() - 0.051_m) / kMetersPerMotorTurn);
+    // motor1Sim.SetRotorVelocity(elevatorSim.GetVelocity() / kMetersPerMotorTurn);
+    // motor2Sim.SetRotorVelocity(elevatorSim.GetVelocity() / kMetersPerMotorTurn);
+    
+    // frc::SmartDashboard::PutBoolean("Simulated Elevator Has Hit Lower Limit", elevatorSim.HasHitLowerLimit());
+    // frc::SmartDashboard::PutNumber("Simulated Elevator Height", elevatorSim.GetPosition().value());
 }

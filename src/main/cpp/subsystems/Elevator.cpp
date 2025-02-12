@@ -38,11 +38,12 @@ void Elevator::SetMotors(double power)
     motor1.Set(power);
 }
 
-void Elevator::GoToTurns(units::turn_t turns)
+bool Elevator::GoToTurns(units::turn_t turns)
 {
     // If delta turns is postitive, the elevator is going up - vice versa for negative delta turns
-    units::turn_t deltaTurns = turns - GetElevatorEncoder();
-    if ((IsBottomLimitSwitchClosed() == true && deltaTurns < 0_tr) || (GetElevatorEncoder() >= kMaxEncoderValue && deltaTurns > 0_tr) || isElevatorRegistered == false)
+    units::turn_t deltaTurns = turns - GetEncoder();
+    // Conditions to kill motors
+    if ((IsBottomLimitSwitchClosed() == true && deltaTurns < 0_tr) || (GetEncoder() >= kMaxEncoderValue && deltaTurns > 0_tr) || isElevatorRegistered == false)
     {
         SetMotors(0);
     }
@@ -52,24 +53,26 @@ void Elevator::GoToTurns(units::turn_t turns)
         controls::PositionVoltage &turnPos = positionOut.WithPosition(turns);
         motor1.SetControl(turnPos);
     }
+    // Returns true if the change in position is less than the deadzone
+    return units::math::abs(deltaTurns) < (kDeadzone / kMetersPerMotorTurn);
 }
 
-void Elevator::GoToPosition(Positions pos)
+bool Elevator::GoToPosition(Positions pos)
 {
     units::turn_t setTurns = GetTurnsToPosition(pos);
-    GoToTurns(setTurns);
+    return GoToTurns(setTurns);
 }
 
 void Elevator::UpdateElevator()
 {
-    if (IsBottomLimitSwitchClosed() == true && ((GetElevatorEncoder() > 0.025_tr || GetElevatorEncoder() < -0.025_tr) || isElevatorRegistered == false))
+    if (IsBottomLimitSwitchClosed() == true && ((GetEncoder() > 0.025_tr || GetEncoder() < -0.025_tr) || isElevatorRegistered == false))
     {
         ResetElevatorEncoders();
         isElevatorRegistered = true;
     }
 }
 
-const units::turn_t Elevator::GetElevatorEncoder()
+const units::turn_t Elevator::GetEncoder()
 {
     units::turn_t motor1RotorPos = motor1.GetRotorPosition().GetValue();
     units::turn_t motor2RotorPos = -motor2.GetRotorPosition().GetValue();
@@ -89,39 +92,48 @@ void Elevator::ResetElevatorEncoders()
 
 units::turn_t Elevator::GetTurnsToPosition(Positions pos)
 {
+    units::meter_t height = 0_m;
     switch (pos)
     {
     case Positions::L1:
-        return kPositionL1;
+        height = kPositionL1;
         break;
     case Positions::L2:
-        return kPositionL2;
+        height = kPositionL2;
         break;
     case Positions::L3:
-        return kPositionL3;
+        height = kPositionL3;
         break;
     case Positions::L4:
-        return kPositionL4;
+        height = kPositionL4;
         break;
-    case Positions::Pickup:
-        return kPositionPickup;
+    case Positions::AlgaeLow:
+        height = kPositionAlgaeLow;
+        break;
+    case Positions::AlgaeHigh:
+        height = kPositionAlgaeHigh;
+        break;
+    case Positions::Intake:
+        height = kPositionIntake;
         break;
     case Positions::Processor:
-        return kPositionProcessor;
+        height = kPositionProcessor;
         break;
     case Positions::Barge:
-        return kPositionBarge;
+        height = kPositionBarge;
         break;
 
     default:
-        return 0_tr;
+        height = GetHeight();
         break;
     }
+
+    return height / kMetersPerMotorTurn;
 }
 
 void Elevator::UpdateTelemtry()
 {
-    frc::SmartDashboard::PutNumber("Elevator Encoder", GetElevatorEncoder().value());
+    frc::SmartDashboard::PutNumber("Elevator Encoder", GetEncoder().value());
     frc::SmartDashboard::PutBoolean("Elevator Bottom Limit Switch", IsBottomLimitSwitchClosed());
     frc::SmartDashboard::PutBoolean("Elevator Is Registered", isElevatorRegistered);
     frc::SmartDashboard::PutNumber("Elevator M1 Pos", motor1.GetRotorPosition().GetValueAsDouble());

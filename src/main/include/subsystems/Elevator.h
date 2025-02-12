@@ -28,12 +28,13 @@ public:
     Elevator();
 
     void SetMotors(double power);
-    void GoToTurns(units::turn_t);
-    void GoToPosition(Positions pos);
+    bool GoToTurns(units::turn_t);
+    bool GoToPosition(Positions pos);
 
     void UpdateElevator();
-    const units::turn_t GetElevatorEncoder();
-    void ResetElevatorEncoders();
+    const units::turn_t GetEncoder();
+    const units::meter_t GetHeight() { return GetElevatorEncoder() * kMetersPerMotorTurn + kHeightOffset; };
+    void ResetEncoders();
 
     units::turn_t GetTurnsToPosition(Positions pos);
 
@@ -67,13 +68,13 @@ private:
         (
             frc::DCMotor::KrakenX60(2),
             9.07_kg,
-            kSpoolRadius,
+            kSprocketPitchDiameter / 2,
             kMotorGearing.value()
         ),
         frc::DCMotor::KrakenX60(2),
-        0.051_m,
-        1.7_m,
+        kHeightOffset,
+        kMaxElevatorHeight,
         false,
-        0.051_m
+        kHeightOffset
     };
 };

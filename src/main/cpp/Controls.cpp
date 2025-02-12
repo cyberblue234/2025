@@ -97,7 +97,9 @@ void Controls::ElevatorControls()
 {
     if (GetDesiredPosition() != Positions::Null)
     {
-        elevator->GoToPosition(GetDesiredPosition());
+        bool isElevatorAtPos = elevator->GoToPosition(GetDesiredPosition());
+        if (isElevatorAtPos == true) SetElevatorPosition(GetDesiredPosition());
+        else SetElevatorPosition(Positions::Null);
     }
     else if (gamepad2.GetPOV() == 0) 
     {
@@ -117,7 +119,9 @@ void Controls::ClawControls()
 {
     if (GetDesiredPosition() != Positions::Null)
     {
-        claw->GoToPosition(GetDesiredPosition());
+        bool isClawAtPosition = claw->GoToPosition(GetDesiredPosition());
+        if (isClawAtPosition == true) SetClawPosition(GetDesiredPosition());
+        else SetClawPosition(Positions::Null);
     }
     else if (gamepad2.GetRightBumperButton())
     {
@@ -132,10 +136,10 @@ void Controls::ClawControls()
         claw->SetWristPower(0.0);
     }
     
-
+    
     if (gamepad2.GetRightTriggerAxis() >= 0.5)
     {
-        claw->OutputCoral(GetDesiredPosition());
+        claw->OutputCoral(GetCurrentPosition());
     }
     else if (gamepad2.GetLeftTriggerAxis() >= 0.5)
     {
@@ -157,6 +161,10 @@ void Controls::ClawControls()
 
 void Controls::SetDesiredPosition()
 {
+    // When the control board gets set up:
+    //   - Change L1-L4 to rotary swith that only sets desired position when the button is pressed
+    //   - The rest will probably be buttons like now, so they can stay similar
+
     if (gamepad2.GetAButton())
     {
         desiredPosition = Positions::L1;
