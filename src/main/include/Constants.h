@@ -84,6 +84,9 @@ namespace RobotMap
         constexpr int kBackRightTurnID = 8;
         // CANCoder
         constexpr int kBackRightCanCoderID = 4;
+
+        // Pigeon2
+        constexpr int kGyroID = 1;
     }
 
     /// @brief The Elevator IDs
@@ -105,6 +108,9 @@ namespace RobotMap
         constexpr int kIntakeMotorID = 1;
         //CANcoder
         constexpr int kCanCoderID = 5;
+
+        //CANrange
+        constexpr int kCanRangeID = 1;
     }
 }
 
@@ -188,7 +194,7 @@ namespace PathPlannerConstants
 
 enum Positions
 {
-    L1, L2, L3, L4, Pickup, Processor, Barge
+    Null, L1, L2, L3, L4, Pickup, Processor, Barge
 };
 
 /// @brief Constants for the Elevator Class
@@ -231,6 +237,8 @@ namespace ClawConstants
     inline constexpr units::degree_t kAnglePickup = 0_deg;
     inline constexpr units::degree_t kAngleProcessor = -45_deg;
     inline constexpr units::degree_t kAngleBarge = 0_deg;
+
+    inline constexpr double kCoralIntakePower = 0.2;
 }
 
 /// @brief Clamps the input to a specifed range

@@ -26,6 +26,11 @@ public:
     /// @brief Claw controls
     void ClawControls();
 
+    /// @brief Sets desired position
+    void SetDesiredPosition();
+    /// @brief Gets desired position
+    Positions GetDesiredPosition() { return desiredPosition; };
+
     /// @brief Applies a deadband around zero. Zone depends on deadband value. 
     /// @param value Value to apply the deadband to
     /// @param deadband Value of the deadband
@@ -45,7 +50,9 @@ private:
     Elevator *elevator;
     Claw *claw;
     Limelight *limelightHigh;
-    Limelight *limelightLow;  
+    Limelight *limelightLow; 
+
+    Positions desiredPosition = Positions::Null; 
 
     int branch = 0;
     std::optional<frc2::CommandPtr> path;

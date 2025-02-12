@@ -26,7 +26,7 @@
 
 #include <frc2/command/SubsystemBase.h>
 
-#include "studica/AHRS.h"
+#include <ctre/phoenix6/Pigeon2.hpp>
 #include <frc/simulation/SimDeviceSim.h>
 
 #include "subsystems/SwerveModule.h"
@@ -37,6 +37,7 @@
 using namespace DrivetrainConstants;
 using namespace PathPlannerConstants;
 using namespace pathplanner;
+using namespace ctre::phoenix6;
 
 class Drivetrain : frc2::SubsystemBase
 {
@@ -148,10 +149,10 @@ public:
 
     /// @brief Returns the acceleration in the x-direction
     /// @return Acceleration in meters per second squared
-    const units::meters_per_second_squared_t GetXAcceleration() { return gyro.GetWorldLinearAccelX() * 9.80665_mps_sq; };
+    const units::meters_per_second_squared_t GetXAcceleration() { return gyro.GetAccelerationX().GetValue(); };
     /// @brief Returns the acceleration in the y-direction
     /// @return Acceleration in meters per second squared
-    const units::meters_per_second_squared_t GetYAcceleration() { return gyro.GetWorldLinearAccelY() * 9.80665_mps_sq; };
+    const units::meters_per_second_squared_t GetYAcceleration() { return gyro.GetAccelerationY().GetValue(); };
 
 private:
     // Creates the four swerve modules - see SwerveModule.h
@@ -160,8 +161,8 @@ private:
     SwerveModule backLeft{"Back Left", RobotMap::Drivetrain::kBackLeftDriveID, RobotMap::Drivetrain::kBackLeftTurnID, RobotMap::Drivetrain::kBackLeftCanCoderID, kBackLeftMagnetOffset};
     SwerveModule backRight{"Back Right", RobotMap::Drivetrain::kBackRightDriveID, RobotMap::Drivetrain::kBackRightTurnID, RobotMap::Drivetrain::kBackRightCanCoderID, kBackRightMagnetOffset};
 
-    // Creates the gyro object in the MXP SPI port, or the port on the middle of the roborio
-    studica::AHRS gyro{studica::AHRS::NavXComType::kMXP_SPI};
+    // Creates the gyro object
+    hardware::Pigeon2 gyro{RobotMap::Drivetrain::kGyroID, "rio"};
     units::degree_t drivingOffset = 180_deg;
     units::degree_t blueOriginOffset = 0_deg;
     // Gyro simulation tools

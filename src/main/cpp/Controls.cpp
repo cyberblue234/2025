@@ -14,6 +14,8 @@ void Controls::Periodic()
 {
     // Runs the different controls
     DriveControls();
+    // Must call before elevator and claw controls, otherwise they would be behind 20ms
+    SetDesiredPosition();
     ElevatorControls();
     ClawControls();
 }
@@ -93,29 +95,9 @@ void Controls::DriveControls()
 
 void Controls::ElevatorControls() 
 {
-    if (gamepad2.GetAButton())
+    if (GetDesiredPosition() != Positions::Null)
     {
-        elevator->GoToPosition(Positions::L1);
-    }
-    else if (gamepad2.GetBButton())
-    {
-        elevator->GoToPosition(Positions::L2);
-    }
-    else if (gamepad2.GetXButton())
-    {
-        elevator->GoToPosition(Positions::L3);
-    }
-    else if (gamepad2.GetYButton())
-    {
-        elevator->GoToPosition(Positions::L4);
-    }
-    else if (gamepad2.GetRightBumperButton())
-    {
-        elevator->GoToPosition(Positions::Barge);
-    }
-    else if (gamepad2.GetLeftBumperButton())
-    {
-        elevator->GoToPosition(Positions::Processor);
+        elevator->GoToPosition(GetDesiredPosition());
     }
     else if (gamepad2.GetPOV() == 0) 
     {
@@ -133,29 +115,9 @@ void Controls::ElevatorControls()
 
 void Controls::ClawControls()
 {
-    if (gamepad2.GetAButton())
+    if (GetDesiredPosition() != Positions::Null)
     {
-        claw->GoToPosition(Positions::L1);
-    }
-    else if (gamepad2.GetBButton())
-    {
-        claw->GoToPosition(Positions::L2);
-    }
-    else if (gamepad2.GetXButton())
-    {
-        claw->GoToPosition(Positions::L3);
-    }
-    else if (gamepad2.GetYButton())
-    {
-        claw->GoToPosition(Positions::L4);
-    }
-    else if (gamepad2.GetRightBumperButton())
-    {
-        claw->GoToPosition(Positions::Barge);
-    }
-    else if (gamepad2.GetLeftBumperButton())
-    {
-        claw->GoToPosition(Positions::Processor);
+        claw->GoToPosition(GetDesiredPosition());
     }
     else if (gamepad2.GetRightBumperButton())
     {
@@ -170,16 +132,49 @@ void Controls::ClawControls()
         claw->SetWristPower(0.0);
     }
     
+
     if (gamepad2.GetRightTriggerAxis() >= 0.5)
     {
-        claw->SetIntakePower(0.7);
+        claw->OutputCoral(GetDesiredPosition());
     }
     else if (gamepad2.GetLeftTriggerAxis() >= 0.5)
     {
-        claw->SetIntakePower(-0.7);
+        claw->IntakeCoral();
+    }
+    else if (gamepad2.GetPOV() == 90) 
+    {
+        claw->SetIntakePower(0.2);
+    }
+    else if (gamepad2.GetPOV() == 270)
+    {
+        claw->SetIntakePower(-0.2);
     }
     else
     {
         claw->SetIntakePower(0);
+    }
+}
+
+void Controls::SetDesiredPosition()
+{
+    if (gamepad2.GetAButton())
+    {
+        desiredPosition = Positions::L1;
+    }
+    else if (gamepad2.GetBButton())
+    {
+        desiredPosition = Positions::L2;
+    }
+    else if (gamepad2.GetXButton())
+    {
+        desiredPosition = Positions::L3;
+    }
+    else if (gamepad2.GetYButton())
+    {
+        desiredPosition = Positions::L4;
+    }
+    else
+    {
+        desiredPosition = Positions::Null;
     }
 }

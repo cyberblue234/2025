@@ -41,7 +41,7 @@ Drivetrain::Drivetrain(Limelight *limelightHigh, Limelight *limelightLow)
     // Gives a reference to the field object, which allows it to update without a periodic call
     frc::SmartDashboard::PutData("Field", &field);
 
-    
+    gyro.GetConfigurator().Apply(configs::Pigeon2Configuration{});
 }
 
 void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)

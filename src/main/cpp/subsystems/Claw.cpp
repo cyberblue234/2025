@@ -37,6 +37,13 @@ Claw::Claw()
     intakeConfig.SetIdleMode(SparkBaseConfig::IdleMode::kBrake);
     intakeConfig.SmartCurrentLimit(60);
     intakeMotor.Configure(intakeConfig, SparkBase::ResetMode::kResetSafeParameters, SparkBase::PersistMode::kPersistParameters);
+
+    proxSensor.GetConfigurator().Apply(configs::CANrangeConfiguration{});
+    configs::CANrangeConfiguration proxSensorConfig{};
+
+    proxSensorConfig.ProximityParams.ProximityThreshold = 2_in;
+
+    proxSensor.GetConfigurator().Apply(proxSensorConfig);
 }
 
 void Claw::SetWristPower(double power)
@@ -100,4 +107,41 @@ units::degree_t Claw::GetAngleToPosition(Positions pos)
 void Claw::SetIntakePower(double power)
 {
     intakeMotor.Set(power);
+}
+
+void Claw::IntakeCoral()
+{
+    if (IsCoralInClaw() == false)
+    {
+        SetIntakePower(kCoralIntakePower);
+    }
+    else
+    {
+        SetIntakePower(0);
+    }
+}
+
+void Claw::OutputCoral(Positions pos)
+{
+    if (IsCoralInClaw() == true)
+    {
+        if (pos == Positions::L4)
+        {
+            SetIntakePower(-kCoralIntakePower);
+        }
+        else
+        {
+            SetIntakePower(kCoralIntakePower);
+        }
+    }
+    else
+    {
+        SetIntakePower(0);
+    }
+}
+
+void Claw::UpdateTelemetry()
+{
+    frc::SmartDashboard::PutBoolean("Is Coral in Claw?", IsCoralInClaw());
+    frc::SmartDashboard::PutNumber("Proximity Sensor Distance", units::inch_t(GetDistance()).value());
 }
