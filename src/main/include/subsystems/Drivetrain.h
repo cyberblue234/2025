@@ -114,7 +114,7 @@ public:
     frc::Rotation2d GetBlueOriginGyroAngle() { return GetRobotGyroAngle().RotateBy(blueOriginOffset); };
     /// @brief Gets the rate of the gyro yaw
     /// @return Rate of gyro yaw in degrees per second
-    units::degrees_per_second_t GetYawRate() { return units::degrees_per_second_t{-gyro.GetRate()}; };
+    units::degrees_per_second_t GetYawRate() { return gyro.GetAngularVelocityZWorld().GetValue(); };
     
     /// @brief Resets the gyro angles
     void ResetGyro() { gyro.Reset(); };

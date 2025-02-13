@@ -256,6 +256,8 @@ namespace ClawConstants
     constexpr double kCoralIntakePower = 0.2;
 
     constexpr units::degree_t kDeadzone = 0.25_deg;
+
+    constexpr units::turn_t kWristGearRatio = 46.69_tr;
 }
 
 /// @brief Clamps the input to a specifed range

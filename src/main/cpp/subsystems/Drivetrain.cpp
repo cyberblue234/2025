@@ -147,7 +147,7 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToPose(frc::Pose2d pose, frc
 void Drivetrain::UpdateOdometry()
 {
     // Updates the odometry with the gyro angle and the wheel positions (drive distance and turn angle)
-    odometry.Update(frc::RobotBase::IsReal() ? GetRobotGyroAngle() : simYaw,
+    odometry.Update(GetRobotGyroAngle(),
                     {frontLeft.GetPosition(), frontRight.GetPosition(),
                      backLeft.GetPosition(), backRight.GetPosition()});
 

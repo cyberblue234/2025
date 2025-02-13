@@ -33,7 +33,7 @@ public:
 
     void UpdateElevator();
     const units::turn_t GetEncoder();
-    const units::meter_t GetHeight() { return GetElevatorEncoder() * kMetersPerMotorTurn + kHeightOffset; };
+    const units::meter_t GetHeight() { return GetEncoder() * kMetersPerMotorTurn + kHeightOffset; };
     void ResetEncoders();
 
     units::turn_t GetTurnsToPosition(Positions pos);

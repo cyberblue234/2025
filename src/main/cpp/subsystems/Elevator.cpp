@@ -67,7 +67,7 @@ void Elevator::UpdateElevator()
 {
     if (IsBottomLimitSwitchClosed() == true && ((GetEncoder() > 0.025_tr || GetEncoder() < -0.025_tr) || isElevatorRegistered == false))
     {
-        ResetElevatorEncoders();
+        ResetEncoders();
         isElevatorRegistered = true;
     }
 }
@@ -83,7 +83,7 @@ const units::turn_t Elevator::GetEncoder()
     return motor2RotorPos;
 }
 
-void Elevator::ResetElevatorEncoders()
+void Elevator::ResetEncoders()
 {
     if (frc::RobotBase::IsSimulation()) return;
     motor1.SetPosition(0_tr);
@@ -138,6 +138,7 @@ void Elevator::UpdateTelemtry()
     frc::SmartDashboard::PutBoolean("Elevator Is Registered", isElevatorRegistered);
     frc::SmartDashboard::PutNumber("Elevator M1 Pos", motor1.GetRotorPosition().GetValueAsDouble());
     frc::SmartDashboard::PutNumber("Elevator M2 Pos", motor2.GetRotorPosition().GetValueAsDouble());
+    frc::SmartDashboard::PutNumber("Elevator Height", GetHeight().convert<units::feet>().value());
 }
 
 void Elevator::SimMode()

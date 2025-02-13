@@ -47,6 +47,7 @@ void Robot::SimulationPeriodic()
 {
 	swerve.Sim();
 	elevator.SimMode();
+	claw.SimMode();
 }
 
 void Robot::UpdateTelemetry()
@@ -55,6 +56,7 @@ void Robot::UpdateTelemetry()
 
 	swerve.UpdateTelemetry();
 	elevator.UpdateTelemtry();
+	claw.UpdateTelemetry();
 	limelightHigh.UpdateTelemetry();
 	limelightLow.UpdateTelemetry();
 }
