@@ -162,7 +162,7 @@ void Claw::SimMode()
     clawSim.SetInputVoltage(motorVoltage);
     clawSim.Update(20_ms); // assume 20 ms loop time
 
-    wristMotorSim.SetRawRotorPosition(clawSim.GetAngle().convert<units::turn>() / kWristGearRatio.value());
-    wristMotorSim.SetRotorVelocity(clawSim.GetVelocity().convert<units::turns_per_second>() / kWristGearRatio.value());
-    canCoderWristSim.SetRawPosition(clawSim.GetAngle().convert<units::turn>());
+    wristMotorSim.SetRawRotorPosition(clawSim.GetAngle() / kWristGearRatio);
+    wristMotorSim.SetRotorVelocity(clawSim.GetVelocity() / kWristGearRatio);
+    canCoderWristSim.SetRawPosition(clawSim.GetAngle());
 }

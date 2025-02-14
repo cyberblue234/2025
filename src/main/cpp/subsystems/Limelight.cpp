@@ -4,6 +4,7 @@ Limelight::Limelight(std::string name)
 {
     this->name = name;
     SetupPortForwarding(name);
+    tx = GetLimelightNTDoubleSub
 }
 
 Limelight::Limelight()
