@@ -113,8 +113,8 @@ units::turn_t Elevator::GetTurnsToPosition(Positions pos)
     case Positions::AlgaeHigh:
         height = kPositionAlgaeHigh;
         break;
-    case Positions::Intake:
-        height = kPositionIntake;
+    case Positions::CoralStation:
+        height = kPositionCoralStation;
         break;
     case Positions::Processor:
         height = kPositionProcessor;

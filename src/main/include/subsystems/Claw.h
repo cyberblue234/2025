@@ -34,8 +34,8 @@ public:
     units::degree_t GetCurrentAngle() { return canCoderWrist.GetAbsolutePosition().GetValue(); };
 
     void SetIntakePower(double power);
-    void IntakeCoral();
-    void OutputCoral(Positions pos);
+    void Intake(Positions pos);
+    void Output(Positions pos);
 
     bool IsCoralInClaw() { return proxSensor.GetIsDetected().GetValue(); };
     units::meter_t GetDistance() { return proxSensor.GetDistance().GetValue(); };

@@ -1,13 +1,18 @@
 #pragma once
 
 #include <frc/XboxController.h>
+#include <frc/Joystick.h>
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Elevator.h"
-#include "subsystems/Limelight.h"
 #include "subsystems/Claw.h"
+#include "subsystems/Climber.h"
+#include "subsystems/Pneumatics.h"
+#include "subsystems/Limelight.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include "Constants.h"
+
+using namespace ControlsConstants;
 
 class Controls
 {
@@ -15,9 +20,12 @@ public:
     /// @brief Constructs the Controls object to control the provided subsystems 
     /// @param swerve pointer to the Drivetrain object
     /// @param elevator pointer to the Elevator object
+    /// @param claw pointer to the Claw object
+    /// @param climber pointer to the Climber object
+    /// @param pneumatics pointer to the Pneumatics object
     /// @param limelightHigh pointer to one of the Limelight objects
     /// @param limelightLow pointer to one of the Limelight objects
-    Controls(Drivetrain *swerve, Elevator *elevator, Claw *claw, Limelight *limelightHigh, Limelight *limelightLow);
+    Controls(Drivetrain *swerve, Elevator *elevator, Claw *claw, Climber *climber, Pneumatics *pneumatics,  Limelight *limelightHigh, Limelight *limelightLow);
     /// @brief Runs all of the subsystems controls every cycle
     void Periodic();
     /// @brief Drivetain controls
@@ -26,6 +34,10 @@ public:
     void ElevatorControls();
     /// @brief Claw controls
     void ClawControls();
+    /// @brief Climber controls
+    void ClimberControls();
+    /// @brief Pneumatics controls
+    void PneumaticsControls();
 
     /// @brief Sets current elevator position
     void SetElevatorPosition(Positions pos) { elevatorPosition = pos; };
@@ -66,12 +78,14 @@ public:
     }
 
     frc::XboxController gamepad{0};
-    frc::XboxController gamepad2{1};
+    frc::Joystick controlBoard{1};
 
 private:
     Drivetrain *swerve;
     Elevator *elevator;
     Claw *claw;
+    Climber *climber;
+    Pneumatics *pneumatics;
     Limelight *limelightHigh;
     Limelight *limelightLow; 
 

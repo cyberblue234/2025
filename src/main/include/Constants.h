@@ -112,6 +112,41 @@ namespace RobotMap
         //CANrange
         constexpr int kCanRangeID = 1;
     }
+
+    namespace Climber
+    {
+        //SparkMax
+        constexpr int kClimbMotorID = 2;
+    }
+    namespace Pneumatics
+    {
+        constexpr int kPneumaticHubID = 1;
+        constexpr int kStopperForwardSlot = 0;
+        constexpr int kStopperReverseSlot = 1;
+    }
+}
+
+namespace ControlsConstants
+{
+    // Analog inputs
+    constexpr int kManualWristAxis = 0;
+    constexpr int kManualElevatorAxis = 1;
+    constexpr int kClimberAxis = 2;
+    constexpr int kManualIntakeAxis = 3;
+
+    constexpr int kL1Button = 4;
+    constexpr int kL2Button = 9;
+    constexpr int kL3Button = 3;
+    constexpr int kL4Button = 11;
+    constexpr int kAlgaeHighButton = 8;
+    constexpr int kAlgaeLowButton = 12;
+    constexpr int kCoralStationButton = 2;
+    constexpr int kProcessorButton = 1;
+    constexpr int kStopperButton = 5;
+
+    constexpr int kOutputButton = 7;
+    constexpr int kIntakeButton = 10;
+    
 }
 
 /// @brief Personal add-on to the WPILib units library. See https://docs.wpilib.org/en/stable/docs/software/basic-programming/cpp-units.html for details on it.
@@ -194,8 +229,22 @@ namespace PathPlannerConstants
 
 enum Positions
 {
-    Null, L1, L2, L3, L4, AlgaeLow, AlgaeHigh, Intake, Processor, Barge
+    Null, L1, L2, L3, L4, AlgaeLow, AlgaeHigh, CoralStation, Processor, Barge
 };
+
+static bool IsPositionForCoralOutput(Positions pos)
+{
+    return pos == Positions::L1 || pos == Positions::L2 || pos == Positions::L3 || pos == Positions::L4;
+}
+static bool IsPositionForAlgaeIntake(Positions pos)
+{
+    return pos == Positions::AlgaeLow || pos == Positions::AlgaeHigh;
+}
+static bool IsPositionForAlgaeOutput(Positions pos)
+{
+    return pos == Positions::Processor || pos == Positions::Barge;
+}
+
 
 /// @brief Constants for the Elevator Class
 namespace ElevatorConstants
@@ -220,7 +269,7 @@ namespace ElevatorConstants
     constexpr units::meter_t kPositionL4        = 4.0_ft;
     constexpr units::meter_t kPositionAlgaeLow  = 2.5_ft;
     constexpr units::meter_t kPositionAlgaeHigh = 3.5_ft;
-    constexpr units::meter_t kPositionIntake    = 0.0_ft;
+    constexpr units::meter_t kPositionCoralStation    = 0.0_ft;
     constexpr units::meter_t kPositionProcessor = 0.0_ft;
     constexpr units::meter_t kPositionBarge     = 8.0_ft;
 
@@ -249,15 +298,21 @@ namespace ClawConstants
     constexpr units::degree_t kAngleL4        = 90_deg;
     constexpr units::degree_t kAngleAlgaeLow  = 0_deg;
     constexpr units::degree_t kAngleAlgaeHigh = 0_deg;
-    constexpr units::degree_t kAngleIntake    = 0_deg;
+    constexpr units::degree_t kAngleCoralStation    = 0_deg;
     constexpr units::degree_t kAngleProcessor = -45_deg;
     constexpr units::degree_t kAngleBarge     = 0_deg;
 
     constexpr double kCoralIntakePower = 0.2;
+    constexpr double kAlgaeIntakePower = 0.3;
 
     constexpr units::degree_t kDeadzone = 0.25_deg;
 
     constexpr units::turn_t kWristGearRatio = 46.69_tr;
+}
+
+namespace ClimberConstants
+{
+    constexpr double kClimberPower = 0.4;
 }
 
 /// @brief Clamps the input to a specifed range

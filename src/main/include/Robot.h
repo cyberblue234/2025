@@ -13,6 +13,8 @@
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Elevator.h"
 #include "subsystems/Claw.h"
+#include "subsystems/Climber.h"
+#include "subsystems/Pneumatics.h"
 #include "subsystems/Limelight.h"
 #include "Controls.h"
 #include "Constants.h"
@@ -34,11 +36,13 @@ public:
     void SimulationInit() override;
     void SimulationPeriodic() override;
 
-    Drivetrain *GetSwerve() { return &swerve; }; 
-    Elevator *GetElevator() { return &elevator; };
-    Claw *GetClaw() { return &claw; };
-    Limelight *GetLimelightHigh() { return &limelightHigh; };
-    Limelight *GetLimelightLow() { return &limelightLow; };
+    Drivetrain *GetSwerve() { return &swerve; }
+    Elevator *GetElevator() { return &elevator; }
+    Claw *GetClaw() { return &claw; }
+    Climber *GetClimber() { return &climber; }
+    Pneumatics *GetPneumatics() { return &pneumatics; }
+    Limelight *GetLimelightHigh() { return &limelightHigh; }
+    Limelight *GetLimelightLow() { return &limelightLow; }
 
     void UpdateTelemetry();
 
@@ -47,12 +51,15 @@ private:
     Drivetrain swerve{GetLimelightHigh(), GetLimelightLow()};
     Elevator elevator;
     Claw claw;
+    Climber climber;
+    Pneumatics pneumatics;
+
     Limelight limelightHigh{"limelight-high"};
     Limelight limelightLow{"limelight-low"};
 
 	frc::PowerDistribution pdp{1, frc::PowerDistribution::ModuleType::kRev};
     
-	Controls controls{GetSwerve(), GetElevator(), GetClaw(), GetLimelightHigh(), GetLimelightLow()};
+	Controls controls{GetSwerve(), GetElevator(), GetClaw(), GetClimber(), GetPneumatics(), GetLimelightHigh(), GetLimelightLow()};
     Autonomous autonomous{GetSwerve()};
 
     std::optional<frc2::CommandPtr> autoCmd;

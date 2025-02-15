@@ -10,10 +10,6 @@ Claw::Claw()
     wristMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     wristMotorConfig.CurrentLimits.StatorCurrentLimit = 120.0_A;
 
-    wristMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 0.15_s;
-    wristMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.15_s;
-    wristMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.15_s;
-
     wristMotorConfig.Slot0.kP = kPWrist;
     wristMotorConfig.Slot0.kI = kIWrist;
     wristMotorConfig.Slot0.kD = kDWrist;
@@ -89,8 +85,8 @@ units::degree_t Claw::GetAngleToPosition(Positions pos)
     case Positions::L4:
         return kAngleL4;
         break;
-    case Positions::Intake:
-        return kAngleIntake;
+    case Positions::CoralStation:
+        return kAngleCoralStation;
         break;
     case Positions::Processor:
         return kAngleProcessor;
@@ -110,21 +106,32 @@ void Claw::SetIntakePower(double power)
     intakeMotor.Set(power);
 }
 
-void Claw::IntakeCoral()
+void Claw::Intake(Positions pos)
 {
-    if (IsCoralInClaw() == false)
+    if (pos == Positions::CoralStation)
     {
-        SetIntakePower(kCoralIntakePower);
+        if (IsCoralInClaw() == false)
+        {
+            SetIntakePower(kCoralIntakePower);
+        }
+        else
+        {
+            SetIntakePower(0);
+        }
+    }
+    else if (IsPositionForAlgaeIntake(pos))
+    {
+        SetIntakePower(kAlgaeIntakePower);
     }
     else
     {
-        SetIntakePower(0);
+        SetIntakePower(0.0);
     }
 }
 
-void Claw::OutputCoral(Positions pos)
+void Claw::Output(Positions pos)
 {
-    if (IsCoralInClaw() == true)
+    if (IsPositionForCoralOutput(pos))
     {
         if (pos == Positions::L4)
         {
@@ -135,9 +142,9 @@ void Claw::OutputCoral(Positions pos)
             SetIntakePower(kCoralIntakePower);
         }
     }
-    else
+    else if (IsPositionForAlgaeOutput(pos))
     {
-        SetIntakePower(0);
+        SetIntakePower(-kAlgaeIntakePower);
     }
 }
 
@@ -162,7 +169,7 @@ void Claw::SimMode()
     clawSim.SetInputVoltage(motorVoltage);
     clawSim.Update(20_ms); // assume 20 ms loop time
 
-    // wristMotorSim.SetRawRotorPosition(clawSim.GetAngle() / kWristGearRatio);
-    // wristMotorSim.SetRotorVelocity(clawSim.GetVelocity() / kWristGearRatio);
-    // canCoderWristSim.SetRawPosition(clawSim.GetAngle());
+    wristMotorSim.SetRawRotorPosition(units::turn_t(clawSim.GetAngle().value() / kWristGearRatio.value()));
+    wristMotorSim.SetRotorVelocity(units::turns_per_second_t(clawSim.GetVelocity().value() / kWristGearRatio.value()));
+    canCoderWristSim.SetRawPosition(clawSim.GetAngle());
 }

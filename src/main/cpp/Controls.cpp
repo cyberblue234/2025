@@ -1,11 +1,13 @@
 #include "Controls.h"
 
-Controls::Controls(Drivetrain *swerve, Elevator *elevator, Claw *claw, Limelight *limelightHigh, Limelight *limelightLow)
+Controls::Controls(Drivetrain *swerve, Elevator *elevator, Claw *claw, Climber *climber, Pneumatics *pneumatics, Limelight *limelightHigh, Limelight *limelightLow)
 {
     // Sets all of the class pointers to the arguments for later use
     this->swerve = swerve;
     this->elevator = elevator;
     this->claw = claw;
+    this->climber = climber;
+    this->pneumatics = pneumatics;
     this->limelightHigh = limelightHigh;
     this->limelightLow = limelightLow;
 }
@@ -18,6 +20,8 @@ void Controls::Periodic()
     SetDesiredPosition();
     ElevatorControls();
     ClawControls();
+    ClimberControls();
+    PneumaticsControls();
 }
 
 void Controls::DriveControls()
@@ -101,11 +105,11 @@ void Controls::ElevatorControls()
         if (isElevatorAtPos == true) SetElevatorPosition(GetDesiredPosition());
         else SetElevatorPosition(Positions::Null);
     }
-    else if (gamepad2.GetPOV() == 0) 
+    else if (controlBoard.GetRawAxis(kManualElevatorAxis) < -0.5) 
     {
         elevator->SetMotors(0.4);
     }
-    else if (gamepad2.GetPOV() == 180)
+    else if (controlBoard.GetRawAxis(kManualElevatorAxis) > 0.5)
     {
         elevator->SetMotors(-0.4);
     }
@@ -123,11 +127,11 @@ void Controls::ClawControls()
         if (isClawAtPosition == true) SetClawPosition(GetDesiredPosition());
         else SetClawPosition(Positions::Null);
     }
-    else if (gamepad2.GetRightBumperButton())
+    else if (controlBoard.GetRawAxis(kManualWristAxis) < -0.5)
     {
         claw->SetWristPower(0.3);
     }
-    else if (gamepad2.GetLeftBumperButton())
+    else if (controlBoard.GetRawAxis(kManualWristAxis) > 0.5)
     {
         claw->SetWristPower(-0.3);
     }
@@ -137,21 +141,29 @@ void Controls::ClawControls()
     }
     
     
-    if (gamepad2.GetRightTriggerAxis() >= 0.5)
+    if (controlBoard.GetRawButton(kOutputButton))
     {
-        claw->OutputCoral(GetCurrentPosition());
+        claw->Output(GetCurrentPosition());
     }
-    else if (gamepad2.GetLeftTriggerAxis() >= 0.5)
+    else if (controlBoard.GetRawButton(kIntakeButton))
     {
-        claw->IntakeCoral();
+        claw->Intake(GetCurrentPosition());
     }
-    else if (gamepad2.GetPOV() == 90) 
+    // else if (controlBoard.GetRawAxis(kManualIntakeAxis) < -0.5 || gamepad.GetLeftTriggerAxis() >= 0.5) 
+    // {
+    //     claw->SetIntakePower(kCoralIntakePower);
+    // }
+    // else if (controlBoard.GetRawAxis(kManualIntakeAxis) > 0.5 || gamepad.GetRightTriggerAxis() >= 0.5)
+    // {
+    //     claw->SetIntakePower(-kCoralIntakePower);
+    // }
+    else if (gamepad.GetLeftTriggerAxis() >= 0.5) 
     {
-        claw->SetIntakePower(0.2);
+        claw->SetIntakePower(kCoralIntakePower);
     }
-    else if (gamepad2.GetPOV() == 270)
+    else if (gamepad.GetRightTriggerAxis() >= 0.5)
     {
-        claw->SetIntakePower(-0.2);
+        claw->SetIntakePower(-kCoralIntakePower);
     }
     else
     {
@@ -159,27 +171,67 @@ void Controls::ClawControls()
     }
 }
 
+void Controls::ClimberControls()
+{
+    if (controlBoard.GetRawAxis(kClimberAxis) < -0.5)
+    {
+        climber->SetPower(kClimberPower);
+    }
+    else if (controlBoard.GetRawAxis(kClimberAxis) > 0.5)
+    {
+        climber->SetPower(-kClimberPower);
+    }
+    else
+    {
+        climber->SetPower(0.0);
+    }
+}
+
+void Controls::PneumaticsControls()
+{
+    if (controlBoard.GetRawButton(kStopperButton))
+    {
+        pneumatics->ExtendStopper();
+    }
+    else
+    {
+        pneumatics->RetractStopper();
+    }
+}
+
 void Controls::SetDesiredPosition()
 {
-    // When the control board gets set up:
-    //   - Change L1-L4 to rotary swith that only sets desired position when the button is pressed
-    //   - The rest will probably be buttons like now, so they can stay similar
-
-    if (gamepad2.GetAButton())
+    if (controlBoard.GetRawButton(kL1Button))
     {
         desiredPosition = Positions::L1;
     }
-    else if (gamepad2.GetBButton())
+    else if (controlBoard.GetRawButton(kL2Button))
     {
         desiredPosition = Positions::L2;
     }
-    else if (gamepad2.GetXButton())
+    else if (controlBoard.GetRawButton(kL3Button))
     {
         desiredPosition = Positions::L3;
     }
-    else if (gamepad2.GetYButton())
+    else if (controlBoard.GetRawButton(kL4Button))
     {
         desiredPosition = Positions::L4;
+    }
+    else if (controlBoard.GetRawButton(kAlgaeLowButton))
+    {
+        desiredPosition = Positions::AlgaeLow;
+    }
+    else if (controlBoard.GetRawButton(kAlgaeHighButton))
+    {
+        desiredPosition = Positions::AlgaeHigh;
+    }
+    else if (controlBoard.GetRawButton(kCoralStationButton))
+    {
+        desiredPosition = Positions::CoralStation;
+    }
+    else if (controlBoard.GetRawButton(kProcessorButton))
+    {
+        desiredPosition = Positions::Processor;
     }
     else
     {
