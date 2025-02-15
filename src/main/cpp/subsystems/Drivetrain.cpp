@@ -153,14 +153,14 @@ void Drivetrain::UpdateOdometry()
 
     // Gets the estimated pose from the limelight
     // Uses MegaTag 2 which utilizes current gyro rotation in order to ensure better quality estimations
-    PoseEstimate visionHigh = limelightHigh->GetBotPoseBlue(GetBlueOriginGyroAngle().Degrees(), GetYawRate());
+    PoseEstimate visionHigh = limelightHigh->GetPose(GetBlueOriginGyroAngle().Degrees(), GetYawRate());
     // Rejects the estimation if the rotation rate is too great or if the limelight doesn't see any tags
     if ((abs(GetYawRate().value()) > 720 || visionHigh.tagCount == 0) == false)
     {
         odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
         odometry.AddVisionMeasurement(visionHigh.pose, frc::Timer::GetFPGATimestamp());
     }
-    PoseEstimate visionLow = limelightLow->GetBotPoseBlue(GetBlueOriginGyroAngle().Degrees(), GetYawRate());
+    PoseEstimate visionLow = limelightLow->GetPose(GetBlueOriginGyroAngle().Degrees(), GetYawRate());
     if ((abs(GetYawRate().value()) > 720 || visionLow.tagCount == 0) == false)
     {
         odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});

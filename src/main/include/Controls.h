@@ -30,8 +30,8 @@ public:
     /// @brief Sets current elevator position
     void SetElevatorPosition(Positions pos) { elevatorPosition = pos; };
     /// @brief Gets current elevator position
-    /// @retval @ref Position of the elevator
-    /// @retval @ref Positions::Null if the elevator is not at any preset position
+    /// @retval Position of the elevator
+    /// @retval Positions::Null if the elevator is not at any preset position
     Positions GetElevatorPosition() { return elevatorPosition; };
     /// @brief Sets current claw position
     void SetClawPosition(Positions pos) { clawPosition = pos; };

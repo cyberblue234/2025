@@ -283,3 +283,17 @@ static T sgn(T val)
 {
     return val == T{0} ? T{0} : val > T{0} ? T{1} : T{-1};
 }
+
+/// @brief Returns the value at the index
+/// @param inData Array
+/// @param position Index
+/// @retval Default value of the type if position is not within bounds of the array
+/// @retval Value at position
+template <typename T>
+static T ExtractArrayEntry(const std::vector<T>& inData, int position) 
+{
+    if (inData.size() < static_cast<size_t>(position + 1)) {
+        return T{};
+    }
+    return inData[position];
+}
