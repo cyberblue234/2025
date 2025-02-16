@@ -3,6 +3,8 @@
 void Robot::RobotInit() 
 {
 	EnableLiveWindowInTest(true);
+
+	frc::SmartDashboard::PutData("Mech2d", &mech);
 }
 
 void Robot::RobotPeriodic() 
@@ -12,6 +14,9 @@ void Robot::RobotPeriodic()
 	elevator.UpdateElevator();
 
 	frc2::CommandScheduler::GetInstance().Run();
+
+	elevatorMech->SetLength(elevator.GetHeight().value());
+	clawMech->SetAngle(claw.GetCurrentAngle() - 90_deg);
 }
 
 void Robot::DisabledInit() 

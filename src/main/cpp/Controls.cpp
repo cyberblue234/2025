@@ -129,11 +129,11 @@ void Controls::ClawControls()
     }
     else if (controlBoard.GetRawAxis(kManualWristAxis) < -0.5)
     {
-        claw->SetWristPower(0.3);
+        claw->SetWristPower(kWristPower);
     }
     else if (controlBoard.GetRawAxis(kManualWristAxis) > 0.5)
     {
-        claw->SetWristPower(-0.3);
+        claw->SetWristPower(-kWristPower);
     }
     else
     {

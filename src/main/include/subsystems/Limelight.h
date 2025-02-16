@@ -1,25 +1,9 @@
 #pragma once
 
-#include <frc/smartdashboard/SmartDashboard.h>
-
-#include "networktables/NetworkTable.h"
-#include "networktables/NetworkTableInstance.h"
-#include <networktables/IntegerTopic.h>
-#include <networktables/IntegerArrayTopic.h>
-#include <networktables/DoubleTopic.h>
-#include <networktables/DoubleArrayTopic.h>
-#include <networktables/StringTopic.h>
-#include "networktables/NetworkTableValue.h"
 #include <wpinet/PortForwarder.h>
 #include "wpi/json.h"
 #include <chrono>
 #include <iostream>
-#include <frc/geometry/Translation2d.h>
-#include <frc/geometry/Translation3d.h>
-#include <frc/geometry/Pose2d.h>
-#include <frc/geometry/Pose3d.h>
-#include <frc/geometry/Rotation2d.h>
-#include <frc/geometry/Rotation3d.h>
 #include <cstring>
 #include <fcntl.h>
 

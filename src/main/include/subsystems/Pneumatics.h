@@ -4,8 +4,6 @@
 
 #include "Constants.h"
 
-
-
 class Pneumatics
 {
 public:

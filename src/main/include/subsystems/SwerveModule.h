@@ -3,10 +3,6 @@
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 
-#include <frc/controller/SimpleMotorFeedforward.h>
-
-#include <wpi/sendable/SendableRegistry.h>
-
 #include <ctre/phoenix6/CANcoder.hpp>
 #include <ctre/phoenix6/TalonFX.hpp>
 #include <ctre/phoenix6/configs/Configurator.hpp>
@@ -17,10 +13,6 @@
 #include <frc/system/plant/DCMotor.h>
 #include <frc/simulation/DCMotorSim.h>
 #include <frc/system/plant/LinearSystemId.h>
-#include <frc/RobotController.h>
-#include <frc/RobotBase.h>
-
-#include <frc/smartdashboard/SmartDashboard.h>
 
 #include "Constants.h"
 

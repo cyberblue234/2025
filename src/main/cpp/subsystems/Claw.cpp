@@ -169,7 +169,8 @@ void Claw::SimMode()
     clawSim.SetInputVoltage(motorVoltage);
     clawSim.Update(20_ms); // assume 20 ms loop time
 
-    wristMotorSim.SetRawRotorPosition(units::turn_t(clawSim.GetAngle().value() / kWristGearRatio.value()));
-    wristMotorSim.SetRotorVelocity(units::turns_per_second_t(clawSim.GetVelocity().value() / kWristGearRatio.value()));
+    wristMotorSim.SetRawRotorPosition(clawSim.GetAngle() * kWristGearRatio.value());
+    wristMotorSim.SetRotorVelocity(clawSim.GetVelocity() * kWristGearRatio.value());
     canCoderWristSim.SetRawPosition(clawSim.GetAngle());
+    frc::SmartDashboard::PutNumber("Simulated Wrist Angle", clawSim.GetAngle().convert<units::degrees>().value());
 }

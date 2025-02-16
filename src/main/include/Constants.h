@@ -40,10 +40,36 @@
 #include <units/voltage.h>
 #include <units/volume.h>
 
-#include <frc/geometry/Pose2d.h>
-#include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
+#include <frc/geometry/Translation3d.h>
+#include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Pose3d.h>
+#include <frc/geometry/Rotation2d.h>
+#include <frc/geometry/Rotation3d.h>
 #include <frc/controller/SimpleMotorFeedforward.h>
+
+#include <frc/RobotController.h>
+#include <frc/RobotBase.h>
+
+#include <frc/smartdashboard/SmartDashboard.h>
+
+#include "networktables/NetworkTable.h"
+#include "networktables/NetworkTableInstance.h"
+#include <networktables/IntegerTopic.h>
+#include <networktables/IntegerArrayTopic.h>
+#include <networktables/DoubleTopic.h>
+#include <networktables/DoubleArrayTopic.h>
+#include <networktables/StringTopic.h>
+#include <networktables/StructTopic.h>
+#include <networktables/StructArrayTopic.h>
+
+#include <frc2/command/CommandPtr.h>
+#include <frc2/command/Commands.h>
+#include <frc2/command/StartEndCommand.h>
+#include <frc2/command/RunCommand.h>
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/WaitCommand.h>
 
 #include <numbers>
 #include <string>
@@ -232,20 +258,6 @@ enum Positions
     Null, L1, L2, L3, L4, AlgaeLow, AlgaeHigh, CoralStation, Processor, Barge
 };
 
-static bool IsPositionForCoralOutput(Positions pos)
-{
-    return pos == Positions::L1 || pos == Positions::L2 || pos == Positions::L3 || pos == Positions::L4;
-}
-static bool IsPositionForAlgaeIntake(Positions pos)
-{
-    return pos == Positions::AlgaeLow || pos == Positions::AlgaeHigh;
-}
-static bool IsPositionForAlgaeOutput(Positions pos)
-{
-    return pos == Positions::Processor || pos == Positions::Barge;
-}
-
-
 /// @brief Constants for the Elevator Class
 namespace ElevatorConstants
 {
@@ -285,9 +297,11 @@ namespace ElevatorConstants
 
 namespace ClawConstants
 {
-    constexpr double kPWrist = 1.0;
+    constexpr double kPWrist = 3.0;
     constexpr double kIWrist = 0.0;
-    constexpr double kDWrist = 0.0;
+    constexpr double kDWrist = 0.1;
+
+    constexpr double kWristPower = 0.1;
 
     constexpr units::turn_t canCoderMagnetOffset = 0_tr;
 

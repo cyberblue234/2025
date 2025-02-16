@@ -102,5 +102,6 @@
     "socket": "cpp",
     "timer": "cpp"
   },
-  "C_Cpp.errorSquiggles": "enabledIfIncludesResolve"
+  "C_Cpp.errorSquiggles": "enabledIfIncludesResolve",
+  "wpilib.skipTests": true
 }

@@ -8,12 +8,8 @@
 #include <frc/system/plant/DCMotor.h>
 #include <frc/simulation/SingleJointedArmSim.h>
 #include <frc/system/plant/LinearSystemId.h>
-#include <frc/RobotController.h>
-#include <frc/RobotBase.h>
 
 #include "rev/SparkFlex.h"
-
-#include <frc/smartdashboard/SmartDashboard.h>
 
 #include "Constants.h"
 
@@ -45,6 +41,20 @@ public:
     void SimMode();
 
 private:
+    bool IsPositionForCoralOutput(Positions pos)
+    {
+        return pos == Positions::L1 || pos == Positions::L2 || pos == Positions::L3 || pos == Positions::L4;
+    }
+    bool IsPositionForAlgaeIntake(Positions pos)
+    {
+        return pos == Positions::AlgaeLow || pos == Positions::AlgaeHigh;
+    }
+    bool IsPositionForAlgaeOutput(Positions pos)
+    {
+        return pos == Positions::Processor || pos == Positions::Barge;
+    }
+
+
     hardware::TalonFX wristMotor{RobotMap::Claw::kWristMotorID, "rio"};
     SparkFlex intakeMotor{RobotMap::Claw::kIntakeMotorID, SparkFlex::MotorType::kBrushless};
     hardware::CANcoder canCoderWrist{RobotMap::Claw::kCanCoderID,"rio"};
@@ -60,7 +70,7 @@ private:
         frc::sim::SingleJointedArmSim::EstimateMOI(0.56_m, 5_kg),
         0.56_m,
         -std::numbers::pi * 1_rad,
-        std::numbers::pi * 1_rad,
+        std::numbers::pi * 1_rad - 0.01_rad,
         false,
         0_rad
     };

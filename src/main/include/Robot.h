@@ -1,23 +1,12 @@
 #pragma once
 
-#include <optional>
-
 #include <frc/TimedRobot.h>
 #include <frc/PowerDistribution.h>
 
-#include <frc2/command/CommandPtr.h>
-#include <frc2/command/CommandScheduler.h>
+#include <frc/smartdashboard/Mechanism2d.h>
+#include <frc/smartdashboard/MechanismLigament2d.h>
 
-#include <pathplanner/lib/commands/PathPlannerAuto.h>
-
-#include "subsystems/Drivetrain.h"
-#include "subsystems/Elevator.h"
-#include "subsystems/Claw.h"
-#include "subsystems/Climber.h"
-#include "subsystems/Pneumatics.h"
-#include "subsystems/Limelight.h"
 #include "Controls.h"
-#include "Constants.h"
 #include "Autonomous.h"
 
 class Robot : public frc::TimedRobot
@@ -53,6 +42,14 @@ private:
     Claw claw;
     Climber climber;
     Pneumatics pneumatics;
+
+    frc::Mechanism2d mech{3, 3};
+    frc::MechanismRoot2d *root = mech.GetRoot("elevator-claw", 2, 0);
+    frc::MechanismLigament2d* elevatorMech =
+      root->Append<frc::MechanismLigament2d>("elevator", 1, 90_deg);
+    frc::MechanismLigament2d* clawMech =
+        elevatorMech->Append<frc::MechanismLigament2d>(
+            "claw", 0.5, 0_deg, 6, frc::Color8Bit{frc::Color::kPurple});
 
     Limelight limelightHigh{"limelight-high"};
     Limelight limelightLow{"limelight-low"};

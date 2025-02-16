@@ -2,15 +2,13 @@
 
 #include <frc/XboxController.h>
 #include <frc/Joystick.h>
+
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Elevator.h"
 #include "subsystems/Claw.h"
 #include "subsystems/Climber.h"
 #include "subsystems/Pneumatics.h"
 #include "subsystems/Limelight.h"
-#include <frc/smartdashboard/SmartDashboard.h>
-
-#include "Constants.h"
 
 using namespace ControlsConstants;
 

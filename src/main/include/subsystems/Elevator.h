@@ -1,7 +1,5 @@
 #pragma once
 
-#include <frc/smartdashboard/SmartDashboard.h>
-
 #include <ctre/phoenix6/TalonFX.hpp>
 #include <ctre/phoenix6/configs/Configurator.hpp>
 #include <ctre/phoenix6/controls/Follower.hpp>
@@ -12,8 +10,6 @@
 #include <frc/system/plant/DCMotor.h>
 #include <frc/simulation/ElevatorSim.h>
 #include <frc/system/plant/LinearSystemId.h>
-#include <frc/RobotController.h>
-#include <frc/RobotBase.h>
 
 #include <frc/DigitalInput.h>
 

@@ -3,10 +3,7 @@
 #include <frc/XboxController.h>
 #include <frc/DriverStation.h>
 
-#include <frc/TimedRobot.h>
-
 #include <frc/smartdashboard/Field2d.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
@@ -14,7 +11,6 @@
 
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 
-#include <frc2/command/CommandPtr.h>
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/config/RobotConfig.h>
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
@@ -24,14 +20,11 @@
 
 #include <frc/controller/PIDController.h>
 
-#include <frc2/command/SubsystemBase.h>
-
 #include <ctre/phoenix6/Pigeon2.hpp>
 #include <ctre/phoenix6/sim/Pigeon2SimState.hpp>
 
 #include "subsystems/SwerveModule.h"
 #include "subsystems/Limelight.h"
-#include "Constants.h"
 
 // This file uses Drivetrain and PathPlanner a lot
 using namespace DrivetrainConstants;
@@ -163,15 +156,13 @@ private:
 
     // Creates the gyro object
     hardware::Pigeon2 gyro{RobotMap::Drivetrain::kGyroID, "rio"};
+    ctre::phoenix6::sim::Pigeon2SimState& gyroSim = gyro.GetSimState();
     units::degree_t drivingOffset = 180_deg;
     units::degree_t blueOriginOffset = 0_deg;
 
     // Creates the two limelight objects, one is higher on the robot and one is lower
     Limelight *limelightHigh;
     Limelight *limelightLow;
-    
-    // Creates a field object for use of odometry and PathPlanner debugging
-    frc::Field2d field{};
 
     // Container for the current relative robot speeds
     frc::ChassisSpeeds robotRelativeSpeeds;
@@ -199,6 +190,11 @@ private:
         },
         frc::Pose2d()
     };
+
+    // Creates a field object for use of odometry and PathPlanner debugging
+    frc::Field2d field{};
+    nt::StructPublisher<frc::Pose2d> odometryPublisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructTopic<frc::Pose2d>("odom").Publish();
+    nt::StructArrayPublisher<frc::SwerveModuleState> moduleStatesPublisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructArrayTopic<frc::SwerveModuleState>("moduleStates").Publish();
     
     /// @brief Gets the pose of the different branches - will flip the pose if on the blue alliance
     /// @param branch Branch to get the pose of

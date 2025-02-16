@@ -42,6 +42,8 @@ Drivetrain::Drivetrain(Limelight *limelightHigh, Limelight *limelightLow)
     frc::SmartDashboard::PutData("Field", &field);
 
     gyro.GetConfigurator().Apply(configs::Pigeon2Configuration{});
+
+    moduleStatesPublisher.Set(wpi::array<frc::SwerveModuleState, 4U>{frontLeft.GetState(), frontRight.GetState(), backLeft.GetState(), backRight.GetState()});
 }
 
 void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
@@ -58,11 +60,10 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     // Changes the simulation gyro tools
     if (frc::RobotBase::IsSimulation())
     {
-        ctre::phoenix6::sim::Pigeon2SimState& gyroSim = gyro.GetSimState();
         gyroSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
         gyroSim.AddYaw(speeds.omega * 0.02_s);
     }
-
+    
     // Splits the vector into four individual states
     auto [fl, fr, bl, br] = states;
     // Calls the funcitons to set the states
@@ -70,6 +71,8 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     frontRight.SetDesiredState(fr);
     backLeft.SetDesiredState(bl);
     backRight.SetDesiredState(br);
+
+    moduleStatesPublisher.Set(states);
 }
 
 std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(ReefBranches branch, bool usePPLibPathfinding)
@@ -168,6 +171,7 @@ void Drivetrain::UpdateOdometry()
     }
     
     field.SetRobotPose(odometry.GetEstimatedPosition());
+    odometryPublisher.Set(GetPose());
 }
 
 void Drivetrain::UpdateTelemetry()
