@@ -53,7 +53,7 @@ bool Claw::GoToAngle(units::degree_t angle)
     if (angle >= -180_deg && angle < 180_deg)
     {
         controls::PositionVoltage &anglePos = angleOut.WithPosition(angle);
-        wristMotor.SetControl(anglePos);
+        wristMotor.SetControl(anglePos.WithSlot(0));
     }
     else
     {
