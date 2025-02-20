@@ -100,8 +100,8 @@
     "io_context": "cpp",
     "netfwd": "cpp",
     "socket": "cpp",
-    "timer": "cpp"
+    "timer": "cpp",
+    "xstring": "cpp"
   },
   "C_Cpp.errorSquiggles": "enabledIfIncludesResolve",
-  "wpilib.skipTests": true
 }

@@ -151,23 +151,23 @@ void Controls::ClawControls()
     }
     // else if (controlBoard.GetRawAxis(kManualIntakeAxis) < -0.5 || gamepad.GetLeftTriggerAxis() >= 0.5) 
     // {
-    //     claw->SetIntakePower(kCoralIntakePower);
+    //     claw->SetIOPower(kCoralIntakePower);
     // }
     // else if (controlBoard.GetRawAxis(kManualIntakeAxis) > 0.5 || gamepad.GetRightTriggerAxis() >= 0.5)
     // {
-    //     claw->SetIntakePower(-kCoralIntakePower);
+    //     claw->SetIOPower(-kCoralIntakePower);
     // }
     else if (gamepad.GetLeftTriggerAxis() >= 0.5) 
     {
-        claw->SetIntakePower(kCoralIntakePower);
+        claw->SetIOPower(kCoralIntakePower);
     }
     else if (gamepad.GetRightTriggerAxis() >= 0.5)
     {
-        claw->SetIntakePower(-kCoralIntakePower);
+        claw->SetIOPower(kCoralOutputPower);
     }
     else
     {
-        claw->SetIntakePower(0);
+        claw->SetIOPower(0);
     }
 }
 
@@ -189,14 +189,7 @@ void Controls::ClimberControls()
 
 void Controls::PneumaticsControls()
 {
-    if (controlBoard.GetRawButton(kStopperButton))
-    {
-        pneumatics->ExtendStopper();
-    }
-    else
-    {
-        pneumatics->RetractStopper();
-    }
+    pneumatics->SetStopper(controlBoard.GetRawButton(kStopperButton));
 }
 
 void Controls::SetDesiredPosition()

@@ -1,20 +1,24 @@
 #pragma once
 
-#include <frc/DoubleSolenoid.h>
+#include <frc/Solenoid.h>
 
 #include "Constants.h"
 
 class Pneumatics
 {
 public:
-    void ExtendStopper();
-    void RetractStopper();
+    /// @brief Sets the stopper solenoid to extend or retract the stopper
+    /// @param extended True for extended, false for retracted
+    void SetStopper(bool extended);
+
+    /// @brief Returns a pointer to the stopperSolenoid object
+    /// @return frc::Solenoid* of the stopper solenoid
+    frc::Solenoid *GetStopperSolenoid() { return &stopperSolenoid; };
 private:
-    frc::DoubleSolenoid stopperSolenoid
+    frc::Solenoid stopperSolenoid
     {
         RobotMap::Pneumatics::kPneumaticHubID, 
         frc::PneumaticsModuleType::REVPH, 
-        RobotMap::Pneumatics::kStopperForwardSlot, 
-        RobotMap::Pneumatics::kStopperReverseSlot
+        RobotMap::Pneumatics::kStopperSlot, 
     };
 };

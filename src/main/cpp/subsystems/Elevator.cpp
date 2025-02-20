@@ -2,14 +2,19 @@
 
 Elevator::Elevator()
 {
+    // Starts the configuration process for the first elevator motor
+    // This line resets any previous configurations to ensure a clean slate 
     motor1.GetConfigurator().Apply(configs::TalonFXConfiguration{});
     configs::TalonFXConfiguration motor1Config{};
 
+    // Sets the motor to brake mode - this is so the elevator stays at the position we tell it to stay at
     motor1Config.MotorOutput.NeutralMode = signals::NeutralModeValue::Brake;
 
+    // Stator limit makes sure we don't burn up our motors if they get jammed
     motor1Config.CurrentLimits.StatorCurrentLimitEnable = true;
     motor1Config.CurrentLimits.StatorCurrentLimit = 120.0_A;
 
+    // Sets the PID values
     motor1Config.Slot0.kP = kP;
     motor1Config.Slot0.kI = kI;
     motor1Config.Slot0.kD = kD;
@@ -26,11 +31,13 @@ Elevator::Elevator()
 
     motor2.GetConfigurator().Apply(motor2Config);
 
+    // Makes the second elevator motor a follower to the first elevator motor
     motor2.SetControl(follower);
 }
 
 void Elevator::SetMotors(double power)
 {
+    // Only allow the elevator to go down if it is not registered
     if(isElevatorRegistered == false && power > 0)
     {
         power = 0;
@@ -49,7 +56,6 @@ bool Elevator::GoToTurns(units::turn_t turns)
     }
     else
     {
-        frc::SmartDashboard::PutNumber("Elevator Set Turns", turns.value());
         controls::PositionVoltage &turnPos = positionOut.WithPosition(turns);
         motor1.SetControl(turnPos);
     }
@@ -63,8 +69,10 @@ bool Elevator::GoToPosition(Positions pos)
     return GoToTurns(setTurns);
 }
 
+
 void Elevator::UpdateElevator()
 {
+    // If the limit switch is pressed AND the encoders are close to 0 or the elevator isn't registered
     if (IsBottomLimitSwitchClosed() == true && ((GetEncoder() > 0.025_tr || GetEncoder() < -0.025_tr) || isElevatorRegistered == false))
     {
         ResetEncoders();
@@ -72,25 +80,8 @@ void Elevator::UpdateElevator()
     }
 }
 
-const units::turn_t Elevator::GetEncoder()
-{
-    units::turn_t motor1RotorPos = motor1.GetRotorPosition().GetValue();
-    units::turn_t motor2RotorPos = -motor2.GetRotorPosition().GetValue();
-    if (motor1RotorPos >= motor2RotorPos)
-    {
-        return motor1RotorPos;
-    }
-    return motor2RotorPos;
-}
 
-void Elevator::ResetEncoders()
-{
-    if (frc::RobotBase::IsSimulation()) return;
-    motor1.SetPosition(0_tr);
-    motor2.SetPosition(0_tr);
-}
-
-units::turn_t Elevator::GetTurnsToPosition(Positions pos)
+const units::turn_t Elevator::GetTurnsToPosition(Positions pos)
 {
     units::meter_t height = 0_m;
     switch (pos)
@@ -130,6 +121,27 @@ units::turn_t Elevator::GetTurnsToPosition(Positions pos)
 
     return height / kMetersPerMotorTurn;
 }
+
+
+const units::turn_t Elevator::GetEncoder()
+{
+    /// @todo Look into turning this to GetPosition()
+    units::turn_t motor1RotorPos = motor1.GetRotorPosition().GetValue();
+    units::turn_t motor2RotorPos = -motor2.GetRotorPosition().GetValue();
+    if (motor1RotorPos >= motor2RotorPos)
+    {
+        return motor1RotorPos;
+    }
+    return motor2RotorPos;
+}
+
+void Elevator::ResetEncoders()
+{
+    if (frc::RobotBase::IsSimulation()) return;
+    motor1.SetPosition(0_tr);
+    motor2.SetPosition(0_tr);
+}
+
 
 void Elevator::UpdateTelemtry()
 {

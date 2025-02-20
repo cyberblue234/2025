@@ -131,7 +131,7 @@ namespace RobotMap
         //TalonFX
         constexpr int kWristMotorID = 11;
         //SparkFlex
-        constexpr int kIntakeMotorID = 1;
+        constexpr int kIOMotorID = 1;
         //CANcoder
         constexpr int kCanCoderID = 5;
 
@@ -146,9 +146,10 @@ namespace RobotMap
     }
     namespace Pneumatics
     {
+        //RevPH
         constexpr int kPneumaticHubID = 1;
-        constexpr int kStopperForwardSlot = 0;
-        constexpr int kStopperReverseSlot = 1;
+        //Pneumatic Hub Slot
+        constexpr int kStopperSlot = 0;
     }
 }
 
@@ -316,8 +317,12 @@ namespace ClawConstants
     constexpr units::degree_t kAngleProcessor = -45_deg;
     constexpr units::degree_t kAngleBarge     = 0_deg;
 
+    // Intake and output powers for coral and algae
     constexpr double kCoralIntakePower = 0.2;
     constexpr double kAlgaeIntakePower = 0.3;
+    // Outputting should be negative compared to intaking
+    constexpr double kCoralOutputPower = -0.2;
+    constexpr double kAlgaeOutputPower = -0.3;
 
     constexpr units::degree_t kDeadzone = 0.25_deg;
 

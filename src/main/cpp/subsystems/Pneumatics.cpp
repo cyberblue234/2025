@@ -1,11 +1,6 @@
 #include "subsystems/Pneumatics.h"
 
-void Pneumatics::ExtendStopper()
+void Pneumatics::SetStopper(bool extended)
 {
-    stopperSolenoid.Set(frc::DoubleSolenoid::kForward);
-}
-
-void Pneumatics::RetractStopper()
-{
-    stopperSolenoid.Set(frc::DoubleSolenoid::kReverse);
+    stopperSolenoid.Set(extended);
 }

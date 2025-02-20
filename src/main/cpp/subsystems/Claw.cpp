@@ -2,21 +2,28 @@
 
 Claw::Claw()
 {
+    // Starts the configuration process for the wrist motor
+    // This line resets any previous configurations to ensure a clean slate
     wristMotor.GetConfigurator().Apply(configs::TalonFXConfiguration{});
     configs::TalonFXConfiguration wristMotorConfig{};
 
+    // Stops the motor if there is no input - desirable for ensuring the wrist stays at the desired position
     wristMotorConfig.MotorOutput.NeutralMode = signals::NeutralModeValue::Brake;
 
+    // Stator limit makes sure we don't burn up our motors if they get jammed
     wristMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     wristMotorConfig.CurrentLimits.StatorCurrentLimit = 120.0_A;
 
+    // Configures PID values
     wristMotorConfig.Slot0.kP = kPWrist;
     wristMotorConfig.Slot0.kI = kIWrist;
     wristMotorConfig.Slot0.kD = kDWrist;
 
+    // Sets the CANcoder as the encoder for the wrist motor
     wristMotorConfig.Feedback.FeedbackRemoteSensorID = canCoderWrist.GetDeviceID();
     wristMotorConfig.Feedback.FeedbackSensorSource = signals::FeedbackSensorSourceValue::RemoteCANcoder;
 
+    // Applies the configuration
     wristMotor.GetConfigurator().Apply(wristMotorConfig);
 
     canCoderWrist.GetConfigurator().Apply(configs::CANcoderConfiguration{});
@@ -29,14 +36,19 @@ Claw::Claw()
 
     canCoderWrist.GetConfigurator().Apply(canCoderWristConfig);
 
-    SparkBaseConfig intakeConfig;
-    intakeConfig.SetIdleMode(SparkBaseConfig::IdleMode::kBrake);
-    intakeConfig.SmartCurrentLimit(60);
-    intakeMotor.Configure(intakeConfig, SparkBase::ResetMode::kResetSafeParameters, SparkBase::PersistMode::kPersistParameters);
+    // Creates the configurator for the IO motor - it's REV, so there are differences in configuration
+    SparkBaseConfig ioConfig;
+    // Brake mode
+    ioConfig.SetIdleMode(SparkBaseConfig::IdleMode::kBrake);
+    // Limits the current so we don't burn out the motor
+    ioConfig.SmartCurrentLimit(60);
+    // Applies the configuration, resetting the parameters that it can, and persisting avaiable parameters
+    ioMotor.Configure(ioConfig, SparkBase::ResetMode::kResetSafeParameters, SparkBase::PersistMode::kPersistParameters);
 
     proxSensor.GetConfigurator().Apply(configs::CANrangeConfiguration{});
     configs::CANrangeConfiguration proxSensorConfig{};
 
+    // If an object is detected by the proximity sensor within this value, the .GetIsDetected() will return true
     proxSensorConfig.ProximityParams.ProximityThreshold = 2_in;
 
     proxSensor.GetConfigurator().Apply(proxSensorConfig);
@@ -44,6 +56,7 @@ Claw::Claw()
 
 void Claw::SetWristPower(double power)
 {
+    // Sets the duty cycle of the motor
     wristMotor.Set(power);
 }
 
@@ -52,7 +65,9 @@ bool Claw::GoToAngle(units::degree_t angle)
     // Constrains the angle to [-180, 180)
     if (angle >= -180_deg && angle < 180_deg)
     {
+        // Sets the desired angle
         controls::PositionVoltage &anglePos = angleOut.WithPosition(angle);
+        // Tells the motor to go to that position with the PIDs
         wristMotor.SetControl(anglePos.WithSlot(0));
     }
     else
@@ -69,7 +84,7 @@ bool Claw::GoToPosition(Positions pos)
     return GoToAngle(setAngle);
 }
 
-units::degree_t Claw::GetAngleToPosition(Positions pos)
+const units::degree_t Claw::GetAngleToPosition(Positions pos)
 {
     switch (pos)
     {
@@ -101,31 +116,37 @@ units::degree_t Claw::GetAngleToPosition(Positions pos)
     }
 }
 
-void Claw::SetIntakePower(double power)
+void Claw::SetIOPower(double power)
 {
-    intakeMotor.Set(power);
+    // Sets the duty cycle of the motor
+    ioMotor.Set(power);
 }
 
 void Claw::Intake(Positions pos)
 {
     if (pos == Positions::CoralStation)
     {
+        // If we're at the CoralStation, we are intaking a coral. 
+        // Thus, we check to see if there is a coral in the intake.
+        // If there is, we stop the motor
         if (IsCoralInClaw() == false)
         {
-            SetIntakePower(kCoralIntakePower);
+            SetIOPower(kCoralIntakePower);
         }
         else
         {
-            SetIntakePower(0);
+            SetIOPower(0);
         }
     }
     else if (IsPositionForAlgaeIntake(pos))
     {
-        SetIntakePower(kAlgaeIntakePower);
+        // Algae intake is always the same, so we just check to see if it is for that
+        SetIOPower(kAlgaeIntakePower);
     }
     else
     {
-        SetIntakePower(0.0);
+        // If for whatever reason another Position is given to this function, don't run the motors
+        SetIOPower(0.0);
     }
 }
 
@@ -133,28 +154,28 @@ void Claw::Output(Positions pos)
 {
     if (IsPositionForCoralOutput(pos))
     {
+        // At L4 we have to output the coral in the opposition of the rest of the levels
         if (pos == Positions::L4)
         {
-            SetIntakePower(-kCoralIntakePower);
+            SetIOPower(-kCoralOutputPower);
         }
         else
         {
-            SetIntakePower(kCoralIntakePower);
+            SetIOPower(kCoralOutputPower);
         }
     }
     else if (IsPositionForAlgaeOutput(pos))
     {
-        SetIntakePower(-kAlgaeIntakePower);
+        SetIOPower(kAlgaeOutputPower);
     }
 }
 
 void Claw::UpdateTelemetry()
 {
     frc::SmartDashboard::PutBoolean("Is Coral in Claw?", IsCoralInClaw());
-    frc::SmartDashboard::PutNumber("Proximity Sensor Distance", units::inch_t(GetDistance()).value());
+    frc::SmartDashboard::PutNumber("Proximity Sensor Distance", GetDistance().convert<units::inch>().value());
     frc::SmartDashboard::PutNumber("Wrist Angle", GetCurrentAngle().value());
 }
-
 
 void Claw::SimMode()
 {
