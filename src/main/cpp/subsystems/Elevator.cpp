@@ -9,6 +9,8 @@ Elevator::Elevator()
 
     // Sets the motor to brake mode - this is so the elevator stays at the position we tell it to stay at
     motor1Config.MotorOutput.NeutralMode = signals::NeutralModeValue::Brake;
+    // Ensures positive input makes the elevator go up and negative input makes the elevator go down
+    motor1Config.MotorOutput.Inverted = signals::InvertedValue::CounterClockwise_Positive;
 
     // Stator limit makes sure we don't burn up our motors if they get jammed
     motor1Config.CurrentLimits.StatorCurrentLimitEnable = true;

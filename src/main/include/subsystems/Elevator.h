@@ -79,7 +79,7 @@ private:
     bool isElevatorRegistered = false;
 
     // Whether or not to output the negative input to the follower motor
-    bool followerInverted = true;
+    bool followerInverted = false;
     // Will use this to set motor2 to a follower motor of motor1
     // This means every input to motor1 will be sent to motor2
     // If followerInverted is true, the input will be the opposite (5 volts -> -5 volts)
