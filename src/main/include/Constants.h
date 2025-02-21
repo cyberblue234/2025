@@ -287,11 +287,11 @@ namespace ElevatorConstants
     constexpr units::meter_t kPositionBarge     = 8.0_ft;
 
     // Maximum encoder count - should be slightly lower than the maximum possible encoder count
-    constexpr units::turn_t kMaxEncoderValue    = 92_tr;
+    constexpr units::turn_t kMaxEncoderValue    = 34_tr;
     // The distance from the ground to the bottom of the carriage
-    constexpr units::meter_t kHeightOffset      = 2_in;
-    // Should be equal to kMaxEncoderValue / kMetersPerMotorTurn + kHeightOffset
-    constexpr units::meter_t kMaxElevatorHeight = 67_in;
+    constexpr units::meter_t kHeightOffset      = 6.5_in;
+    // Should be equal to kMaxEncoderValue * kMetersPerMotorTurn + kHeightOffset
+    constexpr units::meter_t kMaxElevatorHeight = 4_ft + kHeightOffset;
 
     constexpr units::meter_t kDeadzone = 0.125_in;
 }

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <ctre/phoenix6/TalonFX.hpp>
-#include <ctre/phoenix6/configs/Configurator.hpp>
+#include "rev/SparkFlex.h"
+
 
 #include "Constants.h"
 
 using namespace ClimberConstants;
-using namespace ctre::phoenix6;
+using namespace rev::spark;
 
 class Climber
 {
@@ -19,5 +19,5 @@ public:
     void SetPower(double power);
 private:
     // Creates the climber motor
-    hardware::TalonFX climbMotor{RobotMap::Climber::kClimbMotorID, "rio"};
+    SparkFlex climbMotor{RobotMap::Climber::kClimbMotorID, SparkLowLevel::MotorType::kBrushless};
 };
