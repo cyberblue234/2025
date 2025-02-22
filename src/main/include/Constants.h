@@ -266,6 +266,7 @@ namespace ElevatorConstants
     constexpr double kP = 1.0;
     constexpr double kI = 0.0;
     constexpr double kD = 0.0;
+    constexpr double kG = 0.1;
 
     // The gearing between the motor and the sprocket
     constexpr units::turn_t kMotorGearing = 7.75_tr;

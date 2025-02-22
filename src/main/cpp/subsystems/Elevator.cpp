@@ -16,10 +16,12 @@ Elevator::Elevator()
     motor1Config.CurrentLimits.StatorCurrentLimitEnable = true;
     motor1Config.CurrentLimits.StatorCurrentLimit = 120.0_A;
 
-    // Sets the PID values
+    // Sets the PID and gravity feedforward values
     motor1Config.Slot0.kP = kP;
     motor1Config.Slot0.kI = kI;
     motor1Config.Slot0.kD = kD;
+    motor1Config.Slot0.kG = kG;
+    motor1Config.Slot0.GravityType = signals::GravityTypeValue::Elevator_Static;
 
     motor1.GetConfigurator().Apply(motor1Config);
 
@@ -44,7 +46,7 @@ void Elevator::SetMotors(double power)
     {
         power = 0;
     }
-    motor1.Set(power);
+    motor1.SetControl(controls::DutyCycleOut{power});
 }
 
 bool Elevator::GoToTurns(units::turn_t turns)
@@ -128,8 +130,8 @@ const units::turn_t Elevator::GetTurnsToPosition(Positions pos)
 const units::turn_t Elevator::GetEncoder()
 {
     /// @todo Look into turning this to GetPosition()
-    units::turn_t motor1RotorPos = motor1.GetRotorPosition().GetValue();
-    units::turn_t motor2RotorPos = -motor2.GetRotorPosition().GetValue();
+    units::turn_t motor1RotorPos = motor1.GetPosition().GetValue();
+    units::turn_t motor2RotorPos = motor2.GetPosition().GetValue();
     if (motor1RotorPos >= motor2RotorPos)
     {
         return motor1RotorPos;
@@ -150,8 +152,8 @@ void Elevator::UpdateTelemtry()
     frc::SmartDashboard::PutNumber("Elevator Encoder", GetEncoder().value());
     frc::SmartDashboard::PutBoolean("Elevator Bottom Limit Switch", IsBottomLimitSwitchClosed());
     frc::SmartDashboard::PutBoolean("Elevator Is Registered", isElevatorRegistered);
-    frc::SmartDashboard::PutNumber("Elevator M1 Pos", motor1.GetRotorPosition().GetValueAsDouble());
-    frc::SmartDashboard::PutNumber("Elevator M2 Pos", motor2.GetRotorPosition().GetValueAsDouble());
+    frc::SmartDashboard::PutNumber("Elevator M1 Pos", motor1.GetPosition().GetValueAsDouble());
+    frc::SmartDashboard::PutNumber("Elevator M2 Pos", motor2.GetPosition().GetValueAsDouble());
     frc::SmartDashboard::PutNumber("Elevator Height", GetHeight().convert<units::feet>().value());
 }
 
