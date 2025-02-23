@@ -145,5 +145,4 @@ void SwerveModule::SimMode()
     // DCMotorSim returns mechanism position/velocity (after gear ratio)
     driveMotorSim.SetRawRotorPosition(kDriveGearRatio.value() * driveMotorSimModel.GetAngularPosition());
     driveMotorSim.SetRotorVelocity(kDriveGearRatio.value() * driveMotorSimModel.GetAngularVelocity());
-    
 }

@@ -108,10 +108,12 @@ void Controls::ElevatorControls()
     else if (controlBoard.GetRawAxis(kManualElevatorAxis) < -0.5) 
     {
         elevator->SetMotors(0.4);
+        SetElevatorPosition(std::nullopt);
     }
     else if (controlBoard.GetRawAxis(kManualElevatorAxis) > 0.5)
     {
         elevator->SetMotors(-0.4);
+        SetElevatorPosition(std::nullopt);
     }
     else
     {
@@ -130,10 +132,12 @@ void Controls::ClawControls()
     else if (controlBoard.GetRawAxis(kManualWristAxis) < -0.5)
     {
         claw->SetWristPower(kWristPower);
+        SetClawPosition(std::nullopt);
     }
     else if (controlBoard.GetRawAxis(kManualWristAxis) > 0.5)
     {
         claw->SetWristPower(-kWristPower);
+        SetClawPosition(std::nullopt);
     }
     else
     {
@@ -236,4 +240,12 @@ void Controls::SetDesiredPosition()
     {
         desiredPosition = std::nullopt;
     }
+}
+
+void Controls::UpdateTelemetry()
+{
+    frc::SmartDashboard::PutString("Claw Position", GetClawPosition() ? GetClawPosition().value().to_string() : "None");
+    frc::SmartDashboard::PutString("Elevator Position", GetElevatorPosition() ? GetElevatorPosition().value().to_string() : "None");
+    frc::SmartDashboard::PutString("Current Position", GetCurrentPosition() ? GetCurrentPosition().value().to_string() : "None");
+    frc::SmartDashboard::PutString("Desired Position", GetDesiredPosition() ? GetDesiredPosition().value().to_string() : "None");
 }

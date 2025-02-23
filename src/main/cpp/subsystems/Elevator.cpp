@@ -69,7 +69,7 @@ bool Elevator::GoToTurns(units::turn_t turns)
 
 bool Elevator::GoToPosition(const Position &pos)
 {
-    return GoToTurns(pos.height / kMetersPerMotorTurn);
+    return GoToTurns((pos.height - kHeightOffset) / kMetersPerMotorTurn);
 }
 
 
@@ -97,7 +97,6 @@ const units::turn_t Elevator::GetEncoder()
 
 void Elevator::ResetEncoders()
 {
-    if (frc::RobotBase::IsSimulation()) return;
     motor1.SetPosition(0_tr);
     motor2.SetPosition(0_tr);
 }

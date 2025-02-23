@@ -278,14 +278,14 @@ namespace ElevatorConstants
     // Should be equal to kMaxEncoderValue * kMetersPerMotorTurn + kHeightOffset
     constexpr units::meter_t kMaxElevatorHeight = 4_ft + kHeightOffset;
 
-    constexpr units::meter_t kDeadzone = 0.125_in;
+    constexpr units::meter_t kDeadzone = 0.5_in;
 }
 
 namespace ClawConstants
 {
-    constexpr double kPWrist = 3.0;
+    constexpr double kPWrist = 5.0;
     constexpr double kIWrist = 0.0;
-    constexpr double kDWrist = 0.1;
+    constexpr double kDWrist = 0.0;
 
     constexpr double kWristPower = 0.1;
     // Intake and output powers for coral and algae
@@ -298,7 +298,7 @@ namespace ClawConstants
 
     constexpr units::turn_t canCoderMagnetOffset = 0_tr;
 
-    constexpr units::degree_t kDeadzone = 0.25_deg;
+    constexpr units::degree_t kDeadzone = 1.0_deg;
 
     constexpr units::turn_t kWristGearRatio = 46.69_tr;
 }
@@ -311,6 +311,7 @@ namespace ClimberConstants
 /// @brief Struct for the different possible positions
 struct Position
 {
+
     /// @brief The height of the elevator
     const units::meter_t height;
     /// @brief The angle of the claw
@@ -328,6 +329,10 @@ struct Position
     {
         return this->height == rhs.height && this->angle == this->angle 
                 && this->ioMotorPower == rhs.ioMotorPower && this->isForCoralIntake == rhs.isForCoralIntake;
+    }
+    std::string to_string()
+    {
+        return "Height: " + units::to_string(height.convert<units::feet>()) + "; Angle: " + units::to_string(angle) + "; IO Power: " + std::to_string(ioMotorPower);
     }
 };
 namespace Positions
