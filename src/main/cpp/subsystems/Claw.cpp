@@ -78,43 +78,11 @@ bool Claw::GoToAngle(units::degree_t angle)
     return units::math::abs(angle - GetCurrentAngle()) < kDeadzone;
 }
 
-bool Claw::GoToPosition(Positions pos)
+bool Claw::GoToPosition(const Position &pos)
 {
-    units::degree_t setAngle = GetAngleToPosition(pos);
-    return GoToAngle(setAngle);
+    return GoToAngle(pos.angle);
 }
 
-const units::degree_t Claw::GetAngleToPosition(Positions pos)
-{
-    switch (pos)
-    {
-    case Positions::L1:
-        return kAngleL1;
-        break;
-    case Positions::L2:
-        return kAngleL2;
-        break;
-    case Positions::L3:
-        return kAngleL3;
-        break;
-    case Positions::L4:
-        return kAngleL4;
-        break;
-    case Positions::CoralStation:
-        return kAngleCoralStation;
-        break;
-    case Positions::Processor:
-        return kAngleProcessor;
-        break;
-    case Positions::Barge:
-        return kAngleBarge;
-        break;
-
-    default:
-        return 0_deg;
-        break;
-    }
-}
 
 void Claw::SetIOPower(double power)
 {
@@ -122,53 +90,6 @@ void Claw::SetIOPower(double power)
     ioMotor.Set(power);
 }
 
-void Claw::Intake(Positions pos)
-{
-    if (pos == Positions::CoralStation)
-    {
-        // If we're at the CoralStation, we are intaking a coral. 
-        // Thus, we check to see if there is a coral in the intake.
-        // If there is, we stop the motor
-        if (IsCoralInClaw() == false)
-        {
-            SetIOPower(kCoralIntakePower);
-        }
-        else
-        {
-            SetIOPower(0);
-        }
-    }
-    else if (IsPositionForAlgaeIntake(pos))
-    {
-        // Algae intake is always the same, so we just check to see if it is for that
-        SetIOPower(kAlgaeIntakePower);
-    }
-    else
-    {
-        // If for whatever reason another Position is given to this function, don't run the motors
-        SetIOPower(0.0);
-    }
-}
-
-void Claw::Output(Positions pos)
-{
-    if (IsPositionForCoralOutput(pos))
-    {
-        // At L4 we have to output the coral in the opposition of the rest of the levels
-        if (pos == Positions::L4)
-        {
-            SetIOPower(-kCoralOutputPower);
-        }
-        else
-        {
-            SetIOPower(kCoralOutputPower);
-        }
-    }
-    else if (IsPositionForAlgaeOutput(pos))
-    {
-        SetIOPower(kAlgaeOutputPower);
-    }
-}
 
 void Claw::UpdateTelemetry()
 {

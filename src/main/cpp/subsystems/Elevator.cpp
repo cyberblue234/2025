@@ -67,10 +67,9 @@ bool Elevator::GoToTurns(units::turn_t turns)
     return units::math::abs(deltaTurns) < (kDeadzone / kMetersPerMotorTurn);
 }
 
-bool Elevator::GoToPosition(Positions pos)
+bool Elevator::GoToPosition(const Position &pos)
 {
-    units::turn_t setTurns = GetTurnsToPosition(pos);
-    return GoToTurns(setTurns);
+    return GoToTurns(pos.height / kMetersPerMotorTurn);
 }
 
 
@@ -85,51 +84,8 @@ void Elevator::UpdateElevator()
 }
 
 
-const units::turn_t Elevator::GetTurnsToPosition(Positions pos)
-{
-    units::meter_t height = 0_m;
-    switch (pos)
-    {
-    case Positions::L1:
-        height = kPositionL1;
-        break;
-    case Positions::L2:
-        height = kPositionL2;
-        break;
-    case Positions::L3:
-        height = kPositionL3;
-        break;
-    case Positions::L4:
-        height = kPositionL4;
-        break;
-    case Positions::AlgaeLow:
-        height = kPositionAlgaeLow;
-        break;
-    case Positions::AlgaeHigh:
-        height = kPositionAlgaeHigh;
-        break;
-    case Positions::CoralStation:
-        height = kPositionCoralStation;
-        break;
-    case Positions::Processor:
-        height = kPositionProcessor;
-        break;
-    case Positions::Barge:
-        height = kPositionBarge;
-        break;
-
-    default:
-        height = GetHeight();
-        break;
-    }
-
-    return height / kMetersPerMotorTurn;
-}
-
-
 const units::turn_t Elevator::GetEncoder()
 {
-    /// @todo Look into turning this to GetPosition()
     units::turn_t motor1RotorPos = motor1.GetPosition().GetValue();
     units::turn_t motor2RotorPos = motor2.GetPosition().GetValue();
     if (motor1RotorPos >= motor2RotorPos)

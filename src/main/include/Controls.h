@@ -38,31 +38,34 @@ public:
     void PneumaticsControls();
 
     /// @brief Sets current elevator position
-    void SetElevatorPosition(Positions pos) { elevatorPosition = pos; };
+    void SetElevatorPosition(std::optional<Position> pos) { elevatorPosition = pos; }
     /// @brief Gets current elevator position
     /// @retval Position of the elevator
     /// @retval Positions::Null if the elevator is not at any preset position
-    Positions GetElevatorPosition() { return elevatorPosition; };
+    std::optional<Position> GetElevatorPosition() { return elevatorPosition; }
     /// @brief Sets current claw position
-    void SetClawPosition(Positions pos) { clawPosition = pos; };
+    void SetClawPosition(std::optional<Position> pos) { clawPosition = pos; }
     /// @brief Gets current claw position
     /// @retval Position of the claw
     /// @retval Positions::Null if the claw is not at any preset position
-    Positions GetClawPosition() { return clawPosition; };
+    std::optional<Position> GetClawPosition() { return clawPosition; }
     /// @brief Returns the position of the elevator-claw system
     /// @retval Position of the system
     /// @retval Positions::Null if the two subsystems are not at the same position
-    Positions GetCurrentPosition()
+    std::optional<Position> GetCurrentPosition()
     {
-        if (GetElevatorPosition() == GetClawPosition()) return GetElevatorPosition();
-        return Positions::Null;
+        // Short circuits if either elevator or claw position does not exist
+        // Equals comparison checks if the height, angle, IO power, and coral output check are the same
+        if (GetElevatorPosition() && GetClawPosition() && GetElevatorPosition().value().operator==(GetClawPosition().value())) return GetElevatorPosition();
+        return std::nullopt;
     }
 
     /// @brief Sets desired position
     void SetDesiredPosition();
     /// @brief Gets desired position
-    Positions GetDesiredPosition() { return desiredPosition; };
+    std::optional<Position> GetDesiredPosition() { return desiredPosition; }
 
+    void UpdateTelemetry();
 
     /// @brief Applies a deadband around zero. Zone depends on deadband value. 
     /// @param value Value to apply the deadband to
@@ -87,9 +90,9 @@ private:
     Limelight *limelightHigh;
     Limelight *limelightLow; 
 
-    Positions elevatorPosition = Positions::Null;
-    Positions clawPosition = Positions::Null;
-    Positions desiredPosition = Positions::Null; 
+    std::optional<Position> elevatorPosition;
+    std::optional<Position> clawPosition;
+    std::optional<Position> desiredPosition; 
 
     int branch = 0;
     std::optional<frc2::CommandPtr> path;

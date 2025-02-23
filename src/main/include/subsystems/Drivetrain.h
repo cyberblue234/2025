@@ -48,16 +48,16 @@ public:
     /// @brief Sets current robot pose
     /// @param pose Pose to reset the pose to
     /// @warning Might be an issue - before it was .ResetPosition(...)
-    void ResetPose(frc::Pose2d pose) { odometry.ResetPose(pose); };
+    void ResetPose(frc::Pose2d pose) { odometry.ResetPose(pose); }
     /// @brief Returns current robot pose
     /// @return Pose2d of current robot pose
-    frc::Pose2d GetPose() { return odometry.GetEstimatedPosition(); };
+    frc::Pose2d GetPose() { return odometry.GetEstimatedPosition(); }
     /// @brief Sets the current chassis speeds
     /// @param newSpeeds The new robot relative chassis speeds
-    void SetRobotRelativeSpeeds(frc::ChassisSpeeds newSpeeds) { robotRelativeSpeeds = newSpeeds; };
+    void SetRobotRelativeSpeeds(frc::ChassisSpeeds newSpeeds) { robotRelativeSpeeds = newSpeeds; }
     /// @brief Returns the current chassis speeds
     /// @return ChassisSpeeds of the current speeds
-    frc::ChassisSpeeds GetRobotRelativeSpeeds() { return robotRelativeSpeeds; };
+    frc::ChassisSpeeds GetRobotRelativeSpeeds() { return robotRelativeSpeeds; }
 
     /// @brief List of the branches of the reef. A is the left branch at the face closets to the driver station wall
     enum ReefBranches
@@ -98,21 +98,21 @@ public:
     void UpdateTelemetry();
     /// @brief Gets the gyro angle from the robot perspective
     /// @return Rotation2d of the current gyro angle
-    frc::Rotation2d GetRobotGyroAngle() { return gyro.GetRotation2d(); };
+    frc::Rotation2d GetRobotGyroAngle() { return gyro.GetRotation2d(); }
     /// @brief Gets the gyro angle from the driver's perspective
     /// @return Rotation2d of the current gyro angle
-    frc::Rotation2d GetDriverGyroAngle() { return GetRobotGyroAngle().RotateBy(drivingOffset); };
+    frc::Rotation2d GetDriverGyroAngle() { return GetRobotGyroAngle().RotateBy(drivingOffset); }
     /// @brief Gets the gyro angle from the perspective of a blue origin
     /// @return Rotation2d of the current gyro angle
-    frc::Rotation2d GetBlueOriginGyroAngle() { return GetRobotGyroAngle().RotateBy(blueOriginOffset); };
+    frc::Rotation2d GetBlueOriginGyroAngle() { return GetRobotGyroAngle().RotateBy(blueOriginOffset); }
     /// @brief Gets the rate of the gyro yaw
     /// @return Rate of gyro yaw in degrees per second
-    units::degrees_per_second_t GetYawRate() { return gyro.GetAngularVelocityZWorld().GetValue(); };
+    units::degrees_per_second_t GetYawRate() { return gyro.GetAngularVelocityZWorld().GetValue(); }
     
     /// @brief Resets the gyro angles
     void ResetGyro() { gyro.Reset(); };
     /// @brief Sets the driving offset to the negated current angle
-    void ResetDrivingGyro() { drivingOffset = -GetRobotGyroAngle().Degrees(); };
+    void ResetDrivingGyro() { drivingOffset = -GetRobotGyroAngle().Degrees(); }
 
     void ConfigureBlueOriginOffset() 
     {
@@ -120,7 +120,7 @@ public:
         if (alliance) {
             if (alliance.value() == frc::DriverStation::Alliance::kBlue) blueOriginOffset = 180_deg;
         }
-    };
+    }
 
     /// @brief Resets drive encoders to 0
     void ResetDriveDistances() 
@@ -129,7 +129,7 @@ public:
         frontRight.SetEncoder(0_tr);
         backLeft.SetEncoder(0_tr);
         backRight.SetEncoder(0_tr);
-    };
+    }
 
     /// @brief Simulation periodic
     void Sim() 
@@ -142,10 +142,10 @@ public:
 
     /// @brief Returns the acceleration in the x-direction
     /// @return Acceleration in meters per second squared
-    const units::meters_per_second_squared_t GetXAcceleration() { return gyro.GetAccelerationX().GetValue(); };
+    const units::meters_per_second_squared_t GetXAcceleration() { return gyro.GetAccelerationX().GetValue(); }
     /// @brief Returns the acceleration in the y-direction
     /// @return Acceleration in meters per second squared
-    const units::meters_per_second_squared_t GetYAcceleration() { return gyro.GetAccelerationY().GetValue(); };
+    const units::meters_per_second_squared_t GetYAcceleration() { return gyro.GetAccelerationY().GetValue(); }
 
 private:
     // Creates the four swerve modules - see SwerveModule.h

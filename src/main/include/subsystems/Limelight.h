@@ -97,51 +97,51 @@ public:
     /// @brief Quick SmartDashboard helper tool for printing diagnostics
     /// @param valueName Description of the value
     /// @param value Value to be printed
-    void TelemetryHelperNumber(std::string valueName, double value) { frc::SmartDashboard::PutNumber(valueName + " " + name, value); };
+    void TelemetryHelperNumber(std::string valueName, double value) { frc::SmartDashboard::PutNumber(valueName + " " + name, value); }
 
-    int GetTV() { return tv.Get(); };
-    double GetTX() { return tx.Get(); };
-    double GetTY() { return ty.Get(); };
-    double GetTXNC() { return txnc.Get(); };
-    double GetTYNC() { return tync.Get(); };
-    double GetTA() { return ta.Get(); };
-    double GetTL() { return tl.Get(); };
-    double GetCL() { return cl.Get(); };
-    std::vector<double> GetT2D() { return t2d.Get(); };
-    int GetPipe() { return getpipe.Get(); };
-    std::string GetPipeType() { return getpipetype.Get(); };
-    std::string GetJSON() { return json.Get(); };
-    std::string GetTClass() { return tclass.Get(); };
-    std::vector<double> GetTC() { return tc.Get(); };
-    double GetHB() { return hb.Get(); };
-    std::vector<double> GetHW() { return hw.Get(); };
-    std::vector<double> GetCrosshairs() { return crosshairs.Get(); };
-    std::string GetTCClass() { return tcclass.Get(); };
-    std::string GetTDClass() { return tdclass.Get(); };
-    std::vector<double> GetCameraPoseTargetSpace() { return camerapose_targetspace.Get(); };
-    std::vector<double> GetTargetPoseCameraSpace() { return targetpose_cameraspace.Get(); };
-    std::vector<double> GetTargetPoseRobotSpace() { return targetpose_robotspace.Get(); };
-    std::vector<double> GetBotPoseTargetSpace() { return botpose_targetspace.Get(); };
-    std::vector<double> GetCameraPoseRobotSpace() { return camerapose_robotspace.Get(); };
-    int GetTID() { return tid.Get(); };
-    std::vector<double> GetStdDevs() { return stddevs.Get(); };
+    int GetTV() { return tv.Get(); }
+    double GetTX() { return tx.Get(); }
+    double GetTY() { return ty.Get(); }
+    double GetTXNC() { return txnc.Get(); }
+    double GetTYNC() { return tync.Get(); }
+    double GetTA() { return ta.Get(); }
+    double GetTL() { return tl.Get(); }
+    double GetCL() { return cl.Get(); }
+    std::vector<double> GetT2D() { return t2d.Get(); }
+    int GetPipe() { return getpipe.Get(); }
+    std::string GetPipeType() { return getpipetype.Get(); }
+    std::string GetJSON() { return json.Get(); }
+    std::string GetTClass() { return tclass.Get(); }
+    std::vector<double> GetTC() { return tc.Get(); }
+    double GetHB() { return hb.Get(); }
+    std::vector<double> GetHW() { return hw.Get(); }
+    std::vector<double> GetCrosshairs() { return crosshairs.Get(); }
+    std::string GetTCClass() { return tcclass.Get(); }
+    std::string GetTDClass() { return tdclass.Get(); }
+    std::vector<double> GetCameraPoseTargetSpace() { return camerapose_targetspace.Get(); }
+    std::vector<double> GetTargetPoseCameraSpace() { return targetpose_cameraspace.Get(); }
+    std::vector<double> GetTargetPoseRobotSpace() { return targetpose_robotspace.Get(); }
+    std::vector<double> GetBotPoseTargetSpace() { return botpose_targetspace.Get(); }
+    std::vector<double> GetCameraPoseRobotSpace() { return camerapose_robotspace.Get(); }
+    int GetTID() { return tid.Get(); }
+    std::vector<double> GetStdDevs() { return stddevs.Get(); }
 
-    PoseEstimate GetBotPose() { return GetBotPoseEstimate(botpose); };
-    PoseEstimate GetBotPoseBlue() { return GetBotPoseEstimate(botpose_wpiblue); };
-    PoseEstimate GetBotPoseRed() { return GetBotPoseEstimate(botpose_wpired); };
-    PoseEstimate GetBotPoseMegatag2() { return GetBotPoseEstimate(botpose_orb); };
-    PoseEstimate GetBotPoseMegatag2Blue() { return GetBotPoseEstimate(botpose_orb_wpiblue); };
-    PoseEstimate GetBotPoseMegatag2Red() { return GetBotPoseEstimate(botpose_orb_wpired); };
+    PoseEstimate GetBotPose() { return GetBotPoseEstimate(botpose); }
+    PoseEstimate GetBotPoseBlue() { return GetBotPoseEstimate(botpose_wpiblue); }
+    PoseEstimate GetBotPoseRed() { return GetBotPoseEstimate(botpose_wpired); }
+    PoseEstimate GetBotPoseMegatag2() { return GetBotPoseEstimate(botpose_orb); }
+    PoseEstimate GetBotPoseMegatag2Blue() { return GetBotPoseEstimate(botpose_orb_wpiblue); }
+    PoseEstimate GetBotPoseMegatag2Red() { return GetBotPoseEstimate(botpose_orb_wpired); }
 
     void SetCameraPoseRobotSpace(double forward, double side, double up, double roll, double pitch, double yaw)
     {
         std::vector<double> entries = {forward, side, up, roll, pitch, yaw};
         camerapose_robotspace_set.Set(entries);
-    };
+    }
     void SetPriorityID(int id)
     {
         priorityid.Set(id);
-    };
+    }
     void SetRobotOrientation(
         units::degree_t yaw, units::degrees_per_second_t yawRate, 
         units::degree_t pitch, units::degrees_per_second_t pitchRate, 
@@ -149,40 +149,40 @@ public:
     {
         std::vector<double> entries = {yaw.value(), yawRate.value(), pitch.value(), pitchRate.value(), roll.value(), rollRate.value()};
         robot_orientation_set.Set(entries);
-    };
+    }
     void SetRobotOrientation(units::degree_t yaw, units::degrees_per_second_t yawRate)
     {
         SetRobotOrientation(yaw, yawRate, units::degree_t{0}, units::degrees_per_second_t{0}, units::degree_t{0}, units::degrees_per_second_t{0});
-    };
+    }
     void SetFiducialIDFilters(const std::vector<int64_t>& validIDs)
     {
         fiducial_id_filters_set.Set(validIDs);
-    };
+    }
     void SetFiducialOffset(double x, double y, double z)
     {
         std::vector<double> entries = {x, y, z};
         fiducial_offset_set.Set(entries);
-    };
+    }
     enum LedMode { kPipeline = 0, kForceOff = 1, kForceBlink = 2, kForceOn = 3 };
     void SetLEDMode(LedMode m)
     {
         ledMode.Set(m);
-    };
+    }
     enum Pipeline { kApriltag = 0 };
     void SetPipeline(Pipeline p)
     {
         pipeline.Set(p);
-    };
+    }
     enum Stream { kStandard = 0, kPiPMain = 1, kPiPSecondary = 2 };
     void SetStream(Stream s)
     {
         stream.Set(s);
-    };
+    }
     void SetCropWindow(double cropXMin, double cropXMax, double cropYMin, double cropYMax)
     {
         std::vector<double> entries = {cropXMin, cropXMax, cropYMin, cropYMax};
         crop.Set(entries);
-    };
+    }
 
     std::string SanitizeName(const std::string &name)
     {
@@ -191,7 +191,7 @@ public:
             return "limelight";
         }
         return name;
-    };
+    }
 
     frc::Pose3d ToPose3D(const std::vector<double>& inData)
     {
@@ -203,7 +203,7 @@ public:
             frc::Translation3d(units::length::meter_t(inData[0]), units::length::meter_t(inData[1]), units::length::meter_t(inData[2])),
             frc::Rotation3d(units::angle::degree_t(inData[3]), units::angle::degree_t(inData[4]),
                    units::angle::degree_t(inData[5])));
-    };
+    }
 
     frc::Pose2d ToPose2D(const std::vector<double>& inData)
     {
@@ -214,48 +214,48 @@ public:
         return frc::Pose2d(
             frc::Translation2d(units::length::meter_t(inData[0]), units::length::meter_t(inData[1])), 
             frc::Rotation2d(units::angle::degree_t(inData[5])));
-    };
+    }
 
     std::shared_ptr<nt::NetworkTable> GetTable(const std::string &tableName)
     {
         return nt::NetworkTableInstance::GetDefault().GetTable(SanitizeName(tableName));
-    };
+    }
     nt::IntegerSubscriber GetIntegerSubscriber(const std::string &entryName)
     {
         return GetTable(name)->GetIntegerTopic(entryName).Subscribe(0);
-    };
+    }
     nt::IntegerArraySubscriber GetIntegerArraySubscriber(const std::string &entryName)
     {
         return GetTable(name)->GetIntegerArrayTopic(entryName).Subscribe(std::span<int64_t>{});
-    };
+    }
     nt::DoubleSubscriber GetDoubleSubscriber(const std::string &entryName)
     {
         return GetTable(name)->GetDoubleTopic(entryName).Subscribe(0.0);
-    };
+    }
     nt::DoubleArraySubscriber GetDoubleArraySubscriber(const std::string &entryName)
     {
         return GetTable(name)->GetDoubleArrayTopic(entryName).Subscribe(std::span<double>{});
-    };
+    }
     nt::StringSubscriber GetStringSubscriber(const std::string &entryName)
     {
         return GetTable(name)->GetStringTopic(entryName).Subscribe("");
-    };
+    }
     nt::IntegerPublisher GetIntegerPublisher(const std::string &entryName)
     {
         return GetTable(name)->GetIntegerTopic(entryName).Publish();
-    };
+    }
     nt::IntegerArrayPublisher GetIntegerArrayPublisher(const std::string &entryName)
     {
         return GetTable(name)->GetIntegerArrayTopic(entryName).Publish();
-    };
+    }
     nt::DoublePublisher GetDoublePublisher(const std::string &entryName)
     {
         return GetTable(name)->GetDoubleTopic(entryName).Publish();
-    };
+    }
     nt::DoubleArrayPublisher GetDoubleArrayPublisher(const std::string &entryName)
     {
         return GetTable(SanitizeName(name))->GetDoubleArrayTopic(entryName).Publish();
-    };
+    }
 
     void SetupPortForwarding() 
     {
@@ -270,7 +270,7 @@ public:
         portForwarder.Add(5807, SanitizeName(name), 5807);
         portForwarder.Add(5808, SanitizeName(name), 5808);
         portForwarder.Add(5809, SanitizeName(name), 5809);
-    };
+    }
 
     std::vector<RawFiducial> GetRawFiducials() 
     {
@@ -297,7 +297,7 @@ public:
         }
 
         return rawFiducials;
-    };
+    }
 
     std::vector<RawDetection> GetRawDetections() 
     {
@@ -330,7 +330,7 @@ public:
         }
 
         return rawDetections;
-    };
+    }
 
     inline PoseEstimate GetBotPoseEstimate(const nt::DoubleArraySubscriber &sub) {
         std::vector<double> poseArray = sub.Get();
@@ -366,7 +366,7 @@ public:
         }
 
         return PoseEstimate(pose, timestamp, latency, tagCount, tagSpan, tagDist, tagArea, rawFiducials);
-    };
+    }
 
 private:
     std::string name;

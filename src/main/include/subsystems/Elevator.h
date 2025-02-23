@@ -32,24 +32,19 @@ public:
     /// @return True if the current encoder value is within the deadzone of the desired encoder value
     bool GoToTurns(units::turn_t turns);
     /// @brief Uses PID control to run the elevator motors to a Position
-    /// @param pos Value of the Position enum
+    /// @param pos Position object
     /// @return True if the current encoder value is within the deadzone of the desired encoder value
-    bool GoToPosition(Positions pos);
+    bool GoToPosition(const Position &pos);
 
     /// @brief Runs every cycle, checks to see if the elevator has hit the limit switch
     void UpdateElevator();
-    
-    /// @brief Gets the value of the encoders that is correlated to the height the elevator needs to be at for every Position
-    /// @param pos Value of the Position enum
-    /// @return The amount of turns the motors needs to be at in order to get to the desired Position
-    const units::turn_t GetTurnsToPosition(Positions pos);
     
     /// @brief Gets the greater of the two motors' encoder values
     /// @return The greater encoder value
     const units::turn_t GetEncoder();
     /// @brief Gets the physical height of the elevator based on encoder values
     /// @return The height of the elevator
-    const units::meter_t GetHeight() { return GetEncoder() * kMetersPerMotorTurn + kHeightOffset; };
+    const units::meter_t GetHeight() { return GetEncoder() * kMetersPerMotorTurn + kHeightOffset; }
     /// @brief Sets both encoders to 0
     void ResetEncoders();
 
@@ -59,7 +54,7 @@ public:
     /// @brief Gets the state of the bottom limit switch
     /// @retval true if the limit switch is closed (pressed)
     /// @retval false if the limit switch is open
-    bool IsBottomLimitSwitchClosed() { return !bottomLimitSwitch.Get() || simLimSwitch; };
+    bool IsBottomLimitSwitchClosed() { return !bottomLimitSwitch.Get() || simLimSwitch; }
 
     /// @brief Simulation periodic
     void SimMode();

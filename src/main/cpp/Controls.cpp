@@ -73,9 +73,9 @@ void Controls::DriveControls()
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
     const double y = -gamepad.GetLeftX();
-    // The scalar helps to smooth out driving while preserving full control over the joystick
+    // The scalar helps to smooth out driving while preserving full control over the speed
     const double scalar = x * x + y * y;
-    // Adds a speed adjusmtment based on the right trigger - the more it is pressed, the slower the bot will travel for a maximum reduction of 80%
+    // Adds a speed adjusmtment based on the right trigger - the more it is pressed, the slower the bot will travel for a maximum reduction of -80%
     const double speedAdjust = 1 - 0.8 * gamepad.GetRightTriggerAxis(); 
 
     const units::meters_per_second_t xSpeed = ApplyDeadband(x * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;
@@ -99,11 +99,11 @@ void Controls::DriveControls()
 
 void Controls::ElevatorControls() 
 {
-    if (GetDesiredPosition() != Positions::Null)
+    if (GetDesiredPosition().has_value())
     {
-        bool isElevatorAtPos = elevator->GoToPosition(GetDesiredPosition());
+        bool isElevatorAtPos = elevator->GoToPosition(GetDesiredPosition().value());
         if (isElevatorAtPos == true) SetElevatorPosition(GetDesiredPosition());
-        else SetElevatorPosition(Positions::Null);
+        else SetElevatorPosition(std::nullopt);
     }
     else if (controlBoard.GetRawAxis(kManualElevatorAxis) < -0.5) 
     {
@@ -121,11 +121,11 @@ void Controls::ElevatorControls()
 
 void Controls::ClawControls()
 {
-    if (GetDesiredPosition() != Positions::Null)
+    if (GetDesiredPosition().has_value())
     {
-        bool isClawAtPosition = claw->GoToPosition(GetDesiredPosition());
+        bool isClawAtPosition = claw->GoToPosition(GetDesiredPosition().value());
         if (isClawAtPosition == true) SetClawPosition(GetDesiredPosition());
-        else SetClawPosition(Positions::Null);
+        else SetClawPosition(std::nullopt);
     }
     else if (controlBoard.GetRawAxis(kManualWristAxis) < -0.5)
     {
@@ -141,29 +141,35 @@ void Controls::ClawControls()
     }
     
     
-    if (controlBoard.GetRawButton(kOutputButton))
+    if (controlBoard.GetRawButton(kOutputButton) || controlBoard.GetRawButton(kIntakeButton))
     {
-        claw->Output(GetCurrentPosition());
-    }
-    else if (controlBoard.GetRawButton(kIntakeButton))
-    {
-        claw->Intake(GetCurrentPosition());
+        if (GetCurrentPosition().has_value())
+        {
+            // If we are intaking a coral and there the proximity sensor detects a coral, stop the IO motor
+            if (GetCurrentPosition().value().isForCoralIntake == true && claw->IsCoralInClaw() == true)
+            {
+                claw->SetIOPower(0.0);
+            }
+            // Otherwise, set the IO motor to the constant at the current Position
+            else claw->SetIOPower(GetCurrentPosition().value().ioMotorPower);
+        }
     }
     // else if (controlBoard.GetRawAxis(kManualIntakeAxis) < -0.5 || gamepad.GetLeftTriggerAxis() >= 0.5) 
     // {
-    //     claw->SetIOPower(kCoralIntakePower);
+    //     claw->SetIOPower(kManualIOPower);
     // }
     // else if (controlBoard.GetRawAxis(kManualIntakeAxis) > 0.5 || gamepad.GetRightTriggerAxis() >= 0.5)
     // {
-    //     claw->SetIOPower(-kCoralIntakePower);
+    //     claw->SetIOPower(-kManualIOPower);
     // }
+    
     else if (gamepad.GetLeftTriggerAxis() >= 0.5) 
     {
-        claw->SetIOPower(kCoralIntakePower);
+        claw->SetIOPower(kManualIOPower);
     }
     else if (gamepad.GetRightTriggerAxis() >= 0.5)
     {
-        claw->SetIOPower(kCoralOutputPower);
+        claw->SetIOPower(-kManualIOPower);
     }
     else
     {
@@ -228,6 +234,6 @@ void Controls::SetDesiredPosition()
     }
     else
     {
-        desiredPosition = Positions::Null;
+        desiredPosition = std::nullopt;
     }
 }

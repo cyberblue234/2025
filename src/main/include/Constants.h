@@ -254,11 +254,6 @@ namespace PathPlannerConstants
     constexpr double kRotationD = 0.1;
 }
 
-enum Positions
-{
-    Null, L1, L2, L3, L4, AlgaeLow, AlgaeHigh, CoralStation, Processor, Barge
-};
-
 /// @brief Constants for the Elevator Class
 namespace ElevatorConstants
 {
@@ -275,17 +270,6 @@ namespace ElevatorConstants
     // How many meters the carriage travels per rotation of the motors.
     // Note, carriage raises at a rate of 2:1 compared to the first stage
     constexpr units::meters_per_turn_t kMetersPerMotorTurn = 2 * (kSprocketPitchDiameter * std::numbers::pi) / kMotorGearing;
-
-    // The height of the elevator at each position
-    constexpr units::meter_t kPositionL1        = 1.0_ft;
-    constexpr units::meter_t kPositionL2        = 2.0_ft;
-    constexpr units::meter_t kPositionL3        = 3.0_ft;
-    constexpr units::meter_t kPositionL4        = 4.0_ft;
-    constexpr units::meter_t kPositionAlgaeLow  = 2.5_ft;
-    constexpr units::meter_t kPositionAlgaeHigh = 3.5_ft;
-    constexpr units::meter_t kPositionCoralStation    = 0.0_ft;
-    constexpr units::meter_t kPositionProcessor = 0.0_ft;
-    constexpr units::meter_t kPositionBarge     = 8.0_ft;
 
     // Maximum encoder count - should be slightly lower than the maximum possible encoder count
     constexpr units::turn_t kMaxEncoderValue    = 34_tr;
@@ -304,26 +288,15 @@ namespace ClawConstants
     constexpr double kDWrist = 0.1;
 
     constexpr double kWristPower = 0.1;
-
-    constexpr units::turn_t canCoderMagnetOffset = 0_tr;
-
-    // The encoder readings at the different possible claw angles
-    constexpr units::degree_t kAngleL1        = -15_deg;
-    constexpr units::degree_t kAngleL2        = -30_deg;
-    constexpr units::degree_t kAngleL3        = -30_deg;
-    constexpr units::degree_t kAngleL4        = 90_deg;
-    constexpr units::degree_t kAngleAlgaeLow  = 0_deg;
-    constexpr units::degree_t kAngleAlgaeHigh = 0_deg;
-    constexpr units::degree_t kAngleCoralStation    = 0_deg;
-    constexpr units::degree_t kAngleProcessor = -45_deg;
-    constexpr units::degree_t kAngleBarge     = 0_deg;
-
     // Intake and output powers for coral and algae
     constexpr double kCoralIntakePower = 0.2;
     constexpr double kAlgaeIntakePower = 0.3;
     // Outputting should be negative compared to intaking
     constexpr double kCoralOutputPower = -0.2;
     constexpr double kAlgaeOutputPower = -0.3;
+    constexpr double kManualIOPower = 0.2;
+
+    constexpr units::turn_t canCoderMagnetOffset = 0_tr;
 
     constexpr units::degree_t kDeadzone = 0.25_deg;
 
@@ -333,6 +306,41 @@ namespace ClawConstants
 namespace ClimberConstants
 {
     constexpr double kClimberPower = 0.4;
+}
+
+/// @brief Struct for the different possible positions
+struct Position
+{
+    /// @brief The height of the elevator
+    const units::meter_t height;
+    /// @brief The angle of the claw
+    const units::degree_t angle;
+    /// @brief What power to set to the IO motor
+    const double ioMotorPower;
+    /// @brief Set to true when intaking coral - will be used to stop the IO motor when we have a coral in the claw
+    const bool isForCoralIntake = false;
+
+    const Position operator=(const Position &rhs)
+    {
+        return {rhs.height, rhs.angle, rhs.ioMotorPower, rhs.isForCoralIntake};
+    }
+    bool operator==(const Position &rhs)
+    {
+        return this->height == rhs.height && this->angle == this->angle 
+                && this->ioMotorPower == rhs.ioMotorPower && this->isForCoralIntake == rhs.isForCoralIntake;
+    }
+};
+namespace Positions
+{
+    constexpr Position L1           = Position(1.0_ft,   5.0_deg,  ClawConstants::kCoralOutputPower);
+    constexpr Position L2           = Position(2.0_ft,  10.0_deg,  ClawConstants::kCoralOutputPower);
+    constexpr Position L3           = Position(3.0_ft,  -5.0_deg,  ClawConstants::kCoralOutputPower);
+    constexpr Position L4           = Position(4.0_ft, -10.0_deg, -ClawConstants::kCoralOutputPower);
+    constexpr Position AlgaeLow     = Position(0.0_ft,   0.0_deg,  ClawConstants::kAlgaeIntakePower);
+    constexpr Position AlgaeHigh    = Position(0.0_ft,   0.0_deg,  ClawConstants::kAlgaeIntakePower);
+    constexpr Position CoralStation = Position(0.0_ft,   0.0_deg,  ClawConstants::kCoralIntakePower, true);
+    constexpr Position Processor    = Position(0.0_ft,   0.0_deg,  ClawConstants::kAlgaeOutputPower);
+    constexpr Position Barge        = Position(0.0_ft,   0.0_deg,  ClawConstants::kAlgaeOutputPower);
 }
 
 /// @brief Clamps the input to a specifed range
@@ -346,7 +354,7 @@ template <typename T>
 static T clamp(T val, T low, T high) 
 {
     return val > low && val < high ? val : val <= low ? low : high; 
-};
+}
 
 /// @brief Returns the sign of the input
 /// @param val Input to determine sign of
