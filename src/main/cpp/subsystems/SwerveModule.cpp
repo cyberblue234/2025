@@ -24,12 +24,12 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     driveMotorConfig.CurrentLimits.StatorCurrentLimit = 120.0_A;
 
     // Configures PID and feedforward values
-    driveMotorConfig.Slot0.kP = kDriveP;
-    driveMotorConfig.Slot0.kI = kDriveI;
-    driveMotorConfig.Slot0.kD = kDriveD;
-    driveMotorConfig.Slot0.kS = kDrive_kS.value();
-    driveMotorConfig.Slot0.kV = kDrive_kV.value();
-    driveMotorConfig.Slot0.kA = kDrive_kA.value();
+    driveMotorConfig.Slot0.kP = Drive::kP;
+    driveMotorConfig.Slot0.kI = Drive::kI;
+    driveMotorConfig.Slot0.kD = Drive::kD;
+    driveMotorConfig.Slot0.kS = Drive::kS;
+    driveMotorConfig.Slot0.kV = Drive::kV;
+    driveMotorConfig.Slot0.kA = Drive::kA;
 
     // Actually applies the configuration
     driveMotor.GetConfigurator().Apply(driveMotorConfig);
@@ -51,9 +51,9 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
 
     configs::SlotConfigs turnPIDConfig{};
 
-    turnPIDConfig.kP = kTurnP;
-    turnPIDConfig.kI = kTurnI;
-    turnPIDConfig.kD = kTurnD;
+    turnPIDConfig.kP = Turn::kP;
+    turnPIDConfig.kI = Turn::kI;
+    turnPIDConfig.kD = Turn::kD;
 
     turnMotor.GetConfigurator().Apply(turnPIDConfig);
 

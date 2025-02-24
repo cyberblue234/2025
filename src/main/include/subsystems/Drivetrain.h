@@ -167,8 +167,8 @@ private:
     // Container for the current relative robot speeds
     frc::ChassisSpeeds robotRelativeSpeeds;
     // Creates the translation and rotation PIDs for PathPlanner
-    PIDConstants translationPIDs{kTranslationP, kTranslationI, kTranslationD};
-    PIDConstants rotationPIDs{kRotationP, kRotationI, kRotationD};
+    PIDConstants translationPIDs{Translation::kP, Translation::kI, Translation::kD};
+    PIDConstants rotationPIDs{Rotation::kP, Rotation::kI, Rotation::kD};
 
     // FRC kinematics to determine individual wheel speeds based on the desired chassis speeds
     frc::SwerveDriveKinematics<4> kinematics

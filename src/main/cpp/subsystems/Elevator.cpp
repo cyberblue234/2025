@@ -20,6 +20,9 @@ Elevator::Elevator()
     motor1Config.Slot0.kP = kP;
     motor1Config.Slot0.kI = kI;
     motor1Config.Slot0.kD = kD;
+    motor1Config.Slot0.kS = kS;
+    motor1Config.Slot0.kV = kV;
+    motor1Config.Slot0.kA = kA;
     motor1Config.Slot0.kG = kG;
     motor1Config.Slot0.GravityType = signals::GravityTypeValue::Elevator_Static;
 
@@ -46,7 +49,7 @@ void Elevator::SetMotors(double power)
     {
         power = 0;
     }
-    motor1.SetControl(controls::DutyCycleOut{power});
+    motor1.Set(power);
 }
 
 bool Elevator::GoToTurns(units::turn_t turns)
@@ -133,8 +136,8 @@ void Elevator::SimMode()
 
     simLimSwitch = elevatorSim.HasHitLowerLimit();
 
-    motor1Sim.SetRawRotorPosition((elevatorSim.GetPosition() - 0.051_m) / kMetersPerMotorTurn);
-    motor2Sim.SetRawRotorPosition((elevatorSim.GetPosition() - 0.051_m) / kMetersPerMotorTurn);
+    motor1Sim.SetRawRotorPosition((elevatorSim.GetPosition() - kHeightOffset) / kMetersPerMotorTurn);
+    motor2Sim.SetRawRotorPosition((elevatorSim.GetPosition() - kHeightOffset) / kMetersPerMotorTurn);
     motor1Sim.SetRotorVelocity(elevatorSim.GetVelocity() / kMetersPerMotorTurn);
     motor2Sim.SetRotorVelocity(elevatorSim.GetVelocity() / kMetersPerMotorTurn);
     
