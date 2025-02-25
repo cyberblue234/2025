@@ -85,6 +85,7 @@ private:
      * PositionVoltage allows us to run the elevator motors to a position using voltages.
      */
     controls::PositionVoltage positionOut{0_tr};
+    controls::MotionMagicVoltage motionMagicOut{0_tr};
 
     frc::sim::ElevatorSim elevatorSim
     {

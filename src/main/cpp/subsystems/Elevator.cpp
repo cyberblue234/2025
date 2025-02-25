@@ -25,6 +25,9 @@ Elevator::Elevator()
     motor1Config.Slot0.kA = kA;
     motor1Config.Slot0.kG = kG;
     motor1Config.Slot0.GravityType = signals::GravityTypeValue::Elevator_Static;
+    motor1Config.MotionMagic.MotionMagicCruiseVelocity = 80_tps;
+    motor1Config.MotionMagic.MotionMagicAcceleration = 160_tr_per_s_sq;
+    motor1Config.MotionMagic.MotionMagicJerk = 1600_tr_per_s_cu;
 
     motor1.GetConfigurator().Apply(motor1Config);
 
@@ -57,14 +60,16 @@ bool Elevator::GoToTurns(units::turn_t turns)
     // If delta turns is postitive, the elevator is going up - vice versa for negative delta turns
     units::turn_t deltaTurns = turns - GetEncoder();
     // Conditions to kill motors
-    if ((IsBottomLimitSwitchClosed() == true && deltaTurns < 0_tr) || (GetEncoder() >= kMaxEncoderValue && deltaTurns > 0_tr) || isElevatorRegistered == false)
+    if (isElevatorRegistered == false)
     {
         SetMotors(0);
     }
     else
     {
-        controls::PositionVoltage &turnPos = positionOut.WithPosition(turns);
-        motor1.SetControl(turnPos);
+        // controls::PositionVoltage &turnPos = positionOut.WithPosition(turns);
+        motor1.SetControl(positionOut.WithPosition(turns)
+                            .WithLimitForwardMotion(GetEncoder() >= kMaxEncoderValue)
+                            .WithLimitReverseMotion(IsBottomLimitSwitchClosed() == true));
     }
     // Returns true if the change in position is less than the deadzone
     return units::math::abs(deltaTurns) < (kDeadzone / kMetersPerMotorTurn);
