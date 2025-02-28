@@ -32,6 +32,10 @@ public:
     /// @brief Manually sets the power of the elevator motors
     /// @param power Power to set the motors to
     void SetMotors(double power);
+    /// @brief Uses PID control to run the elevator motors to a height
+    /// @param desiredHeight Height to go to
+    /// @return True if the current encoder value is within the deadzone of the desired encoder value
+    bool GoToHeight(const units::meter_t desiredHeight);
     /// @brief Uses PID control to run the elevator motors to a Position
     /// @param pos Position object
     /// @return True if the current encoder value is within the deadzone of the desired encoder value

@@ -47,10 +47,12 @@ void Elevator::SetMotors(double power)
     {
         power = 0;
     }
-    motor1.Set(power);
+    motor1.SetControl(controls::DutyCycleOut{power}
+                    .WithLimitForwardMotion(GetEncoder() > kMaxEncoderValue)
+                    .WithLimitReverseMotion(IsBottomLimitSwitchClosed()));
 }
 
-bool Elevator::GoToPosition(const Position &pos)
+bool Elevator::GoToHeight(const units::meter_t desiredHeight)
 {
     // Conditions to kill motors
     if (isElevatorRegistered == false)
@@ -59,14 +61,19 @@ bool Elevator::GoToPosition(const Position &pos)
     }
     else
     {
-        units::volt_t pidSet{controller.Calculate(GetHeight(), pos.height)};
+        units::volt_t pidSet{controller.Calculate(GetHeight(), desiredHeight)};
         units::volt_t feedforwardSet = feedforward.Calculate(controller.GetSetpoint().velocity);
         motor1.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
                         .WithLimitForwardMotion(GetEncoder() > kMaxEncoderValue)
                         .WithLimitReverseMotion(IsBottomLimitSwitchClosed()));
     }
     // Returns true if the change in position is less than the deadzone
-    return units::math::abs(pos.height - GetHeight()) < kDeadzone;
+    return units::math::abs(desiredHeight - GetHeight()) < kDeadzone;
+}
+
+bool Elevator::GoToPosition(const Position &pos)
+{
+    return GoToHeight(pos.height);
 }
 
 

@@ -108,6 +108,12 @@ public:
     /// @brief Gets the rate of the gyro yaw
     /// @return Rate of gyro yaw in degrees per second
     units::degrees_per_second_t GetYawRate() { return gyro.GetAngularVelocityZWorld().GetValue(); }
+    /// @brief Gets the gyro roll
+    /// @return Roll in degrees
+    units::degree_t GetRoll() { return gyro.GetRoll().GetValue(); }
+    /// @brief Gets the gyro pitch
+    /// @return Pitch in degrees
+    units::degree_t GetPitch() { return gyro.GetPitch().GetValue(); }
     
     /// @brief Resets the gyro angles
     void ResetGyro() { gyro.Reset(); };
