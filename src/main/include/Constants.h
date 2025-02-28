@@ -47,6 +47,8 @@
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Rotation3d.h>
 #include <frc/controller/SimpleMotorFeedforward.h>
+#include <frc/controller/ElevatorFeedforward.h>
+#include <frc/trajectory/TrapezoidProfile.h>
 
 #include <frc/RobotController.h>
 #include <frc/RobotBase.h>
@@ -184,10 +186,8 @@ namespace units
     using radians_per_turn = compound_unit<radian, inverse<turn>>;
     using radians_per_turn_t = unit_t<radians_per_turn>;
 
-    using volts_per_tps = frc::SimpleMotorFeedforward<turns>::kv_unit;
-    using volts_per_tps_t = unit_t<volts_per_tps>;
-    using volts_per_tps_sq = frc::SimpleMotorFeedforward<turns>::ka_unit;
-    using volts_per_tps_sq_t = unit_t<volts_per_tps_sq>;   
+    using kv_t = unit_t<frc::SimpleMotorFeedforward<meters>::kv_unit>;
+    using ka_t = unit_t<frc::SimpleMotorFeedforward<meters>::ka_unit>;   
 }
 
 /// @brief Constants for the SwerveModule class
@@ -210,9 +210,9 @@ namespace SwerveModuleConstants
         constexpr double kP = 0.0;
         constexpr double kI = 0.0;
         constexpr double kD = 0.0;
-        constexpr double kS = 0.24;
-        constexpr double kV = 2.46 * kDriveDistanceRatio.value(); // values from https://www.reca.lc/drive?appliedVoltageRamp=%7B%22s%22%3A1200%2C%22u%22%3A%22V%2Fs%22%7D&batteryAmpHours=%7B%22s%22%3A18%2C%22u%22%3A%22A%2Ah%22%7D&batteryResistance=%7B%22s%22%3A0.015%2C%22u%22%3A%22Ohm%22%7D&batteryVoltageAtRest=%7B%22s%22%3A12.5%2C%22u%22%3A%22V%22%7D&efficiency=97&filtering=1&gearRatioMax=%7B%22magnitude%22%3A15%2C%22ratioType%22%3A%22Reduction%22%7D&gearRatioMin=%7B%22magnitude%22%3A3%2C%22ratioType%22%3A%22Reduction%22%7D&maxSimulationTime=%7B%22s%22%3A4%2C%22u%22%3A%22s%22%7D&maxSpeedAccelerationThreshold=%7B%22s%22%3A0.15%2C%22u%22%3A%22ft%2Fs2%22%7D&motor=%7B%22quantity%22%3A4%2C%22name%22%3A%22Kraken%20X60%2A%22%7D&motorCurrentLimit=%7B%22s%22%3A120%2C%22u%22%3A%22A%22%7D&numCyclesPerMatch=24&peakBatteryDischarge=20&ratio=%7B%22magnitude%22%3A6.54%2C%22ratioType%22%3A%22Reduction%22%7D&sprintDistance=%7B%22s%22%3A21%2C%22u%22%3A%22ft%22%7D&swerve=1&targetTimeToGoal=%7B%22s%22%3A2%2C%22u%22%3A%22s%22%7D&throttleResponseMax=0.99&throttleResponseMin=0.5&weightAuxilliary=%7B%22s%22%3A23%2C%22u%22%3A%22lbs%22%7D&weightDistributionFrontBack=0.5&weightDistributionLeftRight=0.5&weightInspected=%7B%22s%22%3A105%2C%22u%22%3A%22lbs%22%7D&wheelBaseLength=%7B%22s%22%3A27%2C%22u%22%3A%22in%22%7D&wheelBaseWidth=%7B%22s%22%3A20%2C%22u%22%3A%22in%22%7D&wheelCOFDynamic=0.9&wheelCOFLateral=1.1&wheelCOFStatic=1&wheelDiameter=%7B%22s%22%3A4%2C%22u%22%3A%22in%22%7D
-        constexpr double kA = 0.20 * kDriveDistanceRatio.value();
+        constexpr units::volt_t kS{0.24};
+        constexpr units::kv_t kV{2.46}; // values from https://www.reca.lc/drive?appliedVoltageRamp=%7B%22s%22%3A1200%2C%22u%22%3A%22V%2Fs%22%7D&batteryAmpHours=%7B%22s%22%3A18%2C%22u%22%3A%22A%2Ah%22%7D&batteryResistance=%7B%22s%22%3A0.015%2C%22u%22%3A%22Ohm%22%7D&batteryVoltageAtRest=%7B%22s%22%3A12.5%2C%22u%22%3A%22V%22%7D&efficiency=97&filtering=1&gearRatioMax=%7B%22magnitude%22%3A15%2C%22ratioType%22%3A%22Reduction%22%7D&gearRatioMin=%7B%22magnitude%22%3A3%2C%22ratioType%22%3A%22Reduction%22%7D&maxSimulationTime=%7B%22s%22%3A4%2C%22u%22%3A%22s%22%7D&maxSpeedAccelerationThreshold=%7B%22s%22%3A0.15%2C%22u%22%3A%22ft%2Fs2%22%7D&motor=%7B%22quantity%22%3A4%2C%22name%22%3A%22Kraken%20X60%2A%22%7D&motorCurrentLimit=%7B%22s%22%3A120%2C%22u%22%3A%22A%22%7D&numCyclesPerMatch=24&peakBatteryDischarge=20&ratio=%7B%22magnitude%22%3A6.54%2C%22ratioType%22%3A%22Reduction%22%7D&sprintDistance=%7B%22s%22%3A21%2C%22u%22%3A%22ft%22%7D&swerve=1&targetTimeToGoal=%7B%22s%22%3A2%2C%22u%22%3A%22s%22%7D&throttleResponseMax=0.99&throttleResponseMin=0.5&weightAuxilliary=%7B%22s%22%3A23%2C%22u%22%3A%22lbs%22%7D&weightDistributionFrontBack=0.5&weightDistributionLeftRight=0.5&weightInspected=%7B%22s%22%3A105%2C%22u%22%3A%22lbs%22%7D&wheelBaseLength=%7B%22s%22%3A27%2C%22u%22%3A%22in%22%7D&wheelBaseWidth=%7B%22s%22%3A20%2C%22u%22%3A%22in%22%7D&wheelCOFDynamic=0.9&wheelCOFLateral=1.1&wheelCOFStatic=1&wheelDiameter=%7B%22s%22%3A4%2C%22u%22%3A%22in%22%7D
+        constexpr units::ka_t kA{0.20};
     }
     // PIDs of the turn motor
     namespace Turn
@@ -272,10 +272,11 @@ namespace ElevatorConstants
     constexpr double kP = 0.0;
     constexpr double kI = 0.0;
     constexpr double kD = 0.0;
-    constexpr double kS = 0.0;
-    constexpr double kV = 0.0;
-    constexpr double kA = 0.0;
-    constexpr double kG = 0.0;
+    constexpr units::volt_t kS{0.0};
+    constexpr units::volt_t kG{0.0};
+    constexpr units::kv_t kV{0.0};
+    constexpr units::ka_t kA{0.0};
+    constexpr frc::TrapezoidProfile<units::meters>::Constraints kTrapezoidProfileContraints{5_mps, 10_mps_sq};
 
     // The gearing between the motor and the sprocket
     constexpr units::turn_t kMotorGearing = 7.75_tr;

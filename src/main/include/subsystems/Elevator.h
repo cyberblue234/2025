@@ -7,11 +7,16 @@
 #include <ctre/phoenix6/sim/CANcoderSimState.hpp>
 #include <ctre/phoenix6/sim/TalonFXSimState.hpp>
 
+#include <frc/controller/ProfiledPIDController.h>
+#include <frc/controller/ElevatorFeedforward.h>
+
 #include <frc/system/plant/DCMotor.h>
 #include <frc/simulation/ElevatorSim.h>
 #include <frc/system/plant/LinearSystemId.h>
 
 #include <frc/DigitalInput.h>
+
+#include <frc/Timer.h>
 
 #include "Constants.h"
 
@@ -27,10 +32,6 @@ public:
     /// @brief Manually sets the power of the elevator motors
     /// @param power Power to set the motors to
     void SetMotors(double power);
-    /// @brief Uses PID control to run the elevator motors to a specified encoder value
-    /// @param turns Encoder value to run the motors to
-    /// @return True if the current encoder value is within the deadzone of the desired encoder value
-    bool GoToTurns(units::turn_t turns);
     /// @brief Uses PID control to run the elevator motors to a Position
     /// @param pos Position object
     /// @return True if the current encoder value is within the deadzone of the desired encoder value
@@ -82,10 +83,14 @@ private:
 
     /*
      * CTRE uses classes from the controls namespace to control the motors in more complex manners.
-     * PositionVoltage allows us to run the elevator motors to a position using voltages.
+     * VoltageOut allows us to set the voltage of the motors.
+     * The benefit of using VoltageOut instead of just motor.SetVoltage() is that we can set forward and reverse
+     * limits and we can more accurately determine what we want to do
      */
-    controls::PositionVoltage positionOut{0_tr};
-    controls::MotionMagicVoltage motionMagicOut{0_tr};
+    controls::VoltageOut voltageOut{0_V};
+
+    frc::ProfiledPIDController<units::meters> controller{kP, kI, kD, kTrapezoidProfileContraints};
+    frc::ElevatorFeedforward feedforward{kS, kG, kV, kA};
 
     frc::sim::ElevatorSim elevatorSim
     {

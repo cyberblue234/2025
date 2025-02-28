@@ -16,19 +16,6 @@ Elevator::Elevator()
     motor1Config.CurrentLimits.StatorCurrentLimitEnable = true;
     motor1Config.CurrentLimits.StatorCurrentLimit = 120.0_A;
 
-    // Sets the PID and gravity feedforward values
-    motor1Config.Slot0.kP = kP;
-    motor1Config.Slot0.kI = kI;
-    motor1Config.Slot0.kD = kD;
-    motor1Config.Slot0.kS = kS;
-    motor1Config.Slot0.kV = kV;
-    motor1Config.Slot0.kA = kA;
-    motor1Config.Slot0.kG = kG;
-    motor1Config.Slot0.GravityType = signals::GravityTypeValue::Elevator_Static;
-    motor1Config.MotionMagic.MotionMagicCruiseVelocity = 80_tps;
-    motor1Config.MotionMagic.MotionMagicAcceleration = 160_tr_per_s_sq;
-    motor1Config.MotionMagic.MotionMagicJerk = 1600_tr_per_s_cu;
-
     motor1.GetConfigurator().Apply(motor1Config);
 
     motor2.GetConfigurator().Apply(configs::TalonFXConfiguration{});
@@ -43,6 +30,14 @@ Elevator::Elevator()
 
     // Makes the second elevator motor a follower to the first elevator motor
     motor2.SetControl(follower);
+
+    frc::SmartDashboard::PutNumber("Elevator P", kP);
+    frc::SmartDashboard::PutNumber("Elevator I", kI);
+    frc::SmartDashboard::PutNumber("Elevator D", kD);
+    frc::SmartDashboard::PutNumber("Elevator kS", kS.value());
+    frc::SmartDashboard::PutNumber("Elevator kG", kG.value());
+    frc::SmartDashboard::PutNumber("Elevator kV", kV.value());
+    frc::SmartDashboard::PutNumber("Elevator kA", kA.value());
 }
 
 void Elevator::SetMotors(double power)
@@ -55,10 +50,8 @@ void Elevator::SetMotors(double power)
     motor1.Set(power);
 }
 
-bool Elevator::GoToTurns(units::turn_t turns)
+bool Elevator::GoToPosition(const Position &pos)
 {
-    // If delta turns is postitive, the elevator is going up - vice versa for negative delta turns
-    units::turn_t deltaTurns = turns - GetEncoder();
     // Conditions to kill motors
     if (isElevatorRegistered == false)
     {
@@ -66,18 +59,14 @@ bool Elevator::GoToTurns(units::turn_t turns)
     }
     else
     {
-        // controls::PositionVoltage &turnPos = positionOut.WithPosition(turns);
-        motor1.SetControl(positionOut.WithPosition(turns)
-                            .WithLimitForwardMotion(GetEncoder() >= kMaxEncoderValue)
-                            .WithLimitReverseMotion(IsBottomLimitSwitchClosed() == true));
+        units::volt_t pidSet{controller.Calculate(GetHeight(), pos.height)};
+        units::volt_t feedforwardSet = feedforward.Calculate(controller.GetSetpoint().velocity);
+        motor1.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
+                        .WithLimitForwardMotion(GetEncoder() > kMaxEncoderValue)
+                        .WithLimitReverseMotion(IsBottomLimitSwitchClosed()));
     }
     // Returns true if the change in position is less than the deadzone
-    return units::math::abs(deltaTurns) < (kDeadzone / kMetersPerMotorTurn);
-}
-
-bool Elevator::GoToPosition(const Position &pos)
-{
-    return GoToTurns((pos.height - kHeightOffset) / kMetersPerMotorTurn);
+    return units::math::abs(pos.height - GetHeight()) < kDeadzone;
 }
 
 
@@ -118,6 +107,20 @@ void Elevator::UpdateTelemtry()
     frc::SmartDashboard::PutNumber("Elevator M1 Pos", motor1.GetPosition().GetValueAsDouble());
     frc::SmartDashboard::PutNumber("Elevator M2 Pos", motor2.GetPosition().GetValueAsDouble());
     frc::SmartDashboard::PutNumber("Elevator Height", GetHeight().convert<units::feet>().value());
+    double newP = frc::SmartDashboard::GetNumber("Elevator P", kP);
+    if (newP != controller.GetP()) controller.SetP(newP);
+    double newI = frc::SmartDashboard::GetNumber("Elevator I", kI);
+    if (newI != controller.GetI()) controller.SetP(newI);
+    double newD = frc::SmartDashboard::GetNumber("Elevator D", kD);
+    if (newD != controller.GetD()) controller.SetP(newD);
+    double newKs = frc::SmartDashboard::GetNumber("Elevator kS", kS.value());
+    if (newKs != feedforward.GetKs().value()) feedforward.SetKs(units::volt_t{newKs});
+    double newKg = frc::SmartDashboard::GetNumber("Elevator kG", kG.value());
+    if (newKg != feedforward.GetKg().value()) feedforward.SetKg(units::volt_t{newKg});
+    double newKv = frc::SmartDashboard::GetNumber("Elevator kV", kV.value());
+    if (newKv != feedforward.GetKv().value()) feedforward.SetKv(units::kv_t{newKv});
+    double newKa = frc::SmartDashboard::GetNumber("Elevator kA", kA.value());
+    if (newKa != feedforward.GetKa().value()) feedforward.SetKa(units::ka_t{newKa});
 }
 
 void Elevator::SimMode()
