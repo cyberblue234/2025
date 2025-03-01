@@ -27,38 +27,18 @@ void Controls::Periodic()
 void Controls::DriveControls()
 {
     if (gamepad.GetYButton()) swerve->ResetDrivingGyro();
-    /// @deprecated will be removed once the control board is finalized
+
     if (gamepad.GetLeftBumperButtonPressed()) 
     {
-        if (branch == 11) branch = 0;
-        else branch += 1;
+        path = swerve->PathfindToBranch(swerve->GetClosestBranchTag(), Drivetrain::Sides::Left, true);
+        if (path) path->Schedule();
     }
     else if (gamepad.GetRightBumperButtonPressed()) 
     {
-        if (branch == 0) branch = 11;
-        else branch -= 1;
-    }
-    frc::SmartDashboard::PutNumber("Selected Branch", branch);
-    if (gamepad.GetAButtonPressed()) 
-    { 
-        path = swerve->PathfindToBranch(Drivetrain::ReefBranches(branch), gamepad.GetLeftTriggerAxis() > 0.5);
+        path = swerve->PathfindToBranch(swerve->GetClosestBranchTag(), Drivetrain::Sides::Right, true);
         if (path) path->Schedule();
     }
-    else if (gamepad.GetAButtonReleased()) if (path) path->Cancel();
-    
-    if (gamepad.GetBButtonPressed()) 
-    { 
-        path = swerve->PathfindToCoralStation(Drivetrain::CoralStations::Right, gamepad.GetLeftTriggerAxis() > 0.5);
-        if (path) path->Schedule();
-    }
-    else if (gamepad.GetBButtonReleased()) if (path) path->Cancel();
-
-    if (gamepad.GetXButtonPressed()) 
-    { 
-        path = swerve->PathfindToProcessor(gamepad.GetLeftTriggerAxis() > 0.5);
-        if (path) path->Schedule();
-    }
-    else if (gamepad.GetXButtonReleased()) if (path) path->Cancel();
+    else if (gamepad.GetLeftBumperButtonReleased() || gamepad.GetRightBumperButtonReleased()) if (path) path->Cancel();
 
     // Ensures driver control is disabled while pathfinding is occuring
     if (path)

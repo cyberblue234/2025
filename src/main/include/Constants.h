@@ -229,10 +229,10 @@ namespace DrivetrainConstants
     // The locations of the swerve modules in reference to the center of the robot
     // A common error is to use an incorrect coordinate system where the positive Y axis points forward on the robot. 
     // The correct coordinate system has the positive X axis pointing forward.
-    constexpr frc::Translation2d kFrontLeftLocation{+0.2254_m, +0.2699_m};
-    constexpr frc::Translation2d kFrontRightLocation{+0.2254_m, -0.2699_m};
-    constexpr frc::Translation2d kBackLeftLocation{-0.3016_m, +0.2699_m};
-    constexpr frc::Translation2d kBackRightLocation{-0.3016_m, -0.2699_m};
+    constexpr frc::Translation2d kFrontLeftLocation{+12_in, +10.375_in};
+    constexpr frc::Translation2d kFrontRightLocation{+12_in, -10.375_in};
+    constexpr frc::Translation2d kBackLeftLocation{-12_in, +10.375_in};
+    constexpr frc::Translation2d kBackRightLocation{-12_in, -10.375_in};
 
     // Maximum desired speed of the robot. Does not have to be maximum theoretical speed if that is too high for desired driving speed
     constexpr units::meters_per_second_t kMaxSpeed = 4.74_mps;
@@ -240,10 +240,12 @@ namespace DrivetrainConstants
     constexpr units::radians_per_second_t kMaxAngularSpeed = std::numbers::pi * 4_rad_per_s;
 
     // Offsets for the CANcoders to ensure 0 is pointing forward
-    constexpr units::turn_t kFrontLeftMagnetOffset  = -0.547_tr;
-    constexpr units::turn_t kFrontRightMagnetOffset = -0.846_tr;
-    constexpr units::turn_t kBackLeftMagnetOffset   = -0.023_tr;
-    constexpr units::turn_t kBackRightMagnetOffset  = -0.245_tr;
+    constexpr units::turn_t kFrontLeftMagnetOffset  = 0.0_tr;
+    constexpr units::turn_t kFrontRightMagnetOffset = 0.0_tr;
+    constexpr units::turn_t kBackLeftMagnetOffset   = 0.0_tr;
+    constexpr units::turn_t kBackRightMagnetOffset  = 0.0_tr;
+
+    constexpr units::meter_t kDeltaReefAprilTagToBranch = 6.5_in;
 }
 
 /// @brief Constants for PathPlanner
@@ -297,7 +299,7 @@ namespace ElevatorConstants
 
 namespace ClawConstants
 {
-    constexpr double kPWrist = 5.0;
+    constexpr double kPWrist = 0.0;
     constexpr double kIWrist = 0.0;
     constexpr double kDWrist = 0.0;
 
@@ -398,4 +400,10 @@ static T ExtractArrayEntry(const std::vector<T>& inData, int position)
         return T{};
     }
     return inData[position];
+}
+
+static units::meter_t DistanceBetweenPoses(const frc::Pose2d& pose1, const frc::Pose2d& pose2)
+{
+    // Distance formula: d = sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}
+    return units::meter_t{std::pow(std::pow(pose1.X().value() - pose2.X().value(), 2) + std::pow(pose1.Y().value() - pose2.Y().value(), 2), 0.5)};
 }
