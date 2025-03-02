@@ -70,8 +70,6 @@ bool Claw::GoToAngle(units::degree_t angle)
     controller.SetGoal(angle);
     units::volt_t pidSet{controller.Calculate(GetCurrentAngle())};
     units::volt_t feedforwardSet = feedforward.Calculate(GetCurrentAngle(), controller.GetSetpoint().velocity);
-    frc::SmartDashboard::PutNumber("Wrist PID set", pidSet.value());
-    frc::SmartDashboard::PutNumber("Wrist FF set", feedforwardSet.value());
     wristMotor.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet));
 
     // Returns true if the change in angle is less than the deadzone
