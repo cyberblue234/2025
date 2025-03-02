@@ -99,9 +99,9 @@ void Claw::UpdateTelemetry()
     double newP = frc::SmartDashboard::GetNumber("Wrist P", kP);
     if (newP != controller.GetP()) controller.SetP(newP);
     double newI = frc::SmartDashboard::GetNumber("Wrist I", kI);
-    if (newI != controller.GetI()) controller.SetP(newI);
+    if (newI != controller.GetI()) controller.SetI(newI);
     double newD = frc::SmartDashboard::GetNumber("Wrist D", kD);
-    if (newD != controller.GetD()) controller.SetP(newD);
+    if (newD != controller.GetD()) controller.SetD(newD);
     
     double newMaxVel = frc::SmartDashboard::GetNumber("Wrist Trapezoid Max Velocity", kTrapezoidProfileContraints.maxVelocity.value());
     if (newMaxVel != controller.GetConstraints().maxVelocity.value()) 

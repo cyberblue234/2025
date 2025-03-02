@@ -121,9 +121,9 @@ void Elevator::UpdateTelemtry()
     double newP = frc::SmartDashboard::GetNumber("Elevator P", kP);
     if (newP != controller.GetP()) controller.SetP(newP);
     double newI = frc::SmartDashboard::GetNumber("Elevator I", kI);
-    if (newI != controller.GetI()) controller.SetP(newI);
+    if (newI != controller.GetI()) controller.SetI(newI);
     double newD = frc::SmartDashboard::GetNumber("Elevator D", kD);
-    if (newD != controller.GetD()) controller.SetP(newD);
+    if (newD != controller.GetD()) controller.SetD(newD);
     
     double newMaxVel = frc::SmartDashboard::GetNumber("Elevator Trapezoid Max Velocity", kTrapezoidProfileContraints.maxVelocity.value());
     if (newMaxVel != controller.GetConstraints().maxVelocity.value()) 
