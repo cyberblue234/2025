@@ -16,6 +16,9 @@
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 #include <pathplanner/lib/util/PathPlannerLogging.h>
 
+#include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/apriltag/AprilTagFields.h>
+
 #include <frc2/command/SubsystemBase.h>
 
 #include <frc/controller/PIDController.h>
@@ -59,27 +62,22 @@ public:
     /// @return ChassisSpeeds of the current speeds
     frc::ChassisSpeeds GetRobotRelativeSpeeds() { return robotRelativeSpeeds; }
 
-    /// @brief List of the branches of the reef. A is the left branch at the face closets to the driver station wall
-    enum ReefBranches
+    /// @brief Left or right
+    enum Sides
     {
-        A, B, C, D, E, F, G, H, I, J, K, L
+        Left, Right
     };
     /// @brief Pathfind to thealliance-specific specified branch
     /// @param branch Branch to pathfind to
     /// @param usePPLibPathFinding Set true to use PPLib pathfinding, false for internal pathfinding (temp)
     /// @return CommandPtr of the path to run - std::nullopt if the path can not exist
-    std::optional<frc2::CommandPtr> PathfindToBranch(ReefBranches branch, bool usePPLibPathfinding);
+    std::optional<frc2::CommandPtr> PathfindToBranch(int aprilTagID, Sides side, bool usePPLibPathfinding);
 
-    /// @brief Lists the left and right coral stations from the perspective of the driver station
-    enum CoralStations
-    {
-        Left, Right
-    };
     /// @brief Pathfind to the alliance-specific specified coral loading station
     /// @param station Station to pathfind to
     /// @param usePPLibPathFinding Set true to use PPLib pathfinding, false for internal pathfinding (temp)
     /// @return CommandPtr of the path to run - std::nullopt if the path can not exist
-    std::optional<frc2::CommandPtr> PathfindToCoralStation(CoralStations station, bool usePPLibPathfinding);
+    std::optional<frc2::CommandPtr> PathfindToCoralStation(Sides station, bool usePPLibPathfinding);
 
     /// @brief Pathfind to alliance-specific processor
     /// @param usePPLibPathFinding Set true to use PPLib pathfinding, false for internal pathfinding (temp)
@@ -153,6 +151,33 @@ public:
     /// @return Acceleration in meters per second squared
     const units::meters_per_second_squared_t GetYAcceleration() { return gyro.GetAccelerationY().GetValue(); }
 
+    int GetClosestBranchTag()
+    {
+        int closestTag = 0;
+        units::meter_t closestDistance = units::meter_t{INFINITY};
+        auto alliance = frc::DriverStation::GetAlliance();
+        int startingID = 6;
+        if (alliance.value() == frc::DriverStation::Alliance::kBlue)
+        {
+            startingID = 17;
+        }
+        for (int id = startingID; id <= startingID + 5; id++)
+        {
+            units::meter_t deltaDistance = DistanceBetweenPoses(GetPose(), GetAprilTagIDPose(id));
+            if (deltaDistance < closestDistance)
+            {
+                closestTag = id;
+                closestDistance = deltaDistance;
+            }
+        }
+        return closestTag;
+    }
+
+    const frc::Pose2d GetAprilTagIDPose(int id)
+    {
+        return aprilTagLocations.GetTagPose(id).value().ToPose2d();
+    }
+
 private:
     // Creates the four swerve modules - see SwerveModule.h
     SwerveModule frontLeft{"Front Left", RobotMap::Drivetrain::kFrontLeftDriveID, RobotMap::Drivetrain::kFrontLeftTurnID, RobotMap::Drivetrain::kFrontLeftCanCoderID, kFrontLeftMagnetOffset};
@@ -202,52 +227,54 @@ private:
     nt::StructPublisher<frc::Pose2d> odometryPublisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructTopic<frc::Pose2d>("odom").Publish();
     nt::StructArrayPublisher<frc::SwerveModuleState> moduleStatesPublisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructArrayTopic<frc::SwerveModuleState>("moduleStates").Publish();
     
-    /// @brief Gets the pose of the different branches - will flip the pose if on the blue alliance
-    /// @param branch Branch to get the pose of
-    /// @return Pose2d of the branch pose
-    static std::optional<frc::Pose2d> FormatBranch(ReefBranches branch)
-    {
-        frc::Pose2d pose;
-        switch(branch)
-        {
-            case 0:  pose = frc::Pose2d(14.40_m, 3.87_m, frc::Rotation2d(180_deg)); break;
-            case 1:  pose = frc::Pose2d(14.40_m, 4.16_m, frc::Rotation2d(180_deg)); break;
-            case 6:  pose = frc::Pose2d(11.74_m, 4.16_m, frc::Rotation2d(0_deg)); break;
-            case 7:  pose = frc::Pose2d(11.74_m, 3.87_m, frc::Rotation2d(0_deg)); break;
+    frc::AprilTagFieldLayout aprilTagLocations{frc::AprilTagFieldLayout::LoadField(frc::AprilTagField::k2025ReefscapeAndyMark)};
 
-            case 2:  pose = frc::Pose2d(13.85_m, 5.05_m, frc::Rotation2d(-120_deg)); break;
-            case 3:  pose = frc::Pose2d(13.59_m, 5.22_m, frc::Rotation2d(-120_deg)); break;
-            case 4:  pose = frc::Pose2d(12.58_m, 5.22_m, frc::Rotation2d(-60_deg)); break;
-            case 5:  pose = frc::Pose2d(12.28_m, 5.06_m, frc::Rotation2d(-60_deg)); break;
-            case 8:  pose = frc::Pose2d(12.28_m, 2.97_m, frc::Rotation2d(60_deg)); break;
-            case 9:  pose = frc::Pose2d(12.58_m, 2.84_m, frc::Rotation2d(60_deg)); break;
-            case 10: pose = frc::Pose2d(13.58_m, 2.84_m, frc::Rotation2d(120_deg)); break;
-            case 11: pose = frc::Pose2d(13.85_m, 2.97_m, frc::Rotation2d(120_deg)); break;
+    // /// @brief Gets the pose of the different branches - will flip the pose if on the blue alliance
+    // /// @param branch Branch to get the pose of
+    // /// @return Pose2d of the branch pose
+    // static frc::Pose2d FormatBranch(ReefBranches branch)
+    // {
+    //     frc::Pose2d pose;
+    //     switch(branch)
+    //     {
+    //         case 0:  pose = frc::Pose2d(14.40_m, 3.87_m, frc::Rotation2d(180_deg)); break;
+    //         case 1:  pose = frc::Pose2d(14.40_m, 4.16_m, frc::Rotation2d(180_deg)); break;
+    //         case 6:  pose = frc::Pose2d(11.74_m, 4.16_m, frc::Rotation2d(0_deg)); break;
+    //         case 7:  pose = frc::Pose2d(11.74_m, 3.87_m, frc::Rotation2d(0_deg)); break;
 
-            default: return std::nullopt; break;
-        }
-        return FlipPose(pose);
-    }
+    //         case 2:  pose = frc::Pose2d(13.85_m, 5.05_m, frc::Rotation2d(-120_deg)); break;
+    //         case 3:  pose = frc::Pose2d(13.59_m, 5.22_m, frc::Rotation2d(-120_deg)); break;
+    //         case 4:  pose = frc::Pose2d(12.58_m, 5.22_m, frc::Rotation2d(-60_deg)); break;
+    //         case 5:  pose = frc::Pose2d(12.28_m, 5.06_m, frc::Rotation2d(-60_deg)); break;
+    //         case 8:  pose = frc::Pose2d(12.28_m, 2.97_m, frc::Rotation2d(60_deg)); break;
+    //         case 9:  pose = frc::Pose2d(12.58_m, 2.84_m, frc::Rotation2d(60_deg)); break;
+    //         case 10: pose = frc::Pose2d(13.58_m, 2.84_m, frc::Rotation2d(120_deg)); break;
+    //         case 11: pose = frc::Pose2d(13.85_m, 2.97_m, frc::Rotation2d(120_deg)); break;
+
+    //         default: break;
+    //     }
+    //     return FlipPose(pose);
+    // }
 
     /// @brief Gets the pose of the left or right station - will flip the pose if on the blue alliance
     /// @param station Station to get the pose of
     /// @return Pose2d of the station
-    static std::optional<frc::Pose2d> FormatStation(CoralStations station)
+    static frc::Pose2d FormatStation(Sides station)
     {
         frc::Pose2d pose;
         switch(station)
         {
-            case CoralStations::Left: pose = frc::Pose2d(16.15_m, 1.29_m, frc::Rotation2d(126.0_deg)); break;
-            case CoralStations::Right: pose = frc::Pose2d(16.15_m, 6.82_m, frc::Rotation2d(-126_deg)); break;
+            case Sides::Left: pose = frc::Pose2d(16.15_m, 1.29_m, frc::Rotation2d(126.0_deg)); break;
+            case Sides::Right: pose = frc::Pose2d(16.15_m, 6.82_m, frc::Rotation2d(-126_deg)); break;
 
-            default: return std::nullopt; break;
+            default: break;
         }
         return FlipPose(pose);
     }
 
     /// @brief Gets the pose of the processor - will flip the pose if on the blue alliance
     /// @return Pose2d of the processor
-    static std::optional<frc::Pose2d> FormatProcessor()
+    static frc::Pose2d FormatProcessor()
     {
         frc::Pose2d pose = frc::Pose2d(11.52_m, 7.59_m, frc::Rotation2d(90_deg));
         return FlipPose(pose);
@@ -256,7 +283,7 @@ private:
     /// @brief Flips the given pose if the alliance is blue
     /// @param pose Pose to flip based on conditional
     /// @return Pose2d of the possibly flipped pose - std::nullopt if the alliance doesn't exist
-    static std::optional<frc::Pose2d> FlipPose(frc::Pose2d pose)
+    static frc::Pose2d FlipPose(frc::Pose2d pose)
     {
         auto alliance = frc::DriverStation::GetAlliance();
         if (alliance) 
@@ -267,6 +294,6 @@ private:
             }
             return pose;
         }
-        else return std::nullopt;
+        else return pose;
     }
 };
