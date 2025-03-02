@@ -75,12 +75,9 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     moduleStatesPublisher.Set(states);
 }
 
-std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(int aprilTagID, Sides side, bool usePPLibPathfinding)
+std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(Sides side, bool usePPLibPathfinding)
 {
-    frc::Pose2d aprilTagPose = GetAprilTagIDPose(aprilTagID);
-    frc::SmartDashboard::PutNumber("April Tag X", aprilTagPose.X().value());
-    frc::SmartDashboard::PutNumber("April Tag Y", aprilTagPose.Y().value());
-    frc::SmartDashboard::PutNumber("April Tag Rot", aprilTagPose.Rotation().Degrees().value());
+    frc::Pose2d aprilTagPose = GetClosestBranchTagPose();
     units::meter_t deltaX = units::math::cos(aprilTagPose.Rotation().Degrees() + 90_deg) * kDeltaReefAprilTagToBranch;
     units::meter_t deltaY = units::math::sin(aprilTagPose.Rotation().Degrees() + 90_deg) * kDeltaReefAprilTagToBranch;
     if (side == Sides::Left)
@@ -88,11 +85,9 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(int aprilTagID, Sid
         deltaX = -deltaX;
         deltaY = -deltaY;
     }
-    frc::SmartDashboard::PutNumber("April Tag Delta X", deltaX.value());
-    frc::SmartDashboard::PutNumber("April Tag Delta Y", deltaY.value());
     frc::Pose2d pose{aprilTagPose.X() + deltaX, aprilTagPose.Y() + deltaY, aprilTagPose.Rotation().Degrees() + 180_deg};
     // Uses PPLib pathfinding with given constraints
-    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq));
+    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, pathfindingConstraints);
     // Uses internal pathfinding
     return PathfindToPose(pose, pose.Rotation(), true);
 }
@@ -101,7 +96,7 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToCoralStation(Sides station
 {
     frc::Pose2d pose = FormatStation(station);
     // Uses PPLib pathfinding with given constraints
-    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq));
+    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, pathfindingConstraints);
     // Uses internal pathfinding
     return PathfindToPose(pose, pose.Rotation().RotateBy(180_deg), true);
 }
@@ -110,7 +105,7 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToProcessor(bool usePPLibPat
 {
     frc::Pose2d pose = FormatProcessor();
     // Uses PPLib pathfinding with given constraints
-    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq));
+    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, pathfindingConstraints);
     // Uses internal pathfinding
     return PathfindToPose(pose, pose.Rotation(), true);
 }

@@ -30,12 +30,12 @@ void Controls::DriveControls()
 
     if (gamepad.GetLeftBumperButtonPressed()) 
     {
-        path = swerve->PathfindToBranch(swerve->GetClosestBranchTag(), Drivetrain::Sides::Left, true);
+        path = swerve->PathfindToBranch(Drivetrain::Sides::Left, true);
         if (path) path->Schedule();
     }
     else if (gamepad.GetRightBumperButtonPressed()) 
     {
-        path = swerve->PathfindToBranch(swerve->GetClosestBranchTag(), Drivetrain::Sides::Right, true);
+        path = swerve->PathfindToBranch(Drivetrain::Sides::Right, true);
         if (path) path->Schedule();
     }
     else if (gamepad.GetLeftBumperButtonReleased() || gamepad.GetRightBumperButtonReleased()) if (path) path->Cancel();

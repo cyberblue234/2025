@@ -71,7 +71,7 @@ public:
     /// @param branch Branch to pathfind to
     /// @param usePPLibPathFinding Set true to use PPLib pathfinding, false for internal pathfinding (temp)
     /// @return CommandPtr of the path to run - std::nullopt if the path can not exist
-    std::optional<frc2::CommandPtr> PathfindToBranch(int aprilTagID, Sides side, bool usePPLibPathfinding);
+    std::optional<frc2::CommandPtr> PathfindToBranch(Sides side, bool usePPLibPathfinding);
 
     /// @brief Pathfind to the alliance-specific specified coral loading station
     /// @param station Station to pathfind to
@@ -151,26 +151,20 @@ public:
     /// @return Acceleration in meters per second squared
     const units::meters_per_second_squared_t GetYAcceleration() { return gyro.GetAccelerationY().GetValue(); }
 
-    int GetClosestBranchTag()
+    frc::Pose2d GetClosestBranchTagPose()
     {
-        int closestTag = 0;
-        units::meter_t closestDistance = units::meter_t{INFINITY};
         auto alliance = frc::DriverStation::GetAlliance();
         int startingID = 6;
         if (alliance.value() == frc::DriverStation::Alliance::kBlue)
         {
             startingID = 17;
         }
+        std::vector<frc::Pose2d> aprilTagPoses;
         for (int id = startingID; id <= startingID + 5; id++)
         {
-            units::meter_t deltaDistance = DistanceBetweenPoses(GetPose(), GetAprilTagIDPose(id));
-            if (deltaDistance < closestDistance)
-            {
-                closestTag = id;
-                closestDistance = deltaDistance;
-            }
+            aprilTagPoses.push_back(GetAprilTagIDPose(id));
         }
-        return closestTag;
+        return GetPose().Nearest(aprilTagPoses);
     }
 
     const frc::Pose2d GetAprilTagIDPose(int id)
@@ -226,7 +220,7 @@ private:
     frc::Field2d field{};
     nt::StructPublisher<frc::Pose2d> odometryPublisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructTopic<frc::Pose2d>("odom").Publish();
     nt::StructArrayPublisher<frc::SwerveModuleState> moduleStatesPublisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructArrayTopic<frc::SwerveModuleState>("moduleStates").Publish();
-    
+
     frc::AprilTagFieldLayout aprilTagLocations{frc::AprilTagFieldLayout::LoadField(frc::AprilTagField::k2025ReefscapeAndyMark)};
 
     // /// @brief Gets the pose of the different branches - will flip the pose if on the blue alliance
