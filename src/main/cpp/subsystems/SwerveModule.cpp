@@ -27,9 +27,9 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     driveMotorConfig.Slot0.kP = Drive::kP;
     driveMotorConfig.Slot0.kI = Drive::kI;
     driveMotorConfig.Slot0.kD = Drive::kD;
-    driveMotorConfig.Slot0.kS = Drive::kS;
-    driveMotorConfig.Slot0.kV = Drive::kV;
-    driveMotorConfig.Slot0.kA = Drive::kA;
+    driveMotorConfig.Slot0.kS = Drive::kS.value();
+    driveMotorConfig.Slot0.kV = Drive::kV.value();
+    driveMotorConfig.Slot0.kA = Drive::kA.value();
 
     // Actually applies the configuration
     driveMotor.GetConfigurator().Apply(driveMotorConfig);

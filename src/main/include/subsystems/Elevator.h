@@ -13,6 +13,8 @@
 
 #include <frc/DigitalInput.h>
 
+#include <frc/Timer.h>
+
 #include "Constants.h"
 
 using namespace ElevatorConstants;
@@ -27,10 +29,10 @@ public:
     /// @brief Manually sets the power of the elevator motors
     /// @param power Power to set the motors to
     void SetMotors(double power);
-    /// @brief Uses PID control to run the elevator motors to a specified encoder value
-    /// @param turns Encoder value to run the motors to
+    /// @brief Uses PID control to run the elevator motors to a height
+    /// @param desiredHeight Height to go to
     /// @return True if the current encoder value is within the deadzone of the desired encoder value
-    bool GoToTurns(units::turn_t turns);
+    bool GoToHeight(const units::meter_t desiredHeight);
     /// @brief Uses PID control to run the elevator motors to a Position
     /// @param pos Position object
     /// @return True if the current encoder value is within the deadzone of the desired encoder value
@@ -55,6 +57,8 @@ public:
     /// @retval true if the limit switch is closed (pressed)
     /// @retval false if the limit switch is open
     bool IsBottomLimitSwitchClosed() { return !bottomLimitSwitch.Get() || simLimSwitch; }
+
+    void ResetMotionController() { controller.Reset(GetHeight()); }
 
     /// @brief Simulation periodic
     void SimMode();
@@ -82,9 +86,14 @@ private:
 
     /*
      * CTRE uses classes from the controls namespace to control the motors in more complex manners.
-     * PositionVoltage allows us to run the elevator motors to a position using voltages.
+     * VoltageOut allows us to set the voltage of the motors.
+     * The benefit of using VoltageOut instead of just motor.SetVoltage() is that we can set forward and reverse
+     * limits and we can more accurately determine what we want to do
      */
-    controls::PositionVoltage positionOut{0_tr};
+    controls::VoltageOut voltageOut{0_V};
+
+    frc::ProfiledPIDController<units::meters> controller{kP, kI, kD, kTrapezoidProfileContraints};
+    frc::ElevatorFeedforward feedforward{kS, kG, kV, kA};
 
     frc::sim::ElevatorSim elevatorSim
     {
@@ -98,7 +107,7 @@ private:
         frc::DCMotor::KrakenX60(2),
         kHeightOffset,
         kMaxElevatorHeight,
-        false,
+        true,
         kHeightOffset
     };
 };

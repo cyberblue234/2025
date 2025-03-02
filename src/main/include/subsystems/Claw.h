@@ -54,6 +54,8 @@ public:
     /// @brief Updates all the values of the SmartDashboard
     void UpdateTelemetry();
 
+    void ResetMotionController() { controller.Reset(GetCurrentAngle()); }
+
     /// @brief Simulation periodic
     void SimMode();
 
@@ -66,9 +68,14 @@ private:
 
     /*
      * CTRE uses classes from the controls namespace to control the motors in more complex manners.
-     * PositionVoltage allows us to run the wrist motor to a position using voltages.
+     * VoltageOut allows us to set the voltage of the motors.
+     * The benefit of using VoltageOut instead of just motor.SetVoltage() is that we can set forward and reverse
+     * limits and we can more accurately determine what we want to do
      */
-    controls::PositionVoltage angleOut{0_tr};
+    controls::VoltageOut voltageOut{0_V};
+
+    frc::ProfiledPIDController<units::degrees> controller{ClawConstants::kP, ClawConstants::kI, ClawConstants::kD, ClawConstants::kTrapezoidProfileContraints};
+    frc::ArmFeedforward feedforward{ClawConstants::kS, ClawConstants::kG, ClawConstants::kV, ClawConstants::kA};
 
     // Creates a simulation tool for the wrist part of the claw
     frc::sim::SingleJointedArmSim clawSim
@@ -77,8 +84,8 @@ private:
         kWristGearRatio.value(),
         frc::sim::SingleJointedArmSim::EstimateMOI(0.56_m, 5_kg),
         0.56_m,
-        -std::numbers::pi * 1_rad,
-        std::numbers::pi * 1_rad - 0.01_rad,
+        -std::numbers::pi / 2 * 1_rad,
+        std::numbers::pi / 2 * 1_rad - 0.01_rad,
         false,
         0_rad
     };

@@ -79,25 +79,39 @@ void Controls::DriveControls()
 
 void Controls::ElevatorControls() 
 {
+    // Take the elevator down if the robot is tilting
+    if (units::math::abs(swerve->GetRoll()) > 2_deg || units::math::abs(swerve->GetPitch()) > 2_deg)
+    {
+        elevator->GoToHeight(kMaxElevatorHeight);
+    }
+    // If there is a desired position
     if (GetDesiredPosition().has_value())
     {
+        // Runs the elevator to the position
         bool isElevatorAtPos = elevator->GoToPosition(GetDesiredPosition().value());
+        // Set the elevator current position if the height is within the deadzone of the setpoint
         if (isElevatorAtPos == true) SetElevatorPosition(GetDesiredPosition());
+        // If the elevator height is not within the deadzone, set the current elevator pos to null
         else SetElevatorPosition(std::nullopt);
     }
     else if (controlBoard.GetRawAxis(kManualElevatorAxis) < -0.5) 
     {
+        // Manual control up
         elevator->SetMotors(0.4);
         SetElevatorPosition(std::nullopt);
     }
     else if (controlBoard.GetRawAxis(kManualElevatorAxis) > 0.5)
     {
+        // Manual control down
         elevator->SetMotors(-0.4);
         SetElevatorPosition(std::nullopt);
     }
     else
     {
+        // Stop the motors
         elevator->SetMotors(0);
+        elevator->ResetMotionController();
+        SetElevatorPosition(std::nullopt);
     }
 }
 
@@ -122,6 +136,8 @@ void Controls::ClawControls()
     else
     {
         claw->SetWristPower(0.0);
+        claw->ResetMotionController();
+        SetClawPosition(std::nullopt);
     }
     
     
@@ -146,7 +162,6 @@ void Controls::ClawControls()
     // {
     //     claw->SetIOPower(-kManualIOPower);
     // }
-    
     else if (gamepad.GetLeftTriggerAxis() >= 0.5) 
     {
         claw->SetIOPower(kManualIOPower);
