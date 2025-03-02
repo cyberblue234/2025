@@ -130,6 +130,8 @@ void Controls::ElevatorControls()
     {
         // Stop the motors
         elevator->SetMotors(0);
+        elevator->ResetMotionController();
+        SetElevatorPosition(std::nullopt);
     }
 }
 
@@ -154,6 +156,8 @@ void Controls::ClawControls()
     else
     {
         claw->SetWristPower(0.0);
+        claw->ResetMotionController();
+        SetClawPosition(std::nullopt);
     }
     
     

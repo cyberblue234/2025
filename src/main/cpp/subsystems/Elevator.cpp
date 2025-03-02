@@ -34,6 +34,8 @@ Elevator::Elevator()
     frc::SmartDashboard::PutNumber("Elevator P", kP);
     frc::SmartDashboard::PutNumber("Elevator I", kI);
     frc::SmartDashboard::PutNumber("Elevator D", kD);
+    frc::SmartDashboard::PutNumber("Elevator Trapezoid Max Velocity", kTrapezoidProfileContraints.maxVelocity.value());
+    frc::SmartDashboard::PutNumber("Elevator Trapezoid Max Acceleration", kTrapezoidProfileContraints.maxAcceleration.value());
     frc::SmartDashboard::PutNumber("Elevator kS", kS.value());
     frc::SmartDashboard::PutNumber("Elevator kG", kG.value());
     frc::SmartDashboard::PutNumber("Elevator kV", kV.value());
@@ -61,7 +63,8 @@ bool Elevator::GoToHeight(const units::meter_t desiredHeight)
     }
     else
     {
-        units::volt_t pidSet{controller.Calculate(GetHeight(), desiredHeight)};
+        controller.SetGoal(desiredHeight);
+        units::volt_t pidSet{controller.Calculate(GetHeight())};
         units::volt_t feedforwardSet = feedforward.Calculate(controller.GetSetpoint().velocity);
         motor1.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
                         .WithLimitForwardMotion(GetEncoder() > kMaxEncoderValue)
@@ -114,20 +117,30 @@ void Elevator::UpdateTelemtry()
     frc::SmartDashboard::PutNumber("Elevator M1 Pos", motor1.GetPosition().GetValueAsDouble());
     frc::SmartDashboard::PutNumber("Elevator M2 Pos", motor2.GetPosition().GetValueAsDouble());
     frc::SmartDashboard::PutNumber("Elevator Height", GetHeight().convert<units::feet>().value());
+    frc::SmartDashboard::PutNumber("Elevator Setpoint", controller.GetSetpoint().position.convert<units::feet>().value());
     double newP = frc::SmartDashboard::GetNumber("Elevator P", kP);
     if (newP != controller.GetP()) controller.SetP(newP);
     double newI = frc::SmartDashboard::GetNumber("Elevator I", kI);
     if (newI != controller.GetI()) controller.SetP(newI);
     double newD = frc::SmartDashboard::GetNumber("Elevator D", kD);
     if (newD != controller.GetD()) controller.SetP(newD);
+    
+    double newMaxVel = frc::SmartDashboard::GetNumber("Elevator Trapezoid Max Velocity", kTrapezoidProfileContraints.maxVelocity.value());
+    if (newMaxVel != controller.GetConstraints().maxVelocity.value()) 
+        controller.SetConstraints(frc::TrapezoidProfile<units::meters>::Constraints{units::meters_per_second_t{newMaxVel}, controller.GetConstraints().maxAcceleration});
+    double newMaxAccel = frc::SmartDashboard::GetNumber("Elevator Trapezoid Max Acceleration", kTrapezoidProfileContraints.maxAcceleration.value());
+    if (newMaxAccel != controller.GetConstraints().maxAcceleration.value()) 
+        controller.SetConstraints(frc::TrapezoidProfile<units::meters>::Constraints{controller.GetConstraints().maxVelocity, units::meters_per_second_squared_t{newMaxAccel}});
+
     double newKs = frc::SmartDashboard::GetNumber("Elevator kS", kS.value());
     if (newKs != feedforward.GetKs().value()) feedforward.SetKs(units::volt_t{newKs});
     double newKg = frc::SmartDashboard::GetNumber("Elevator kG", kG.value());
     if (newKg != feedforward.GetKg().value()) feedforward.SetKg(units::volt_t{newKg});
     double newKv = frc::SmartDashboard::GetNumber("Elevator kV", kV.value());
-    if (newKv != feedforward.GetKv().value()) feedforward.SetKv(units::kv_t{newKv});
+    if (newKv != feedforward.GetKv().value()) feedforward.SetKv(units::kv_meters_t{newKv});
     double newKa = frc::SmartDashboard::GetNumber("Elevator kA", kA.value());
-    if (newKa != feedforward.GetKa().value()) feedforward.SetKa(units::ka_t{newKa});
+    if (newKa != feedforward.GetKa().value()) feedforward.SetKa(units::ka_meters_t{newKa});
+
 }
 
 void Elevator::SimMode()
@@ -142,8 +155,6 @@ void Elevator::SimMode()
     // get the motor voltage of the TalonFX
     units::volt_t motorVoltage = motor1Sim.GetMotorVoltage();
 
-    frc::SmartDashboard::PutNumber("Elevator M1 Sim Voltage", motorVoltage.value());
-
     // use the motor voltage to calculate new position and velocity
     // using WPILib's DCMotorSim class for physics simulation
     elevatorSim.SetInputVoltage(motorVoltage);
@@ -155,7 +166,4 @@ void Elevator::SimMode()
     motor2Sim.SetRawRotorPosition((elevatorSim.GetPosition() - kHeightOffset) / kMetersPerMotorTurn);
     motor1Sim.SetRotorVelocity(elevatorSim.GetVelocity() / kMetersPerMotorTurn);
     motor2Sim.SetRotorVelocity(elevatorSim.GetVelocity() / kMetersPerMotorTurn);
-    
-    frc::SmartDashboard::PutBoolean("Simulated Elevator Has Hit Lower Limit", elevatorSim.HasHitLowerLimit());
-    frc::SmartDashboard::PutNumber("Simulated Elevator Height", elevatorSim.GetPosition().value());
 }

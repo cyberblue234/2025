@@ -7,9 +7,6 @@
 #include <ctre/phoenix6/sim/CANcoderSimState.hpp>
 #include <ctre/phoenix6/sim/TalonFXSimState.hpp>
 
-#include <frc/controller/ProfiledPIDController.h>
-#include <frc/controller/ElevatorFeedforward.h>
-
 #include <frc/system/plant/DCMotor.h>
 #include <frc/simulation/ElevatorSim.h>
 #include <frc/system/plant/LinearSystemId.h>
@@ -61,6 +58,8 @@ public:
     /// @retval false if the limit switch is open
     bool IsBottomLimitSwitchClosed() { return !bottomLimitSwitch.Get() || simLimSwitch; }
 
+    void ResetMotionController() { controller.Reset(GetHeight()); }
+
     /// @brief Simulation periodic
     void SimMode();
 
@@ -108,7 +107,7 @@ private:
         frc::DCMotor::KrakenX60(2),
         kHeightOffset,
         kMaxElevatorHeight,
-        false,
+        true,
         kHeightOffset
     };
 };

@@ -222,35 +222,35 @@ public:
     }
     nt::IntegerSubscriber GetIntegerSubscriber(const std::string &entryName)
     {
-        return GetTable(name)->GetIntegerTopic(entryName).Subscribe(0);
+        return GetTable(SanitizeName(name))->GetIntegerTopic(entryName).Subscribe(0);
     }
     nt::IntegerArraySubscriber GetIntegerArraySubscriber(const std::string &entryName)
     {
-        return GetTable(name)->GetIntegerArrayTopic(entryName).Subscribe(std::span<int64_t>{});
+        return GetTable(SanitizeName(name))->GetIntegerArrayTopic(entryName).Subscribe(std::span<int64_t>{});
     }
     nt::DoubleSubscriber GetDoubleSubscriber(const std::string &entryName)
     {
-        return GetTable(name)->GetDoubleTopic(entryName).Subscribe(0.0);
+        return GetTable(SanitizeName(name))->GetDoubleTopic(entryName).Subscribe(0.0);
     }
     nt::DoubleArraySubscriber GetDoubleArraySubscriber(const std::string &entryName)
     {
-        return GetTable(name)->GetDoubleArrayTopic(entryName).Subscribe(std::span<double>{});
+        return GetTable(SanitizeName(name))->GetDoubleArrayTopic(entryName).Subscribe(std::span<double>{});
     }
     nt::StringSubscriber GetStringSubscriber(const std::string &entryName)
     {
-        return GetTable(name)->GetStringTopic(entryName).Subscribe("");
+        return GetTable(SanitizeName(name))->GetStringTopic(entryName).Subscribe("");
     }
     nt::IntegerPublisher GetIntegerPublisher(const std::string &entryName)
     {
-        return GetTable(name)->GetIntegerTopic(entryName).Publish();
+        return GetTable(SanitizeName(name))->GetIntegerTopic(entryName).Publish();
     }
     nt::IntegerArrayPublisher GetIntegerArrayPublisher(const std::string &entryName)
     {
-        return GetTable(name)->GetIntegerArrayTopic(entryName).Publish();
+        return GetTable(SanitizeName(name))->GetIntegerArrayTopic(entryName).Publish();
     }
     nt::DoublePublisher GetDoublePublisher(const std::string &entryName)
     {
-        return GetTable(name)->GetDoubleTopic(entryName).Publish();
+        return GetTable(SanitizeName(name))->GetDoubleTopic(entryName).Publish();
     }
     nt::DoubleArrayPublisher GetDoubleArrayPublisher(const std::string &entryName)
     {

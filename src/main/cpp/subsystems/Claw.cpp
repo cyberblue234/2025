@@ -14,11 +14,6 @@ Claw::Claw()
     wristMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     wristMotorConfig.CurrentLimits.StatorCurrentLimit = 120.0_A;
 
-    // Configures PID values
-    wristMotorConfig.Slot0.kP = kPWrist;
-    wristMotorConfig.Slot0.kI = kIWrist;
-    wristMotorConfig.Slot0.kD = kDWrist;
-
     // Sets the CANcoder as the encoder for the wrist motor
     wristMotorConfig.Feedback.FeedbackRemoteSensorID = canCoderWrist.GetDeviceID();
     wristMotorConfig.Feedback.FeedbackSensorSource = signals::FeedbackSensorSourceValue::RemoteCANcoder;
@@ -52,6 +47,16 @@ Claw::Claw()
     proxSensorConfig.ProximityParams.ProximityThreshold = 2_in;
 
     proxSensor.GetConfigurator().Apply(proxSensorConfig);
+
+    frc::SmartDashboard::PutNumber("Wrist P", kP);
+    frc::SmartDashboard::PutNumber("Wrist I", kI);
+    frc::SmartDashboard::PutNumber("Wrist D", kD);
+    frc::SmartDashboard::PutNumber("Wrist Trapezoid Max Velocity", kTrapezoidProfileContraints.maxVelocity.value());
+    frc::SmartDashboard::PutNumber("Wrist Trapezoid Max Acceleration", kTrapezoidProfileContraints.maxAcceleration.value());
+    frc::SmartDashboard::PutNumber("Wrist kS", kS.value());
+    frc::SmartDashboard::PutNumber("Wrist kG", kG.value());
+    frc::SmartDashboard::PutNumber("Wrist kV", kV.value());
+    frc::SmartDashboard::PutNumber("Wrist kA", kA.value());
 }
 
 void Claw::SetWristPower(double power)
@@ -62,18 +67,13 @@ void Claw::SetWristPower(double power)
 
 bool Claw::GoToAngle(units::degree_t angle)
 {
-    // Constrains the angle to [-180, 180)
-    if (angle >= -180_deg && angle < 180_deg)
-    {
-        // Sets the desired angle
-        controls::PositionVoltage &anglePos = angleOut.WithPosition(angle);
-        // Tells the motor to go to that position with the PIDs
-        wristMotor.SetControl(anglePos.WithSlot(0));
-    }
-    else
-    {
-        wristMotor.Set(0);
-    }
+    controller.SetGoal(angle);
+    units::volt_t pidSet{controller.Calculate(GetCurrentAngle())};
+    units::volt_t feedforwardSet = feedforward.Calculate(GetCurrentAngle(), controller.GetSetpoint().velocity);
+    frc::SmartDashboard::PutNumber("Wrist PID set", pidSet.value());
+    frc::SmartDashboard::PutNumber("Wrist FF set", feedforwardSet.value());
+    wristMotor.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet));
+
     // Returns true if the change in angle is less than the deadzone
     return units::math::abs(angle - GetCurrentAngle()) < kDeadzone;
 }
@@ -96,6 +96,30 @@ void Claw::UpdateTelemetry()
     frc::SmartDashboard::PutBoolean("Is Coral in Claw?", IsCoralInClaw());
     frc::SmartDashboard::PutNumber("Proximity Sensor Distance", GetDistance().convert<units::inch>().value());
     frc::SmartDashboard::PutNumber("Wrist Angle", GetCurrentAngle().value());
+    frc::SmartDashboard::PutNumber("Wrist Setpoint", controller.GetSetpoint().position.value());
+
+    double newP = frc::SmartDashboard::GetNumber("Wrist P", kP);
+    if (newP != controller.GetP()) controller.SetP(newP);
+    double newI = frc::SmartDashboard::GetNumber("Wrist I", kI);
+    if (newI != controller.GetI()) controller.SetP(newI);
+    double newD = frc::SmartDashboard::GetNumber("Wrist D", kD);
+    if (newD != controller.GetD()) controller.SetP(newD);
+    
+    double newMaxVel = frc::SmartDashboard::GetNumber("Wrist Trapezoid Max Velocity", kTrapezoidProfileContraints.maxVelocity.value());
+    if (newMaxVel != controller.GetConstraints().maxVelocity.value()) 
+        controller.SetConstraints(frc::TrapezoidProfile<units::degrees>::Constraints{units::degrees_per_second_t{newMaxVel}, controller.GetConstraints().maxAcceleration});
+    double newMaxAccel = frc::SmartDashboard::GetNumber("Wrist Trapezoid Max Acceleration", kTrapezoidProfileContraints.maxAcceleration.value());
+    if (newMaxAccel != controller.GetConstraints().maxAcceleration.value()) 
+        controller.SetConstraints(frc::TrapezoidProfile<units::degrees>::Constraints{controller.GetConstraints().maxVelocity, units::degrees_per_second_squared_t{newMaxAccel}});
+
+    double newKs = frc::SmartDashboard::GetNumber("Wrist kS", kS.value());
+    if (newKs != feedforward.GetKs().value()) feedforward.SetKs(units::volt_t{newKs});
+    double newKg = frc::SmartDashboard::GetNumber("Wrist kG", kG.value());
+    if (newKg != feedforward.GetKg().value()) feedforward.SetKg(units::volt_t{newKg});
+    double newKv = frc::SmartDashboard::GetNumber("Wrist kV", kV.value());
+    if (newKv != feedforward.GetKv().value()) feedforward.SetKv(units::kv_degrees_t{newKv});
+    double newKa = frc::SmartDashboard::GetNumber("Wrist kA", kA.value());
+    if (newKa != feedforward.GetKa().value()) feedforward.SetKa(units::ka_degrees_t{newKa});
 }
 
 void Claw::SimMode()
@@ -114,5 +138,4 @@ void Claw::SimMode()
     wristMotorSim.SetRawRotorPosition(clawSim.GetAngle() * kWristGearRatio.value());
     wristMotorSim.SetRotorVelocity(clawSim.GetVelocity() * kWristGearRatio.value());
     canCoderWristSim.SetRawPosition(clawSim.GetAngle());
-    frc::SmartDashboard::PutNumber("Simulated Wrist Angle", clawSim.GetAngle().convert<units::degrees>().value());
 }
