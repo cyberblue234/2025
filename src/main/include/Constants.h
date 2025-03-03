@@ -55,11 +55,14 @@
 
 #include "networktables/NetworkTable.h"
 #include "networktables/NetworkTableInstance.h"
+#include <networktables/BooleanTopic.h>
+#include <networktables/BooleanArrayTopic.h>
 #include <networktables/IntegerTopic.h>
 #include <networktables/IntegerArrayTopic.h>
 #include <networktables/DoubleTopic.h>
 #include <networktables/DoubleArrayTopic.h>
 #include <networktables/StringTopic.h>
+#include <networktables/StringArrayTopic.h>
 #include <networktables/StructTopic.h>
 #include <networktables/StructArrayTopic.h>
 
@@ -383,7 +386,7 @@ static T clamp(T val, T low, T high)
 /// @retval -1 if val < 0
 /// @retval 1 if val > 0
 template <typename T>
-static T sgn(T val)
+inline static T sgn(T val)
 {
     return val == T{0} ? T{0} : val > T{0} ? T{1} : T{-1};
 }
@@ -394,7 +397,7 @@ static T sgn(T val)
 /// @retval Default value of the type if position is not within bounds of the array
 /// @retval Value at position
 template <typename T>
-static T ExtractArrayEntry(const std::vector<T>& inData, int position) 
+inline static T ExtractArrayEntry(const std::vector<T>& inData, int position) 
 {
     if (inData.size() < static_cast<size_t>(position + 1)) {
         return T{};
@@ -402,7 +405,7 @@ static T ExtractArrayEntry(const std::vector<T>& inData, int position)
     return inData[position];
 }
 
-static units::meter_t DistanceBetweenPoses(const frc::Pose2d& pose1, const frc::Pose2d& pose2)
+inline static units::meter_t DistanceBetweenPoses(const frc::Pose2d& pose1, const frc::Pose2d& pose2)
 {
     // Distance formula: d = sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}
     return units::meter_t{std::pow(std::pow(pose1.X().value() - pose2.X().value(), 2) + std::pow(pose1.Y().value() - pose2.Y().value(), 2), 0.5)};

@@ -7,6 +7,7 @@
 #include <cstring>
 #include <fcntl.h>
 
+#include "TelemetryHelper.h"
 #include "Constants.h"
 
 
@@ -216,60 +217,19 @@ public:
             frc::Rotation2d(units::angle::degree_t(inData[5])));
     }
 
-    std::shared_ptr<nt::NetworkTable> GetTable(const std::string &tableName)
-    {
-        return nt::NetworkTableInstance::GetDefault().GetTable(SanitizeName(tableName));
-    }
-    nt::IntegerSubscriber GetIntegerSubscriber(const std::string &entryName)
-    {
-        return GetTable(name)->GetIntegerTopic(entryName).Subscribe(0);
-    }
-    nt::IntegerArraySubscriber GetIntegerArraySubscriber(const std::string &entryName)
-    {
-        return GetTable(name)->GetIntegerArrayTopic(entryName).Subscribe(std::span<int64_t>{});
-    }
-    nt::DoubleSubscriber GetDoubleSubscriber(const std::string &entryName)
-    {
-        return GetTable(name)->GetDoubleTopic(entryName).Subscribe(0.0);
-    }
-    nt::DoubleArraySubscriber GetDoubleArraySubscriber(const std::string &entryName)
-    {
-        return GetTable(name)->GetDoubleArrayTopic(entryName).Subscribe(std::span<double>{});
-    }
-    nt::StringSubscriber GetStringSubscriber(const std::string &entryName)
-    {
-        return GetTable(name)->GetStringTopic(entryName).Subscribe("");
-    }
-    nt::IntegerPublisher GetIntegerPublisher(const std::string &entryName)
-    {
-        return GetTable(name)->GetIntegerTopic(entryName).Publish();
-    }
-    nt::IntegerArrayPublisher GetIntegerArrayPublisher(const std::string &entryName)
-    {
-        return GetTable(name)->GetIntegerArrayTopic(entryName).Publish();
-    }
-    nt::DoublePublisher GetDoublePublisher(const std::string &entryName)
-    {
-        return GetTable(name)->GetDoubleTopic(entryName).Publish();
-    }
-    nt::DoubleArrayPublisher GetDoubleArrayPublisher(const std::string &entryName)
-    {
-        return GetTable(SanitizeName(name))->GetDoubleArrayTopic(entryName).Publish();
-    }
-
     void SetupPortForwarding() 
     {
         auto& portForwarder = wpi::PortForwarder::GetInstance();
-        portForwarder.Add(5800, SanitizeName(name), 5800);
-        portForwarder.Add(5801, SanitizeName(name), 5801);
-        portForwarder.Add(5802, SanitizeName(name), 5802);
-        portForwarder.Add(5803, SanitizeName(name), 5803);
-        portForwarder.Add(5804, SanitizeName(name), 5804);
-        portForwarder.Add(5805, SanitizeName(name), 5805);
-        portForwarder.Add(5806, SanitizeName(name), 5806);
-        portForwarder.Add(5807, SanitizeName(name), 5807);
-        portForwarder.Add(5808, SanitizeName(name), 5808);
-        portForwarder.Add(5809, SanitizeName(name), 5809);
+        portForwarder.Add(5800, name, 5800);
+        portForwarder.Add(5801, name, 5801);
+        portForwarder.Add(5802, name, 5802);
+        portForwarder.Add(5803, name, 5803);
+        portForwarder.Add(5804, name, 5804);
+        portForwarder.Add(5805, name, 5805);
+        portForwarder.Add(5806, name, 5806);
+        portForwarder.Add(5807, name, 5807);
+        portForwarder.Add(5808, name, 5808);
+        portForwarder.Add(5809, name, 5809);
     }
 
     std::vector<RawFiducial> GetRawFiducials() 
@@ -458,4 +418,8 @@ private:
     *  [id, txnc, tync, ta, corner0x, corner0y, corner1x, corner1y, corner2x, corner2y, corner3x, corner3y, id2.....]
     */
     nt::DoubleArraySubscriber rawdetections;
+
+
+    // Personal data
+    nt::DoublePublisher distanceFromTarget;
 };

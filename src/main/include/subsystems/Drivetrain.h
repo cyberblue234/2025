@@ -218,8 +218,8 @@ private:
 
     // Creates a field object for use of odometry and PathPlanner debugging
     frc::Field2d field{};
-    nt::StructPublisher<frc::Pose2d> odometryPublisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructTopic<frc::Pose2d>("odom").Publish();
-    nt::StructArrayPublisher<frc::SwerveModuleState> moduleStatesPublisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructArrayTopic<frc::SwerveModuleState>("moduleStates").Publish();
+    nt::StructPublisher<frc::Pose2d> odometryPublisher = GetStructPublisher<frc::Pose2d>("Swerve", "Odometry");
+    nt::StructArrayPublisher<frc::SwerveModuleState> moduleStatesPublisher = GetStructArrayPublisher<frc::SwerveModuleState>("Swerve", "ModuleStates");
     
     frc::AprilTagFieldLayout aprilTagLocations{frc::AprilTagFieldLayout::LoadField(frc::AprilTagField::k2025ReefscapeAndyMark)};
 
