@@ -101,7 +101,8 @@
     "netfwd": "cpp",
     "socket": "cpp",
     "timer": "cpp",
-    "xstring": "cpp"
+    "xstring": "cpp",
+    "xtr1common": "cpp"
   },
   "C_Cpp.errorSquiggles": "enabledIfIncludesResolve",
 }

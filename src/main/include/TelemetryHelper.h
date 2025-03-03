@@ -1,6 +1,9 @@
 #pragma once
 
 #include <frc/controller/ProfiledPIDController.h>
+
+#include <wpi/struct/Struct.h>
+
 #include "Constants.h"
 
 /// @todo Add pretty much anything else that could possibly exist
@@ -45,6 +48,33 @@
 //     nt::DoubleSubscriber maxVelocity;
 //     nt::DoubleSubscriber maxAcceleration;
 // };
+
+
+// template <typename U>
+// struct wpi::Struct<U> {
+//     static constexpr std::string_view GetTypeName() {
+//         return typeid(U).name();
+//     }
+
+//     static constexpr size_t GetSize() { return sizeof(double); }
+
+//     static constexpr std::string_view GetSchema() {
+//         return "double value";
+//     }
+
+//     static U Unpack(std::span<const uint8_t> data) {
+//         double value;
+//         std::memcpy(&value, data.data(), sizeof(double));
+//         return U(value);
+//     }
+
+//     static void Pack(std::span<uint8_t> data, const U& value) {
+//         double underlying = value.value();
+//         std::memcpy(data.data(), &underlying, sizeof(double));
+//     }
+// };
+
+
 
 inline static std::shared_ptr<nt::NetworkTable> GetTable(const std::string &tableName)
 {
