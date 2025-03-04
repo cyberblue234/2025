@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left 1"
+            "pathName": "Left 1.0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PathfindToBranchLeft"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left 2"
+            "pathName": "Left 1.1"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Left 3"
+            "name": "PathfindToCoralStationLeft"
           }
         }
       ]

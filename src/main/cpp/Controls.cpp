@@ -97,13 +97,13 @@ void Controls::ElevatorControls()
     else if (controlBoard.GetRawAxis(kManualElevatorAxis) < -0.5) 
     {
         // Manual control up
-        elevator->SetMotors(0.4);
+        elevator->SetMotors(0.1);
         SetElevatorPosition(std::nullopt);
     }
     else if (controlBoard.GetRawAxis(kManualElevatorAxis) > 0.5)
     {
         // Manual control down
-        elevator->SetMotors(-0.4);
+        elevator->SetMotors(-0.1);
         SetElevatorPosition(std::nullopt);
     }
     else

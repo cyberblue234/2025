@@ -247,10 +247,10 @@ namespace DrivetrainConstants
     constexpr units::radians_per_second_t kMaxAngularSpeed = std::numbers::pi * 4_rad_per_s;
 
     // Offsets for the CANcoders to ensure 0 is pointing forward
-    constexpr units::turn_t kFrontLeftMagnetOffset  = 0.0_tr;
-    constexpr units::turn_t kFrontRightMagnetOffset = 0.0_tr;
-    constexpr units::turn_t kBackLeftMagnetOffset   = 0.0_tr;
-    constexpr units::turn_t kBackRightMagnetOffset  = 0.0_tr;
+    constexpr units::turn_t kFrontLeftMagnetOffset  = -0.19067_tr;
+    constexpr units::turn_t kFrontRightMagnetOffset = 0.18213_tr;
+    constexpr units::turn_t kBackLeftMagnetOffset   = -0.552002_tr;
+    constexpr units::turn_t kBackRightMagnetOffset  = -0.62573_tr;
 
     constexpr units::meter_t kDeltaReefAprilTagToBranch = 6.5_in;
 }

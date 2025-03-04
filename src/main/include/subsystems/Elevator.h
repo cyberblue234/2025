@@ -56,7 +56,7 @@ public:
     /// @brief Gets the state of the bottom limit switch
     /// @retval true if the limit switch is closed (pressed)
     /// @retval false if the limit switch is open
-    bool IsBottomLimitSwitchClosed() { return !bottomLimitSwitch.Get() || simLimSwitch; }
+    bool IsBottomLimitSwitchClosed() { return bottomLimitSwitch.Get() || simLimSwitch; }
 
     void ResetMotionController() { controller.Reset(GetHeight()); }
 
