@@ -201,7 +201,7 @@ namespace units
 namespace SwerveModuleConstants
 {   
     // Gearing between the drive motor and wheel in turns - how many turns of the drive motor does it take to drive the wheel one full revolution
-    constexpr units::turn_t kDriveGearRatio = 6.54_tr;
+    constexpr units::turn_t kDriveGearRatio = 6.39_tr;
     // Gearing between the turn motor and wheel in turns - how many turns of the turn motor does it take to turn the wheel one full revolution
     constexpr units::turn_t kTurnGearRatio = 12.1_tr;
     // Radius of the wheel

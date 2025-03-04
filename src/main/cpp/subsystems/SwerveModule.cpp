@@ -92,8 +92,8 @@ void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
     units::volt_t pidSet{turnController.Calculate(GetAngle().Degrees())};
     units::volt_t feedforwardSet = turnFeedforward.Calculate(turnController.GetSetpoint().velocity);
     turnMotor.SetControl(controls::VoltageOut{pidSet + feedforwardSet});
-    TelemetryHelperNumber("Turn motor setpoint", turnController.GetSetpoint().value());
-    TelemetryHelperNumber("Turn motor goal", turnController.GetGoal().value());
+    TelemetryHelperNumber("Turn motor setpoint", turnController.GetSetpoint().position.value());
+    TelemetryHelperNumber("Turn motor goal", turnController.GetGoal().position.value());
     
     // Because the motors work based on turns, we have to convert meters to turns, taking into account the gear ratio
     // If the desired speed is 4 meters per second, we can multiply it by turns per meter to get turns per second
