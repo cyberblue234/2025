@@ -51,10 +51,6 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
 
     configs::SlotConfigs turnPIDConfig{};
 
-    turnPIDConfig.kP = Turn::kP;
-    turnPIDConfig.kI = Turn::kI;
-    turnPIDConfig.kD = Turn::kD;
-
     turnMotor.GetConfigurator().Apply(turnPIDConfig);
 
     canCoder.GetConfigurator().Apply(configs::CANcoderConfiguration{});
@@ -66,6 +62,15 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     canCoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1_tr;
 
     canCoder.GetConfigurator().Apply(canCoderConfig);
+
+    TelemetryHelperNumber("P", Turn::kP);
+    TelemetryHelperNumber("I", Turn::kI);
+    TelemetryHelperNumber("D", Turn::kD);
+    TelemetryHelperNumber("Trapezoid Max Velocity", Turn::kTrapezoidProfileContraints.maxVelocity.value());
+    TelemetryHelperNumber("Trapezoid Max Acceleration", Turn::kTrapezoidProfileContraints.maxAcceleration.value());
+    TelemetryHelperNumber("kS", Turn::kS.value());
+    TelemetryHelperNumber("kV", Turn::kV.value());
+    TelemetryHelperNumber("kA", Turn::kA.value());
 }
 
 void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
@@ -83,10 +88,12 @@ void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
     
     // Calculate the turning motor output from the turning PID controller.
     // The deltaAngle added to the CANcoder position allows for a clean transition between the CANcoders discontinuity point at 1 turn
-    controls::PositionVoltage& turnPos = turnPositionOut.WithPosition(deltaAngle + GetCANcoderPosition());
-    TelemetryHelperNumber("Turn motor setpoint (deg)", turnPos.Position.convert<units::degrees>().value());
-    // turnMotor.SetControl(turnPos);
-    turnMotor.SetControl(turnPos);
+    turnController.SetGoal(deltaAngle + GetCANcoderPosition());
+    units::volt_t pidSet{turnController.Calculate(GetAngle().Degrees())};
+    units::volt_t feedforwardSet = turnFeedforward.Calculate(turnController.GetSetpoint().velocity);
+    turnMotor.SetControl(controls::VoltageOut{pidSet + feedforwardSet});
+    TelemetryHelperNumber("Turn motor setpoint", turnController.GetSetpoint().value());
+    TelemetryHelperNumber("Turn motor goal", turnController.GetGoal().value());
     
     // Because the motors work based on turns, we have to convert meters to turns, taking into account the gear ratio
     // If the desired speed is 4 meters per second, we can multiply it by turns per meter to get turns per second
@@ -117,6 +124,27 @@ void SwerveModule::UpdateTelemetry()
     TelemetryHelperNumber("Turn Motor Temp",  GetTurnTemp().value());
     TelemetryHelperNumber("Drive Processor Temp", GetDriveProcessorTemp().value());
     TelemetryHelperNumber("Turn Processor Temp",  GetTurnProcessorTemp().value());
+
+    double newP = TelemetryHelperGetNumber("P", Turn::kP);
+    if (newP != turnController.GetP()) turnController.SetP(newP);
+    double newI = TelemetryHelperGetNumber("I", Turn::kI);
+    if (newI != turnController.GetI()) turnController.SetI(newI);
+    double newD = TelemetryHelperGetNumber("D", Turn::kD);
+    if (newD != turnController.GetD()) turnController.SetD(newD);
+    
+    double newMaxVel = TelemetryHelperGetNumber("Trapezoid Max Velocity", Turn::kTrapezoidProfileContraints.maxVelocity.value());
+    if (newMaxVel != turnController.GetConstraints().maxVelocity.value()) 
+        turnController.SetConstraints(frc::TrapezoidProfile<units::degrees>::Constraints{units::degrees_per_second_t{newMaxVel}, turnController.GetConstraints().maxAcceleration});
+    double newMaxAccel = TelemetryHelperGetNumber("Trapezoid Max Acceleration", Turn::kTrapezoidProfileContraints.maxAcceleration.value());
+    if (newMaxAccel != turnController.GetConstraints().maxAcceleration.value()) 
+        turnController.SetConstraints(frc::TrapezoidProfile<units::degrees>::Constraints{turnController.GetConstraints().maxVelocity, units::degrees_per_second_squared_t{newMaxAccel}});
+
+    double newKs = TelemetryHelperGetNumber("kS", Turn::kS.value());
+    if (newKs != turnFeedforward.GetKs().value()) turnFeedforward.SetKs(units::volt_t{newKs});
+    double newKv = TelemetryHelperGetNumber("kV", Turn::kV.value());
+    if (newKv != turnFeedforward.GetKv().value()) turnFeedforward.SetKv(units::kv_degrees_t{newKv});
+    double newKa = TelemetryHelperGetNumber("kA", Turn::kA.value());
+    if (newKa != turnFeedforward.GetKa().value()) turnFeedforward.SetKa(units::ka_degrees_t{newKa});
 }
 
 
