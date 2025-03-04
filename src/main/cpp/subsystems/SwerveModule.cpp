@@ -80,19 +80,14 @@ void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
 
     // Gets the difference between the desired angle and the current angle, then makes it in terms on turns/revolutions
     units::turn_t deltaAngle = units::turn_t(state.angle.operator-(GetAngle()).Degrees().value() / 360);
-    if (frc::RobotBase::IsReal())
-    {
-        // Calculate the turning motor output from the turning PID controller.
-        // The deltaAngle added to the CANcoder position allows for a clean transition between the CANcoders discontinuity point at 1 turn
-        controls::PositionVoltage& turnPos = turnPositionOut.WithPosition(deltaAngle + GetCANcoderPosition());
-        turnMotor.SetControl(turnPos);
-    }
-    else // Simulation shortcuts; the sim does not like the turn motors very much, so I just hack around it and set their values directly
-    {
-        ctre::phoenix6::sim::CANcoderSimState& canCoderSim = canCoder.GetSimState();
-        canCoderSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-        canCoderSim.AddPosition(deltaAngle);
-    }
+    
+    // Calculate the turning motor output from the turning PID controller.
+    // The deltaAngle added to the CANcoder position allows for a clean transition between the CANcoders discontinuity point at 1 turn
+    controls::PositionVoltage& turnPos = turnPositionOut.WithPosition(deltaAngle + GetCANcoderPosition());
+    TelemetryHelperNumber("Turn motor setpoint (deg)", turnPos.Position.convert<units::degrees>().value());
+    // turnMotor.SetControl(turnPos);
+    turnMotor.SetControl(turnPos);
+    
     // Because the motors work based on turns, we have to convert meters to turns, taking into account the gear ratio
     // If the desired speed is 4 meters per second, we can multiply it by turns per meter to get turns per second
     // kDriveDistanceRatio is in meters per turn, but we can use the reciprocal to get turns per meter
@@ -145,4 +140,20 @@ void SwerveModule::SimMode()
     // DCMotorSim returns mechanism position/velocity (after gear ratio)
     driveMotorSim.SetRawRotorPosition(kDriveGearRatio.value() * driveMotorSimModel.GetAngularPosition());
     driveMotorSim.SetRotorVelocity(kDriveGearRatio.value() * driveMotorSimModel.GetAngularVelocity());
+
+    ctre::phoenix6::sim::TalonFXSimState& turnMotorSim = turnMotor.GetSimState();
+    ctre::phoenix6::sim::CANcoderSimState& canCoderSim = canCoder.GetSimState();
+    turnMotorSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+    canCoderSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+
+    // get the motor voltage of the TalonFX
+    units::volt_t turnMotorVoltage = turnMotorSim.GetMotorVoltage();
+
+    turnMotorSimModel.SetInputVoltage(turnMotorVoltage);
+    turnMotorSimModel.Update(20_ms); // assume 20 ms loop time
+
+    canCoderSim.SetRawPosition(turnMotorSimModel.GetAngularPosition());
+    canCoderSim.SetVelocity(turnMotorSimModel.GetAngularVelocity());
+    turnMotorSim.SetRawRotorPosition(kTurnGearRatio.value() * turnMotorSimModel.GetAngularPosition());
+    turnMotorSim.SetRotorVelocity(kTurnGearRatio.value() * turnMotorSimModel.GetAngularVelocity());
 }

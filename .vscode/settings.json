@@ -103,5 +103,5 @@
     "timer": "cpp",
     "xstring": "cpp"
   },
-  "C_Cpp.errorSquiggles": "enabledIfIncludesResolve",
+  "C_Cpp.errorSquiggles": "disabled",
 }

@@ -203,9 +203,13 @@ namespace SwerveModuleConstants
     // Gearing between the drive motor and wheel in turns - how many turns of the drive motor does it take to drive the wheel one full revolution
     constexpr units::turn_t kDriveGearRatio = 6.54_tr;
     // Gearing between the turn motor and wheel in turns - how many turns of the turn motor does it take to turn the wheel one full revolution
-    constexpr units::turn_t kTurnGearRatio = 11.31_tr;
+    constexpr units::turn_t kTurnGearRatio = 12.1_tr;
     // Radius of the wheel
-    constexpr units::meter_t kWheelRadius = 0.0491_m;
+    constexpr units::meter_t kWheelRadius = 2_in;
+    // Mass of the wheel
+    constexpr units::kilogram_t kWheelMass = 3.6_lb;
+    // Width of the wheel
+    constexpr units::meter_t kWheelWidth = 2_in;
     // The amount of meters the robot drives per turn of the drive motor. The circumference of the wheel is the distance the robot drives for one full revolution of the wheel. Dividing by the gear ratio gets you to meters per one turn of the drive motor
     constexpr units::meters_per_turn_t kDriveDistanceRatio = kWheelRadius * 2 * std::numbers::pi / kDriveGearRatio;
     // Because we use the CANcoder to determine turning distance, the ratio is just one revolution of the wheel (360° or 2π) for every turn
@@ -397,7 +401,7 @@ static T clamp(T val, T low, T high)
 /// @retval -1 if val < 0
 /// @retval 1 if val > 0
 template <typename T>
-static T sgn(T val)
+inline static T sgn(T val)
 {
     return val == T{0} ? T{0} : val > T{0} ? T{1} : T{-1};
 }
@@ -408,7 +412,7 @@ static T sgn(T val)
 /// @retval Default value of the type if position is not within bounds of the array
 /// @retval Value at position
 template <typename T>
-static T ExtractArrayEntry(const std::vector<T>& inData, int position) 
+inline static T ExtractArrayEntry(const std::vector<T>& inData, int position) 
 {
     if (inData.size() < static_cast<size_t>(position + 1)) {
         return T{};
@@ -416,7 +420,7 @@ static T ExtractArrayEntry(const std::vector<T>& inData, int position)
     return inData[position];
 }
 
-static units::meter_t DistanceBetweenPoses(const frc::Pose2d& pose1, const frc::Pose2d& pose2)
+inline static units::meter_t DistanceBetweenPoses(const frc::Pose2d& pose1, const frc::Pose2d& pose2)
 {
     // Distance formula: d = sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}
     return units::meter_t{std::pow(std::pow(pose1.X().value() - pose2.X().value(), 2) + std::pow(pose1.Y().value() - pose2.Y().value(), 2), 0.5)};
