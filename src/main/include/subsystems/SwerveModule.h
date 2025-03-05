@@ -144,9 +144,7 @@ private:
      * VelocityVoltage allows us to run the drive motor at a velocity using voltages.
      */
     controls::VelocityVoltage driveVelocityOut{0_tps};
-
-    frc::ProfiledPIDController<units::degrees> turnController{Turn::kP, Turn::kI, Turn::kD, Turn::kTrapezoidProfileContraints};
-    frc::SimpleMotorFeedforward<units::degrees> turnFeedforward{Turn::kS, Turn::kV, Turn::kA};
+    controls::PositionVoltage turnPositionOut{0_tr};
 
     // Creates a simluation tool for the drive motor
     /// @todo Think about doing kV and kA
@@ -155,14 +153,6 @@ private:
             frc::DCMotor::KrakenX60(1),
             kDriveMOI,
             kDriveGearRatio.value()
-        ),
-        frc::DCMotor::KrakenX60(1)
-    };
-    frc::sim::DCMotorSim turnMotorSimModel{
-        frc::LinearSystemId::DCMotorSystem(
-            frc::DCMotor::KrakenX60(1),
-            kTurnMOI,
-            kTurnGearRatio.value()
         ),
         frc::DCMotor::KrakenX60(1)
     };

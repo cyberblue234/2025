@@ -232,13 +232,9 @@ namespace SwerveModuleConstants
     // PIDs of the turn motor
     namespace Turn
     {
-        constexpr double kP = 0.0;
+        constexpr double kP = 15.0;
         constexpr double kI = 0.0;
-        constexpr double kD = 0.0;
-        constexpr units::volt_t kS{0.0};
-        constexpr units::kv_degrees_t kV{0.0};
-        constexpr units::ka_degrees_t kA{0.0};
-        constexpr frc::TrapezoidProfile<units::degrees>::Constraints kTrapezoidProfileContraints{10_deg_per_s, 10_deg_per_s_sq};
+        constexpr double kD = 0.5;
     }
 }
 
