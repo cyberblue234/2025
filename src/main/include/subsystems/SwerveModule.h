@@ -46,6 +46,7 @@ public:
     /// @param valueName Description of the value
     /// @param value Value to be printed
     void TelemetryHelperNumber(std::string valueName, double value) { frc::SmartDashboard::PutNumber(valueName + " " + name, value); }
+    double TelemetryHelperGetNumber(std::string valueName, double defaultVal) { return frc::SmartDashboard::GetNumber(valueName + " " + name, defaultVal); }
 
     /// @brief Runs a simulation of the swerve module based on the inputs of SetDesiredState()
     void SimMode();
@@ -142,16 +143,26 @@ private:
      * PositionVoltage allows us to run the turn/angle motor to a position using voltages.
      * VelocityVoltage allows us to run the drive motor at a velocity using voltages.
      */
-    controls::PositionVoltage turnPositionOut{0_tr};
     controls::VelocityVoltage driveVelocityOut{0_tps};
+
+    frc::ProfiledPIDController<units::degrees> turnController{Turn::kP, Turn::kI, Turn::kD, Turn::kTrapezoidProfileContraints};
+    frc::SimpleMotorFeedforward<units::degrees> turnFeedforward{Turn::kS, Turn::kV, Turn::kA};
 
     // Creates a simluation tool for the drive motor
     /// @todo Think about doing kV and kA
     frc::sim::DCMotorSim driveMotorSimModel{
         frc::LinearSystemId::DCMotorSystem(
             frc::DCMotor::KrakenX60(1),
-            0.001_kg_sq_m,
+            kDriveMOI,
             kDriveGearRatio.value()
+        ),
+        frc::DCMotor::KrakenX60(1)
+    };
+    frc::sim::DCMotorSim turnMotorSimModel{
+        frc::LinearSystemId::DCMotorSystem(
+            frc::DCMotor::KrakenX60(1),
+            kTurnMOI,
+            kTurnGearRatio.value()
         ),
         frc::DCMotor::KrakenX60(1)
     };
