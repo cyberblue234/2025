@@ -85,7 +85,9 @@ void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
         // Calculate the turning motor output from the turning PID controller.
         // The deltaAngle added to the CANcoder position allows for a clean transition between the CANcoders discontinuity point at 1 turn
         controls::PositionVoltage& turnPos = turnPositionOut.WithPosition(deltaAngle + GetCANcoderPosition());
+        TelemetryHelperNumber("Turn setpoint", (deltaAngle + GetCANcoderPosition()).value());
         turnMotor.SetControl(turnPos);
+        // turnMotor.Set(0);
     }
     else // Simulation shortcuts; the sim does not like the turn motors very much, so I just hack around it and set their values directly
     {
