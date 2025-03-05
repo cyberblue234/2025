@@ -86,16 +86,16 @@ void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
     // perpendicular to the desired direction of travel that can occur when
     // modules change directions. This results in smoother driving.
     state.CosineScale(GetAngle());
-    
+
+    // Gets the difference between the desired angle and the current angle, then makes it in terms on turns/revolutions
+    units::turn_t deltaAngle = units::turn_t(state.angle.operator-(GetAngle()).Degrees().value() / 360);
+
     // Calculate the turning motor output from the turning PID controller.
     // The deltaAngle added to the CANcoder position allows for a clean transition between the CANcoders discontinuity point at 1 turn
-    turnController.SetGoal((state.angle.Degrees() - GetAngle().Degrees()) + GetCANcoderPosition());
-    units::volt_t pidSet{turnController.Calculate(GetCANcoderPosition())};
-    units::volt_t feedforwardSet = turnFeedforward.Calculate(turnController.GetSetpoint().velocity);
-    turnMotor.SetControl(controls::VoltageOut{pidSet + feedforwardSet});
-    TelemetryHelperNumber("Turn motor setpoint", turnController.GetSetpoint().position.value());
-    TelemetryHelperNumber("Turn motor goal", turnController.GetGoal().position.value());
-    
+    controls::PositionVoltage& turnPos = turnPositionOut.WithPosition(deltaAngle + GetCANcoderPosition());
+    TelemetryHelperNumber("Turn setpoint", (deltaAngle + GetCANcoderPosition()).value());
+    turnMotor.SetControl(turnPos);
+
     // Because the motors work based on turns, we have to convert meters to turns, taking into account the gear ratio
     // If the desired speed is 4 meters per second, we can multiply it by turns per meter to get turns per second
     // kDriveDistanceRatio is in meters per turn, but we can use the reciprocal to get turns per meter
