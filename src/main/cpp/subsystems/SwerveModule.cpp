@@ -63,14 +63,18 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
 
     canCoder.GetConfigurator().Apply(canCoderConfig);
 
-    TelemetryHelperNumber("P", Turn::kP);
-    TelemetryHelperNumber("I", Turn::kI);
-    TelemetryHelperNumber("D", Turn::kD);
-    TelemetryHelperNumber("Trapezoid Max Velocity", Turn::kTrapezoidProfileContraints.maxVelocity.value());
-    TelemetryHelperNumber("Trapezoid Max Acceleration", Turn::kTrapezoidProfileContraints.maxAcceleration.value());
-    TelemetryHelperNumber("kS", Turn::kS.value());
-    TelemetryHelperNumber("kV", Turn::kV.value());
-    TelemetryHelperNumber("kA", Turn::kA.value());
+    if (frc::RobotBase::IsSimulation()) SetCanCoder(0_tr);
+
+    frc::SmartDashboard::PutNumber("Turn P", Turn::kP);
+    frc::SmartDashboard::PutNumber("Turn I", Turn::kI);
+    frc::SmartDashboard::PutNumber("Turn D", Turn::kD);
+    frc::SmartDashboard::PutNumber("Turn Trapezoid Max Velocity", Turn::kTrapezoidProfileContraints.maxVelocity.value());
+    frc::SmartDashboard::PutNumber("Turn Trapezoid Max Acceleration", Turn::kTrapezoidProfileContraints.maxAcceleration.value());
+    frc::SmartDashboard::PutNumber("Turn kS", Turn::kS.value());
+    frc::SmartDashboard::PutNumber("Turn kV", Turn::kV.value());
+    frc::SmartDashboard::PutNumber("Turn kA", Turn::kA.value());
+
+    turnController.DisableContinuousInput();
 }
 
 void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
@@ -82,14 +86,11 @@ void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
     // perpendicular to the desired direction of travel that can occur when
     // modules change directions. This results in smoother driving.
     state.CosineScale(GetAngle());
-
-    // Gets the difference between the desired angle and the current angle, then makes it in terms on turns/revolutions
-    units::turn_t deltaAngle = units::turn_t(state.angle.operator-(GetAngle()).Degrees().value() / 360);
     
     // Calculate the turning motor output from the turning PID controller.
     // The deltaAngle added to the CANcoder position allows for a clean transition between the CANcoders discontinuity point at 1 turn
-    turnController.SetGoal(deltaAngle + GetCANcoderPosition());
-    units::volt_t pidSet{turnController.Calculate(GetAngle().Degrees())};
+    turnController.SetGoal((state.angle.Degrees() - GetAngle().Degrees()) + GetCANcoderPosition());
+    units::volt_t pidSet{turnController.Calculate(GetCANcoderPosition())};
     units::volt_t feedforwardSet = turnFeedforward.Calculate(turnController.GetSetpoint().velocity);
     turnMotor.SetControl(controls::VoltageOut{pidSet + feedforwardSet});
     TelemetryHelperNumber("Turn motor setpoint", turnController.GetSetpoint().position.value());
@@ -103,6 +104,7 @@ void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
 
     TelemetryHelperNumber("SetSpeed", state.speed.value());
     TelemetryHelperNumber("SetAngle", state.angle.Degrees().value());
+    TelemetryHelperNumber("Angle (cont)", GetCANcoderPosition().convert<units::degrees>().value());
 }
 
 void SwerveModule::UpdateTelemetry()
@@ -125,25 +127,25 @@ void SwerveModule::UpdateTelemetry()
     TelemetryHelperNumber("Drive Processor Temp", GetDriveProcessorTemp().value());
     TelemetryHelperNumber("Turn Processor Temp",  GetTurnProcessorTemp().value());
 
-    double newP = TelemetryHelperGetNumber("P", Turn::kP);
+    double newP = frc::SmartDashboard::GetNumber("Turn P", Turn::kP);
     if (newP != turnController.GetP()) turnController.SetP(newP);
-    double newI = TelemetryHelperGetNumber("I", Turn::kI);
+    double newI = frc::SmartDashboard::GetNumber("Turn I", Turn::kI);
     if (newI != turnController.GetI()) turnController.SetI(newI);
-    double newD = TelemetryHelperGetNumber("D", Turn::kD);
+    double newD = frc::SmartDashboard::GetNumber("Turn D", Turn::kD);
     if (newD != turnController.GetD()) turnController.SetD(newD);
     
-    double newMaxVel = TelemetryHelperGetNumber("Trapezoid Max Velocity", Turn::kTrapezoidProfileContraints.maxVelocity.value());
+    double newMaxVel = frc::SmartDashboard::GetNumber("Turn Trapezoid Max Velocity", Turn::kTrapezoidProfileContraints.maxVelocity.value());
     if (newMaxVel != turnController.GetConstraints().maxVelocity.value()) 
         turnController.SetConstraints(frc::TrapezoidProfile<units::degrees>::Constraints{units::degrees_per_second_t{newMaxVel}, turnController.GetConstraints().maxAcceleration});
-    double newMaxAccel = TelemetryHelperGetNumber("Trapezoid Max Acceleration", Turn::kTrapezoidProfileContraints.maxAcceleration.value());
+    double newMaxAccel = frc::SmartDashboard::GetNumber("Turn Trapezoid Max Acceleration", Turn::kTrapezoidProfileContraints.maxAcceleration.value());
     if (newMaxAccel != turnController.GetConstraints().maxAcceleration.value()) 
         turnController.SetConstraints(frc::TrapezoidProfile<units::degrees>::Constraints{turnController.GetConstraints().maxVelocity, units::degrees_per_second_squared_t{newMaxAccel}});
 
-    double newKs = TelemetryHelperGetNumber("kS", Turn::kS.value());
+    double newKs = frc::SmartDashboard::GetNumber("Turn kS", Turn::kS.value());
     if (newKs != turnFeedforward.GetKs().value()) turnFeedforward.SetKs(units::volt_t{newKs});
-    double newKv = TelemetryHelperGetNumber("kV", Turn::kV.value());
+    double newKv = frc::SmartDashboard::GetNumber("Turn kV", Turn::kV.value());
     if (newKv != turnFeedforward.GetKv().value()) turnFeedforward.SetKv(units::kv_degrees_t{newKv});
-    double newKa = TelemetryHelperGetNumber("kA", Turn::kA.value());
+    double newKa = frc::SmartDashboard::GetNumber("Turn kA", Turn::kA.value());
     if (newKa != turnFeedforward.GetKa().value()) turnFeedforward.SetKa(units::ka_degrees_t{newKa});
 }
 

@@ -148,15 +148,12 @@ private:
     frc::ProfiledPIDController<units::degrees> turnController{Turn::kP, Turn::kI, Turn::kD, Turn::kTrapezoidProfileContraints};
     frc::SimpleMotorFeedforward<units::degrees> turnFeedforward{Turn::kS, Turn::kV, Turn::kA};
 
-    // Wheel mass is about 3.6lbs
-    // Drive MOI is 1/2mr^2 = 7.2 lbs in^2
-    // Turn MOI is 1/12ml^2 = 1.2 lbs in^2
     // Creates a simluation tool for the drive motor
     /// @todo Think about doing kV and kA
     frc::sim::DCMotorSim driveMotorSimModel{
         frc::LinearSystemId::DCMotorSystem(
             frc::DCMotor::KrakenX60(1),
-            1 / 2 * kWheelMass * kWheelRadius * kWheelRadius,
+            kDriveMOI,
             kDriveGearRatio.value()
         ),
         frc::DCMotor::KrakenX60(1)
@@ -164,7 +161,7 @@ private:
     frc::sim::DCMotorSim turnMotorSimModel{
         frc::LinearSystemId::DCMotorSystem(
             frc::DCMotor::KrakenX60(1),
-            1 / 12 * kWheelMass * kWheelWidth * kWheelWidth,
+            kTurnMOI,
             kTurnGearRatio.value()
         ),
         frc::DCMotor::KrakenX60(1)

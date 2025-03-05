@@ -210,6 +210,10 @@ namespace SwerveModuleConstants
     constexpr units::kilogram_t kWheelMass = 3.6_lb;
     // Width of the wheel
     constexpr units::meter_t kWheelWidth = 2_in;
+    // MOI of the drive motor - 1/2 * m * r^2
+    constexpr units::kilogram_square_meter_t kDriveMOI = (kWheelMass * (kWheelRadius * kWheelRadius)) / 12;
+    // MOI of the turn motor - 1/12 * m * w^2
+    constexpr units::kilogram_square_meter_t kTurnMOI = (kWheelMass * (kWheelWidth * kWheelWidth)) / 12;
     // The amount of meters the robot drives per turn of the drive motor. The circumference of the wheel is the distance the robot drives for one full revolution of the wheel. Dividing by the gear ratio gets you to meters per one turn of the drive motor
     constexpr units::meters_per_turn_t kDriveDistanceRatio = kWheelRadius * 2 * std::numbers::pi / kDriveGearRatio;
     // Because we use the CANcoder to determine turning distance, the ratio is just one revolution of the wheel (360° or 2π) for every turn
@@ -228,13 +232,13 @@ namespace SwerveModuleConstants
     // PIDs of the turn motor
     namespace Turn
     {
-        constexpr double kP = 15.0;
+        constexpr double kP = 0.0;
         constexpr double kI = 0.0;
-        constexpr double kD = 0.5;
+        constexpr double kD = 0.0;
         constexpr units::volt_t kS{0.0};
         constexpr units::kv_degrees_t kV{0.0};
         constexpr units::ka_degrees_t kA{0.0};
-        constexpr frc::TrapezoidProfile<units::degrees>::Constraints kTrapezoidProfileContraints{180_deg_per_s, 360_deg_per_s_sq};
+        constexpr frc::TrapezoidProfile<units::degrees>::Constraints kTrapezoidProfileContraints{10_deg_per_s, 10_deg_per_s_sq};
     }
 }
 
