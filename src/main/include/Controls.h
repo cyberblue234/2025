@@ -97,5 +97,5 @@ private:
     int branch = 0;
     std::optional<frc2::CommandPtr> path;
 
-    bool fieldRelative = false;
+    bool fieldRelative = true;
 };

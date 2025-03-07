@@ -138,6 +138,11 @@ public:
         std::vector<double> entries = {forward, side, up, roll, pitch, yaw};
         camerapose_robotspace_set.Set(entries);
     }
+    void SetCameraPoseRobotSpace(frc::Pose3d offset)
+    {
+        std::vector<double> entries = {offset.X().value(), offset.Y().value(), offset.Z().value(), offset.Rotation().X().convert<units::degrees>().value(), offset.Rotation().Y().convert<units::degrees>().value(), offset.Rotation().Z().convert<units::degrees>().value()};
+        camerapose_robotspace_set.Set(entries);
+    }
     void SetPriorityID(int id)
     {
         priorityid.Set(id);

@@ -5,6 +5,10 @@ void Robot::RobotInit()
 	EnableLiveWindowInTest(true);
 
 	frc::SmartDashboard::PutData("Mech2d", &mech);
+	limelightHigh.SetCameraPoseRobotSpace(LimelightConstants::kHighOffset);
+	limelightLow.SetCameraPoseRobotSpace(LimelightConstants::kLowOffset);
+	limelightHigh.SetupPortForwarding();
+	limelightLow.SetupPortForwarding();
 }
 
 void Robot::RobotPeriodic() 
