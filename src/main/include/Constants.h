@@ -316,22 +316,22 @@ namespace ElevatorConstants
 
 namespace ClawConstants
 {
-    constexpr double kP = 0.02;
+    constexpr double kP = 0.0;
     constexpr double kI = 0.0;
     constexpr double kD = 0.0;
-    constexpr units::volt_t kS{0.005};
+    constexpr units::volt_t kS{0.0};
     constexpr units::volt_t kG{0.0};
-    constexpr units::kv_degrees_t kV{0.015};
-    constexpr units::ka_degrees_t kA{0.005};
+    constexpr units::kv_degrees_t kV{0.0};
+    constexpr units::ka_degrees_t kA{0.0};
     constexpr frc::TrapezoidProfile<units::degrees>::Constraints kTrapezoidProfileContraints{10_deg_per_s, 10_deg_per_s_sq};
 
     constexpr double kWristPower = 0.1;
     // Intake and output powers for coral and algae
-    constexpr double kCoralIntakePower = 0.2;
-    constexpr double kAlgaeIntakePower = 0.3;
+    constexpr double kCoralIntakePower = -0.2;
+    constexpr double kAlgaeIntakePower = -0.3;
     // Outputting should be negative compared to intaking
-    constexpr double kCoralOutputPower = -0.2;
-    constexpr double kAlgaeOutputPower = -0.3;
+    constexpr double kCoralOutputPower = 0.2;
+    constexpr double kAlgaeOutputPower = 0.3;
     constexpr double kManualIOPower = 0.2;
 
     constexpr units::turn_t canCoderMagnetOffset = 0_tr;
@@ -344,6 +344,12 @@ namespace ClawConstants
 namespace ClimberConstants
 {
     constexpr double kClimberPower = 0.4;
+}
+
+namespace LimelightConstants
+{
+    constexpr frc::Pose3d kHighOffset{8.25_in, 10.25_in, 36_in, frc::Rotation3d{-90_deg, 0_deg, 0_deg}};
+    constexpr frc::Pose3d kLowOffset{11.75_in, 0_in, 7.5_in, frc::Rotation3d{180_deg, 0_deg, 0_deg}};
 }
 
 /// @brief Struct for the different possible positions

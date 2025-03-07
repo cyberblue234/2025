@@ -164,11 +164,11 @@ void Controls::ClawControls()
     // }
     else if (gamepad.GetLeftTriggerAxis() >= 0.5) 
     {
-        claw->SetIOPower(kManualIOPower);
+        claw->SetIOPower(-kManualIOPower);
     }
     else if (gamepad.GetRightTriggerAxis() >= 0.5)
     {
-        claw->SetIOPower(-kManualIOPower);
+        claw->SetIOPower(kManualIOPower);
     }
     else
     {
