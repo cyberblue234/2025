@@ -34,14 +34,16 @@ Elevator::Elevator()
     frc::SmartDashboard::PutNumber("Elevator P", kP);
     frc::SmartDashboard::PutNumber("Elevator I", kI);
     frc::SmartDashboard::PutNumber("Elevator D", kD);
-    frc::SmartDashboard::PutNumber("Elevator Trapezoid Max Velocity", kTrapezoidProfileContraints.maxVelocity.value());
-    frc::SmartDashboard::PutNumber("Elevator Trapezoid Max Acceleration", kTrapezoidProfileContraints.maxAcceleration.value());
+    frc::SmartDashboard::PutNumber("Elevator Up Trapezoid Max Velocity", upTrapezoidProfileContraints.maxVelocity.value());
+    frc::SmartDashboard::PutNumber("Elevator Up Trapezoid Max Acceleration", upTrapezoidProfileContraints.maxAcceleration.value());
+    frc::SmartDashboard::PutNumber("Elevator Down Trapezoid Max Velocity", downTrapezoidProfileContraints.maxVelocity.value());
+    frc::SmartDashboard::PutNumber("Elevator Down Trapezoid Max Acceleration", downTrapezoidProfileContraints.maxAcceleration.value());
     frc::SmartDashboard::PutNumber("Elevator kS", kS.value());
     frc::SmartDashboard::PutNumber("Elevator kG", kG.value());
     frc::SmartDashboard::PutNumber("Elevator kV", kV.value());
     frc::SmartDashboard::PutNumber("Elevator kA", kA.value());
 
-    controller.SetTolerance(kDeadzone);
+    controller.SetTolerance(kTolerance);
 }
 
 void Elevator::SetMotors(double power)
@@ -66,6 +68,18 @@ bool Elevator::GoToHeight(const units::meter_t desiredHeight)
     else
     {
         controller.SetGoal(desiredHeight);
+        if (desiredHeight - GetHeight() > 0_m) 
+        {
+            if (controller.GetConstraints().maxVelocity != upTrapezoidProfileContraints.maxVelocity
+                || controller.GetConstraints().maxAcceleration != upTrapezoidProfileContraints.maxAcceleration)
+                controller.SetConstraints(upTrapezoidProfileContraints);
+        }
+        else
+        {
+            if (controller.GetConstraints().maxVelocity != downTrapezoidProfileContraints.maxVelocity
+                || controller.GetConstraints().maxAcceleration != downTrapezoidProfileContraints.maxAcceleration)
+                controller.SetConstraints(downTrapezoidProfileContraints);
+        }
         units::volt_t pidSet{controller.Calculate(GetHeight())};
         units::volt_t feedforwardSet = feedforward.Calculate(controller.GetSetpoint().velocity);
         motor1.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
@@ -120,6 +134,7 @@ void Elevator::UpdateTelemtry()
     frc::SmartDashboard::PutNumber("Elevator M2 Pos", motor2.GetPosition().GetValueAsDouble());
     frc::SmartDashboard::PutNumber("Elevator Height", GetHeight().convert<units::feet>().value());
     frc::SmartDashboard::PutNumber("Elevator Setpoint", controller.GetSetpoint().position.convert<units::feet>().value());
+    frc::SmartDashboard::PutBoolean("Elevator IsAtPosition", IsAtPosition());
     double newP = frc::SmartDashboard::GetNumber("Elevator P", kP);
     if (newP != controller.GetP()) controller.SetP(newP);
     double newI = frc::SmartDashboard::GetNumber("Elevator I", kI);
@@ -127,12 +142,19 @@ void Elevator::UpdateTelemtry()
     double newD = frc::SmartDashboard::GetNumber("Elevator D", kD);
     if (newD != controller.GetD()) controller.SetD(newD);
     
-    double newMaxVel = frc::SmartDashboard::GetNumber("Elevator Trapezoid Max Velocity", kTrapezoidProfileContraints.maxVelocity.value());
-    if (newMaxVel != controller.GetConstraints().maxVelocity.value()) 
-        controller.SetConstraints(frc::TrapezoidProfile<units::meters>::Constraints{units::meters_per_second_t{newMaxVel}, controller.GetConstraints().maxAcceleration});
-    double newMaxAccel = frc::SmartDashboard::GetNumber("Elevator Trapezoid Max Acceleration", kTrapezoidProfileContraints.maxAcceleration.value());
-    if (newMaxAccel != controller.GetConstraints().maxAcceleration.value()) 
-        controller.SetConstraints(frc::TrapezoidProfile<units::meters>::Constraints{controller.GetConstraints().maxVelocity, units::meters_per_second_squared_t{newMaxAccel}});
+    double newUpMaxVel = frc::SmartDashboard::GetNumber("Elevator Up Trapezoid Max Velocity", upTrapezoidProfileContraints.maxVelocity.value());
+    if (newUpMaxVel != upTrapezoidProfileContraints.maxVelocity.value()) 
+        upTrapezoidProfileContraints.maxVelocity = units::meters_per_second_t{newUpMaxVel};
+    double newUpMaxAccel = frc::SmartDashboard::GetNumber("Elevator Up Trapezoid Max Acceleration", upTrapezoidProfileContraints.maxAcceleration.value());
+    if (newUpMaxAccel != upTrapezoidProfileContraints.maxAcceleration.value()) 
+        upTrapezoidProfileContraints.maxAcceleration = units::meters_per_second_squared_t{newUpMaxAccel};
+
+    double newDownMaxVel = frc::SmartDashboard::GetNumber("Elevator Down Trapezoid Max Velocity", downTrapezoidProfileContraints.maxVelocity.value());
+    if (newDownMaxVel != downTrapezoidProfileContraints.maxVelocity.value()) 
+        downTrapezoidProfileContraints.maxVelocity = units::meters_per_second_t{newDownMaxVel};
+    double newDownMaxAccel = frc::SmartDashboard::GetNumber("Elevator Down Trapezoid Max Acceleration", downTrapezoidProfileContraints.maxAcceleration.value());
+    if (newDownMaxAccel != downTrapezoidProfileContraints.maxAcceleration.value()) 
+        downTrapezoidProfileContraints.maxAcceleration = units::meters_per_second_squared_t{newDownMaxAccel};
 
     double newKs = frc::SmartDashboard::GetNumber("Elevator kS", kS.value());
     if (newKs != feedforward.GetKs().value()) feedforward.SetKs(units::volt_t{newKs});

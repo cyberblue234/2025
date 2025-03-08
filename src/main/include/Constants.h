@@ -287,45 +287,47 @@ namespace PathPlannerConstants
 namespace ElevatorConstants
 {
     // PIDs and feedforward values
-    constexpr double kP = 6.0;
+    constexpr double kP = 40.0;
     constexpr double kI = 0.0;
     constexpr double kD = 0.0;
     constexpr units::volt_t kS{0.0};
-    constexpr units::volt_t kG{0.0};
-    constexpr units::kv_meters_t kV{7.2};
-    constexpr units::ka_meters_t kA{0.5};
-    constexpr frc::TrapezoidProfile<units::meters>::Constraints kTrapezoidProfileContraints{1_mps, 1_mps_sq};
-
+    constexpr units::volt_t kG{0.1};
+    constexpr units::kv_meters_t kV{9.0};
+    constexpr units::ka_meters_t kA{0.3};
+    constexpr frc::TrapezoidProfile<units::meters>::Constraints kUpTrapezoidProfileContraints{2_mps, 1.9_mps_sq};
+    constexpr frc::TrapezoidProfile<units::meters>::Constraints kDownTrapezoidProfileContraints{0.7_mps, 1_mps_sq};                                                       //Te he, hello Elliott. Don't delete me :( - Ayla
+    
     // The gearing between the motor and the sprocket
-    constexpr units::turn_t kMotorGearing = 7.75_tr;
+    constexpr units::turn_t kMotorGearing = 20_tr;
     // Theoretical diameter of the sprocket connected to the chain which raises the first stage
     constexpr units::meter_t kSprocketPitchDiameter = 1.751_in;
     // How many meters the carriage travels per rotation of the motors.
     // Note, carriage raises at a rate of 2:1 compared to the first stage
     constexpr units::meters_per_turn_t kMetersPerMotorTurn = 2 * (kSprocketPitchDiameter * std::numbers::pi) / kMotorGearing;
 
-    // Maximum encoder count - should be slightly lower than the maximum possible encoder count
-    constexpr units::turn_t kMaxEncoderValue    = 34_tr;
     // The distance from the ground to the bottom of the carriage
     constexpr units::meter_t kHeightOffset      = 6.5_in;
     // Should be equal to kMaxEncoderValue * kMetersPerMotorTurn + kHeightOffset
-    constexpr units::meter_t kMaxElevatorHeight = 4_ft + kHeightOffset;
+    constexpr units::meter_t kMaxElevatorHeight = 4.5_ft + kHeightOffset;
+    // Maximum encoder count - should be slightly lower than the maximum possible encoder count
+    constexpr units::turn_t kMaxEncoderValue    = (kMaxElevatorHeight - kHeightOffset) / kMetersPerMotorTurn;
 
-    constexpr units::meter_t kDeadzone = 0.5_in;
+    constexpr units::meter_t kTolerance = 0.5_in;
+
+    constexpr double kElevatorPower = 0.25;
 }
 
 namespace ClawConstants
 {
-    constexpr double kP = 0.02;
+    constexpr double kP = 0.0;
     constexpr double kI = 0.0;
     constexpr double kD = 0.0;
-    constexpr units::volt_t kS{0.005};
+    constexpr units::volt_t kS{0.0};
     constexpr units::volt_t kG{0.0};
-    constexpr units::kv_degrees_t kV{0.015};
-    constexpr units::ka_degrees_t kA{0.005};
+    constexpr units::kv_degrees_t kV{0.0};
+    constexpr units::ka_degrees_t kA{0.0};
     constexpr frc::TrapezoidProfile<units::degrees>::Constraints kTrapezoidProfileContraints{10_deg_per_s, 10_deg_per_s_sq};
 
-    constexpr double kWristPower = 0.1;
     // Intake and output powers for coral and algae
     constexpr double kCoralIntakePower = -0.2;
     constexpr double kAlgaeIntakePower = -0.3;
@@ -334,11 +336,16 @@ namespace ClawConstants
     constexpr double kAlgaeOutputPower = 0.3;
     constexpr double kManualIOPower = 0.2;
 
-    constexpr units::turn_t canCoderMagnetOffset = 0_tr;
+    constexpr units::turn_t canCoderMagnetOffset = 0.1582_tr;
 
-    constexpr units::degree_t kDeadzone = 1.0_deg;
+    constexpr units::degree_t kTolerance = 1.0_deg;
 
-    constexpr units::turn_t kWristGearRatio = 46.69_tr;
+    constexpr units::degree_t kLowLimit = 0_deg;
+    constexpr units::degree_t kHighLimit = 150_deg;
+
+    constexpr units::turn_t kWristGearRatio = 233.45_tr;
+
+    constexpr double kWristPower = 0.15;
 }
 
 namespace ClimberConstants
@@ -383,11 +390,11 @@ namespace Positions
 {
     constexpr Position L1           = Position(1.0_ft,   5.0_deg,  ClawConstants::kCoralOutputPower);
     constexpr Position L2           = Position(2.0_ft,  10.0_deg,  ClawConstants::kCoralOutputPower);
-    constexpr Position L3           = Position(3.0_ft,  -5.0_deg,  ClawConstants::kCoralOutputPower);
-    constexpr Position L4           = Position(4.0_ft, -10.0_deg, -ClawConstants::kCoralOutputPower);
+    constexpr Position L3           = Position(3.0_ft,  5.0_deg,  ClawConstants::kCoralOutputPower);
+    constexpr Position L4           = Position(4.0_ft, 10.0_deg, -ClawConstants::kCoralOutputPower);
     constexpr Position AlgaeLow     = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kAlgaeIntakePower);
     constexpr Position AlgaeHigh    = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kAlgaeIntakePower);
-    constexpr Position CoralStation = Position(2_ft,   0.0_deg,  ClawConstants::kCoralIntakePower, true);
+    constexpr Position CoralStation = Position(1.9_ft,   110.0_deg,  ClawConstants::kCoralIntakePower, true);
     constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kAlgaeOutputPower);
     constexpr Position Barge        = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kAlgaeOutputPower);
 }

@@ -120,6 +120,19 @@
               "true_icon": "None",
               "false_icon": "None"
             }
+          },
+          {
+            "title": "Auto Chooser",
+            "x": 512.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Auto Chooser",
+              "period": 0.06,
+              "sort_options": false
+            }
           }
         ]
       }
@@ -133,29 +146,13 @@
             "title": "Elevator Height",
             "x": 640.0,
             "y": 0.0,
-            "width": 640.0,
-            "height": 512.0,
-            "type": "Graph",
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Text Display",
             "properties": {
               "topic": "/SmartDashboard/Elevator Height",
               "period": 0.033,
               "data_type": "double",
-              "time_displayed": 5.0,
-              "color": 4278238420,
-              "line_width": 2.0
-            }
-          },
-          {
-            "title": "Desired Position",
-            "x": 0.0,
-            "y": 640.0,
-            "width": 512.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Desired Position",
-              "period": 0.06,
-              "data_type": "string",
               "show_submit_button": false
             }
           },
@@ -175,8 +172,8 @@
           },
           {
             "title": "Elevator P",
-            "x": 768.0,
-            "y": 512.0,
+            "x": 640.0,
+            "y": 384.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -189,8 +186,8 @@
           },
           {
             "title": "Elevator I",
-            "x": 768.0,
-            "y": 640.0,
+            "x": 640.0,
+            "y": 512.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -245,8 +242,8 @@
           },
           {
             "title": "Elevator kS",
-            "x": 896.0,
-            "y": 512.0,
+            "x": 768.0,
+            "y": 384.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -260,7 +257,7 @@
           {
             "title": "Elevator kV",
             "x": 896.0,
-            "y": 640.0,
+            "y": 384.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -276,7 +273,7 @@
             "x": 0.0,
             "y": 0.0,
             "width": 640.0,
-            "height": 512.0,
+            "height": 384.0,
             "type": "Graph",
             "properties": {
               "topic": "/SmartDashboard/Elevator Setpoint",
@@ -288,37 +285,9 @@
             }
           },
           {
-            "title": "Elevator Trapezoid Max Acceleration",
-            "x": 1024.0,
-            "y": 640.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Elevator Trapezoid Max Acceleration",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Elevator Trapezoid Max Velocity",
-            "x": 1024.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Elevator Trapezoid Max Velocity",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
             "title": "Elevator Is Registered",
             "x": 512.0,
-            "y": 640.0,
+            "y": 512.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -334,8 +303,8 @@
           },
           {
             "title": "Elevator M1 Pos",
-            "x": 256.0,
-            "y": 512.0,
+            "x": 384.0,
+            "y": 384.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -348,8 +317,8 @@
           },
           {
             "title": "Elevator M2 Pos",
-            "x": 384.0,
-            "y": 512.0,
+            "x": 512.0,
+            "y": 384.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -376,6 +345,149 @@
               "true_icon": "None",
               "false_icon": "None"
             }
+          },
+          {
+            "title": "Elevator D",
+            "x": 768.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator D",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Elevator kA",
+            "x": 896.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator kA",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Elevator Position",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator Position",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Desired Position",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Desired Position",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Elevator kG",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator kG",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Elevator Bottom Limit Switch",
+            "x": 384.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator Bottom Limit Switch",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Elevator Down Trapezoid Max Velocity",
+            "x": 1024.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator Down Trapezoid Max Velocity",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Elevator Down Trapezoid Max Acceleration",
+            "x": 1024.0,
+            "y": 512.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator Down Trapezoid Max Acceleration",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Elevator Up Trapezoid Max Acceleration",
+            "x": 1024.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator Up Trapezoid Max Acceleration",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Elevator Up Trapezoid Max Velocity",
+            "x": 1024.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator Up Trapezoid Max Velocity",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
           }
         ]
       }
@@ -387,18 +499,16 @@
         "containers": [
           {
             "title": "Wrist Angle",
-            "x": 640.0,
+            "x": 512.0,
             "y": 0.0,
-            "width": 640.0,
-            "height": 512.0,
-            "type": "Graph",
+            "width": 512.0,
+            "height": 256.0,
+            "type": "Text Display",
             "properties": {
               "topic": "/SmartDashboard/Wrist Angle",
               "period": 0.033,
               "data_type": "double",
-              "time_displayed": 5.0,
-              "color": 4278238420,
-              "line_width": 2.0
+              "show_submit_button": false
             }
           },
           {
@@ -417,8 +527,8 @@
           },
           {
             "title": "Wrist I",
-            "x": 768.0,
-            "y": 640.0,
+            "x": 512.0,
+            "y": 384.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -431,8 +541,8 @@
           },
           {
             "title": "Wrist P",
-            "x": 768.0,
-            "y": 512.0,
+            "x": 512.0,
+            "y": 256.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -445,8 +555,8 @@
           },
           {
             "title": "Wrist Trapezoid Max Acceleration",
-            "x": 1024.0,
-            "y": 640.0,
+            "x": 896.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
@@ -459,8 +569,8 @@
           },
           {
             "title": "Wrist Trapezoid Max Velocity",
-            "x": 1024.0,
-            "y": 512.0,
+            "x": 896.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
@@ -501,8 +611,8 @@
           },
           {
             "title": "Wrist kS",
-            "x": 896.0,
-            "y": 512.0,
+            "x": 640.0,
+            "y": 256.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -515,8 +625,8 @@
           },
           {
             "title": "Wrist kV",
-            "x": 896.0,
-            "y": 640.0,
+            "x": 768.0,
+            "y": 256.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -543,8 +653,8 @@
           },
           {
             "title": "Desired Position",
-            "x": 128.0,
-            "y": 640.0,
+            "x": 0.0,
+            "y": 384.0,
             "width": 512.0,
             "height": 128.0,
             "type": "Text Display",
@@ -559,8 +669,8 @@
             "title": "Wrist Setpoint",
             "x": 0.0,
             "y": 0.0,
-            "width": 640.0,
-            "height": 512.0,
+            "width": 512.0,
+            "height": 384.0,
             "type": "Graph",
             "properties": {
               "topic": "/SmartDashboard/Wrist Setpoint",
@@ -569,6 +679,34 @@
               "time_displayed": 5.0,
               "color": 4278238420,
               "line_width": 2.0
+            }
+          },
+          {
+            "title": "Wrist kG",
+            "x": 640.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Wrist kG",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Wrist kA",
+            "x": 768.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Wrist kA",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
             }
           }
         ]

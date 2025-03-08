@@ -4,6 +4,8 @@
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
 
+#include <frc/smartdashboard/SendableChooser.h>
+
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Elevator.h"
 #include "subsystems/Claw.h"
@@ -68,6 +70,8 @@ private:
     std::optional<Position> elevatorPosition;
     std::optional<Position> clawPosition;
     std::optional<Position> desiredPosition; 
+
+    frc::SendableChooser<std::string> autoChooser;
 
     bool simCoralInClaw = false;
 };

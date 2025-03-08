@@ -79,11 +79,6 @@ void Controls::DriveControls()
 
 void Controls::ElevatorControls() 
 {
-    // Take the elevator down if the robot is tilting
-    if (units::math::abs(swerve->GetRoll()) > 2_deg || units::math::abs(swerve->GetPitch()) > 2_deg)
-    {
-        elevator->GoToHeight(kHeightOffset);
-    }
     // If there is a desired position
     if (GetDesiredPosition().has_value())
     {
@@ -97,21 +92,19 @@ void Controls::ElevatorControls()
     else if (controlBoard.GetRawAxis(kManualElevatorAxis) < -0.5) 
     {
         // Manual control up
-        elevator->SetMotors(0.1);
+        elevator->SetMotors(kElevatorPower);
         SetElevatorPosition(std::nullopt);
     }
     else if (controlBoard.GetRawAxis(kManualElevatorAxis) > 0.5)
     {
         // Manual control down
-        elevator->SetMotors(-0.1);
+        elevator->SetMotors(-kElevatorPower);
         SetElevatorPosition(std::nullopt);
     }
     else
     {
-        // Stop the motors
-        elevator->SetMotors(0);
-        elevator->ResetMotionController();
-        SetElevatorPosition(std::nullopt);
+        // Go down
+        elevator->SetMotors(0.0);
     }
 }
 
@@ -125,12 +118,12 @@ void Controls::ClawControls()
     }
     else if (controlBoard.GetRawAxis(kManualWristAxis) < -0.5)
     {
-        claw->SetWristPower(kWristPower);
+        claw->SetWristPower(-kWristPower);
         SetClawPosition(std::nullopt);
     }
     else if (controlBoard.GetRawAxis(kManualWristAxis) > 0.5)
     {
-        claw->SetWristPower(-kWristPower);
+        claw->SetWristPower(kWristPower);
         SetClawPosition(std::nullopt);
     }
     else
@@ -162,13 +155,17 @@ void Controls::ClawControls()
     // {
     //     claw->SetIOPower(-kManualIOPower);
     // }
-    else if (gamepad.GetLeftTriggerAxis() >= 0.5) 
+    else if (gamepad.GetXButton()) 
     {
         claw->SetIOPower(-kManualIOPower);
     }
-    else if (gamepad.GetRightTriggerAxis() >= 0.5)
+    else if (gamepad.GetBButton())
     {
         claw->SetIOPower(kManualIOPower);
+    }
+    else if (gamepad.GetLeftTriggerAxis() > 0.5)
+    {
+        claw->SetIOPower(-1.0);
     }
     else
     {

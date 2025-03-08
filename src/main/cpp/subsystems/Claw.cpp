@@ -9,6 +9,7 @@ Claw::Claw()
 
     // Stops the motor if there is no input - desirable for ensuring the wrist stays at the desired position
     wristMotorConfig.MotorOutput.NeutralMode = signals::NeutralModeValue::Brake;
+    wristMotorConfig.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
 
     // Stator limit makes sure we don't burn up our motors if they get jammed
     wristMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -26,8 +27,9 @@ Claw::Claw()
 
     // Sets the offset for the CANcoder - makes sure 0 is when the wrist is horizontal
     canCoderWristConfig.MagnetSensor.MagnetOffset = canCoderMagnetOffset;
-    // Sets the range of the CANcoder. When it is at 0.5 turn, the CANcoders range is from [-0.5, 0.5)
-    canCoderWristConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5_tr;
+    // Sets the range of the CANcoder. When it is at 0.5 turn, the CANcoders range is from [-0.2, 0.8)
+    canCoderWristConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.8_tr;
+    canCoderWristConfig.MagnetSensor.SensorDirection = signals::SensorDirectionValue::CounterClockwise_Positive;
 
     canCoderWrist.GetConfigurator().Apply(canCoderWristConfig);
 
@@ -58,13 +60,13 @@ Claw::Claw()
     frc::SmartDashboard::PutNumber("Wrist kV", kV.value());
     frc::SmartDashboard::PutNumber("Wrist kA", kA.value());
 
-    controller.SetTolerance(kDeadzone);
+    controller.SetTolerance(kTolerance);
 }
 
 void Claw::SetWristPower(double power)
 {
     // Sets the duty cycle of the motor
-    wristMotor.Set(power);
+    wristMotor.SetControl(controls::DutyCycleOut{power});
 }
 
 bool Claw::GoToAngle(units::degree_t angle)
@@ -72,7 +74,9 @@ bool Claw::GoToAngle(units::degree_t angle)
     controller.SetGoal(angle);
     units::volt_t pidSet{controller.Calculate(GetCurrentAngle())};
     units::volt_t feedforwardSet = feedforward.Calculate(GetCurrentAngle(), controller.GetSetpoint().velocity);
-    wristMotor.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet));
+    wristMotor.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
+                        .WithLimitReverseMotion(GetCurrentAngle() <= kLowLimit)
+                        .WithLimitForwardMotion(GetCurrentAngle() >= kHighLimit));
 
     // Returns true if the change in angle is less than the deadzone
     return IsAtPosition();

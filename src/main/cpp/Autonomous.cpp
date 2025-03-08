@@ -19,11 +19,20 @@ Autonomous::Autonomous(Drivetrain *swerve, Elevator *elevator, Claw *claw, Climb
     NamedCommands::registerCommand("CoralStation", GoToCoralStation());
 
     frc::SmartDashboard::PutBoolean("Simulated Coral in Claw", this->simCoralInClaw);
+
+    std::vector<std::string> autos = pathplanner::AutoBuilder::getAllAutoNames();
+    autoChooser.SetDefaultOption(autos[0], autos[0]);
+	for (auto i = autos.begin(); i != autos.end(); ++i)
+	{
+		autoChooser.AddOption(*i, *i);
+	}
+
+	frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 }
 
 frc2::CommandPtr Autonomous::GetAutoCommand()
 {
-    return pathplanner::PathPlannerAuto("Left 1").ToPtr();
+    return pathplanner::PathPlannerAuto(autoChooser.GetSelected()).ToPtr();
 }
 
 
