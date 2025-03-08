@@ -64,6 +64,7 @@ void Robot::UpdateTelemetry()
 	frc::SmartDashboard::PutNumber("Battery Voltage", frc::RobotController::GetBatteryVoltage().value());
 
 	controls.UpdateTelemetry();
+	autonomous.UpdateTelemetry();
 	swerve.UpdateTelemetry();
 	elevator.UpdateTelemtry();
 	claw.UpdateTelemetry();

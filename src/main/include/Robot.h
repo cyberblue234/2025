@@ -57,7 +57,7 @@ private:
 	frc::PowerDistribution pdp{1, frc::PowerDistribution::ModuleType::kRev};
     
 	Controls controls{GetSwerve(), GetElevator(), GetClaw(), GetClimber(), GetPneumatics(), GetLimelightHigh(), GetLimelightLow()};
-    Autonomous autonomous{GetSwerve()};
+    Autonomous autonomous{GetSwerve(), GetElevator(), GetClaw(), GetClimber(), GetPneumatics(), GetLimelightHigh(), GetLimelightLow()};
 
     std::optional<frc2::CommandPtr> autoCmd;
 };

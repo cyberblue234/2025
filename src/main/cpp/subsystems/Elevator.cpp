@@ -40,6 +40,8 @@ Elevator::Elevator()
     frc::SmartDashboard::PutNumber("Elevator kG", kG.value());
     frc::SmartDashboard::PutNumber("Elevator kV", kV.value());
     frc::SmartDashboard::PutNumber("Elevator kA", kA.value());
+
+    controller.SetTolerance(kDeadzone);
 }
 
 void Elevator::SetMotors(double power)
@@ -70,8 +72,8 @@ bool Elevator::GoToHeight(const units::meter_t desiredHeight)
                         .WithLimitForwardMotion(GetEncoder() > kMaxEncoderValue)
                         .WithLimitReverseMotion(IsBottomLimitSwitchClosed()));
     }
-    // Returns true if the change in position is less than the deadzone
-    return units::math::abs(desiredHeight - GetHeight()) < kDeadzone;
+    // Returns true if the position is within the deadzone
+    return IsAtPosition();
 }
 
 bool Elevator::GoToPosition(const Position &pos)

@@ -56,9 +56,11 @@ public:
     /// @brief Gets the state of the bottom limit switch
     /// @retval true if the limit switch is closed (pressed)
     /// @retval false if the limit switch is open
-    bool IsBottomLimitSwitchClosed() { return bottomLimitSwitch.Get() || simLimSwitch; }
+    bool IsBottomLimitSwitchClosed() { return bottomLimitSwitch.Get() && simLimSwitch; }
 
     void ResetMotionController() { controller.Reset(GetHeight()); }
+
+    bool IsAtPosition() { return controller.AtGoal(); }
 
     /// @brief Simulation periodic
     void SimMode();
@@ -71,7 +73,7 @@ private:
     // Creates the limit switch - it is a digital (true or false) input
     frc::DigitalInput bottomLimitSwitch{RobotMap::Elevator::kBottomLimitSwitchID};
     // Simulated representation of the limit switch
-    bool simLimSwitch = false;
+    bool simLimSwitch = true;
 
     // If the elevator is not registered, the elevator encoders have not been reset. 
     // In that case, we will not allow the elevator to use PID control
@@ -107,7 +109,7 @@ private:
         frc::DCMotor::KrakenX60(2),
         kHeightOffset,
         kMaxElevatorHeight,
-        true,
+        false,
         kHeightOffset
     };
 };

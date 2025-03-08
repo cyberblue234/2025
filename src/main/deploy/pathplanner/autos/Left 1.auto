@@ -5,27 +5,78 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Left 1.0"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Left 1.0"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "PathfindToBranchLeft"
+            "name": "Score"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Left 1.1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Left 1.1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralStation"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "PathfindToCoralStationLeft"
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Left 1.2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score"
           }
         }
       ]

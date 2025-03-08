@@ -291,7 +291,7 @@ namespace ElevatorConstants
     constexpr double kI = 0.0;
     constexpr double kD = 0.0;
     constexpr units::volt_t kS{0.0};
-    constexpr units::volt_t kG{0.21975};
+    constexpr units::volt_t kG{0.0};
     constexpr units::kv_meters_t kV{7.2};
     constexpr units::ka_meters_t kA{0.5};
     constexpr frc::TrapezoidProfile<units::meters>::Constraints kTrapezoidProfileContraints{1_mps, 1_mps_sq};
@@ -316,13 +316,13 @@ namespace ElevatorConstants
 
 namespace ClawConstants
 {
-    constexpr double kP = 0.0;
+    constexpr double kP = 0.02;
     constexpr double kI = 0.0;
     constexpr double kD = 0.0;
-    constexpr units::volt_t kS{0.0};
+    constexpr units::volt_t kS{0.005};
     constexpr units::volt_t kG{0.0};
-    constexpr units::kv_degrees_t kV{0.0};
-    constexpr units::ka_degrees_t kA{0.0};
+    constexpr units::kv_degrees_t kV{0.015};
+    constexpr units::ka_degrees_t kA{0.005};
     constexpr frc::TrapezoidProfile<units::degrees>::Constraints kTrapezoidProfileContraints{10_deg_per_s, 10_deg_per_s_sq};
 
     constexpr double kWristPower = 0.1;
@@ -387,7 +387,7 @@ namespace Positions
     constexpr Position L4           = Position(4.0_ft, -10.0_deg, -ClawConstants::kCoralOutputPower);
     constexpr Position AlgaeLow     = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kAlgaeIntakePower);
     constexpr Position AlgaeHigh    = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kAlgaeIntakePower);
-    constexpr Position CoralStation = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kCoralIntakePower, true);
+    constexpr Position CoralStation = Position(2_ft,   0.0_deg,  ClawConstants::kCoralIntakePower, true);
     constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kAlgaeOutputPower);
     constexpr Position Barge        = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kAlgaeOutputPower);
 }

@@ -82,7 +82,7 @@ void Controls::ElevatorControls()
     // Take the elevator down if the robot is tilting
     if (units::math::abs(swerve->GetRoll()) > 2_deg || units::math::abs(swerve->GetPitch()) > 2_deg)
     {
-        elevator->GoToHeight(kMaxElevatorHeight);
+        elevator->GoToHeight(kHeightOffset);
     }
     // If there is a desired position
     if (GetDesiredPosition().has_value())

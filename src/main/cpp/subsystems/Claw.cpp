@@ -57,6 +57,8 @@ Claw::Claw()
     frc::SmartDashboard::PutNumber("Wrist kG", kG.value());
     frc::SmartDashboard::PutNumber("Wrist kV", kV.value());
     frc::SmartDashboard::PutNumber("Wrist kA", kA.value());
+
+    controller.SetTolerance(kDeadzone);
 }
 
 void Claw::SetWristPower(double power)
@@ -73,7 +75,7 @@ bool Claw::GoToAngle(units::degree_t angle)
     wristMotor.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet));
 
     // Returns true if the change in angle is less than the deadzone
-    return units::math::abs(angle - GetCurrentAngle()) < kDeadzone;
+    return IsAtPosition();
 }
 
 bool Claw::GoToPosition(const Position &pos)

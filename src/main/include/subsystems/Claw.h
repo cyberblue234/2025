@@ -56,6 +56,8 @@ public:
 
     void ResetMotionController() { controller.Reset(GetCurrentAngle()); }
 
+    bool IsAtPosition() { return controller.AtGoal(); }
+
     /// @brief Simulation periodic
     void SimMode();
 

@@ -90,6 +90,36 @@
               "data_type": "string",
               "show_submit_button": false
             }
+          },
+          {
+            "title": "Simulated Coral in Claw",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "/SmartDashboard/Simulated Coral in Claw",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Simulated Coral in Claw",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Simulated Coral in Claw",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
           }
         ]
       }
@@ -242,34 +272,6 @@
             }
           },
           {
-            "title": "Elevator PID set",
-            "x": 128.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Elevator PID set",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Elevator FF set",
-            "x": 0.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Elevator FF set",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
             "title": "Elevator Setpoint",
             "x": 0.0,
             "y": 0.0,
@@ -312,6 +314,68 @@
               "data_type": "double",
               "show_submit_button": true
             }
+          },
+          {
+            "title": "Elevator Is Registered",
+            "x": 512.0,
+            "y": 640.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator Is Registered",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Elevator M1 Pos",
+            "x": 256.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator M1 Pos",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Elevator M2 Pos",
+            "x": 384.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator M2 Pos",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Elevator Bottom Limit Switch",
+            "x": 512.0,
+            "y": 768.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator Bottom Limit Switch",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
           }
         ]
       }
@@ -323,22 +387,24 @@
         "containers": [
           {
             "title": "Wrist Angle",
-            "x": 1152.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 640.0,
+            "height": 512.0,
+            "type": "Graph",
             "properties": {
               "topic": "/SmartDashboard/Wrist Angle",
-              "period": 0.06,
+              "period": 0.033,
               "data_type": "double",
-              "show_submit_button": false
+              "time_displayed": 5.0,
+              "color": 4278238420,
+              "line_width": 2.0
             }
           },
           {
             "title": "Wrist D",
-            "x": 640.0,
-            "y": 512.0,
+            "x": 768.0,
+            "y": 768.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -351,8 +417,8 @@
           },
           {
             "title": "Wrist I",
-            "x": 640.0,
-            "y": 384.0,
+            "x": 768.0,
+            "y": 640.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -365,8 +431,8 @@
           },
           {
             "title": "Wrist P",
-            "x": 640.0,
-            "y": 256.0,
+            "x": 768.0,
+            "y": 512.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -380,7 +446,7 @@
           {
             "title": "Wrist Trapezoid Max Acceleration",
             "x": 1024.0,
-            "y": 384.0,
+            "y": 640.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
@@ -394,7 +460,7 @@
           {
             "title": "Wrist Trapezoid Max Velocity",
             "x": 1024.0,
-            "y": 256.0,
+            "y": 512.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
@@ -407,8 +473,8 @@
           },
           {
             "title": "Wrist kA",
-            "x": 768.0,
-            "y": 640.0,
+            "x": 896.0,
+            "y": 768.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -421,8 +487,8 @@
           },
           {
             "title": "Wrist kG",
-            "x": 768.0,
-            "y": 384.0,
+            "x": 1024.0,
+            "y": 768.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -435,8 +501,8 @@
           },
           {
             "title": "Wrist kS",
-            "x": 768.0,
-            "y": 256.0,
+            "x": 896.0,
+            "y": 512.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -449,8 +515,8 @@
           },
           {
             "title": "Wrist kV",
-            "x": 768.0,
-            "y": 512.0,
+            "x": 896.0,
+            "y": 640.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -490,31 +556,19 @@
             }
           },
           {
-            "title": "Wrist PID set",
-            "x": 640.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
+            "title": "Wrist Setpoint",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 640.0,
+            "height": 512.0,
+            "type": "Graph",
             "properties": {
-              "topic": "/SmartDashboard/Wrist PID set",
-              "period": 0.06,
+              "topic": "/SmartDashboard/Wrist Setpoint",
+              "period": 0.033,
               "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Wrist FF set",
-            "x": 768.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Wrist FF set",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
+              "time_displayed": 5.0,
+              "color": 4278238420,
+              "line_width": 2.0
             }
           }
         ]

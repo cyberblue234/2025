@@ -94,7 +94,6 @@ private:
     std::optional<Position> clawPosition;
     std::optional<Position> desiredPosition; 
 
-    int branch = 0;
     std::optional<frc2::CommandPtr> path;
 
     bool fieldRelative = true;
