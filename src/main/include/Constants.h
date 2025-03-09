@@ -162,24 +162,24 @@ namespace RobotMap
 namespace ControlsConstants
 {
     // Analog inputs
-    constexpr int kManualWristAxis = 0;
-    constexpr int kManualElevatorAxis = 1;
-    constexpr int kClimberAxis = 2;
-    constexpr int kManualIntakeAxis = 3;
+    constexpr int kManualWristAxis = 1;
+    constexpr int kManualElevatorAxis = 2;
+    constexpr int kClimberAxis = 3;
+    constexpr int kManualIntakeAxis = 0;
 
     constexpr int kL1Button = 4;
     constexpr int kL2Button = 9;
     constexpr int kL3Button = 3;
     constexpr int kL4Button = 11;
     constexpr int kAlgaeHighButton = 8;
-    constexpr int kAlgaeLowButton = 12;
+    constexpr int kAlgaeLowButton = 11;
     constexpr int kCoralStationButton = 2;
-    constexpr int kProcessorButton = 1;
-    constexpr int kStopperButton = 5;
-    constexpr int kCoralHomeButton = 6;
-    constexpr int kAlgaeHomeButton = 10;
+    constexpr int kProcessorButton = 7;
+    constexpr int kBargeButton = 5;
+    constexpr int kCoralHomeButton = 9;
+    constexpr int kAlgaeHomeButton = 12;
 
-    constexpr int kIOButton = 7;
+    constexpr int kIOButton = 10;
     
 }
 

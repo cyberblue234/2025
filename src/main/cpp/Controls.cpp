@@ -234,7 +234,7 @@ void Controls::ClimberControls()
 
 void Controls::PneumaticsControls()
 {
-    pneumatics->SetStopper(controlBoard.GetRawButton(kStopperButton));
+    // pneumatics->SetStopper(controlBoard.GetRawButton(kStopperButton));
 }
 
 void Controls::SetDesiredPosition()
