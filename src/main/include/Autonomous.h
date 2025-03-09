@@ -37,11 +37,11 @@ public:
     /// @retval Positions::Null if the elevator is not at any preset position
     std::optional<Position> GetElevatorPosition() { return elevatorPosition; }
     /// @brief Sets current claw position
-    void SetClawPosition(std::optional<Position> pos) { clawPosition = pos; }
+    void SetWristPosition(std::optional<Position> pos) { wristPosition = pos; }
     /// @brief Gets current claw position
     /// @retval Position of the claw
     /// @retval Positions::Null if the claw is not at any preset position
-    std::optional<Position> GetClawPosition() { return clawPosition; }
+    std::optional<Position> GetWristPosition() { return wristPosition; }
     /// @brief Returns the position of the elevator-claw system
     /// @retval Position of the system
     /// @retval Positions::Null if the two subsystems are not at the same position
@@ -49,7 +49,7 @@ public:
     {
         // Short circuits if either elevator or claw position does not exist
         // Equals comparison checks if the height, angle, IO power, and coral output check are the same
-        if (GetElevatorPosition() && GetClawPosition() && GetElevatorPosition().value().operator==(GetClawPosition().value())) return GetElevatorPosition();
+        if (GetElevatorPosition() && GetWristPosition() && GetElevatorPosition().value().operator==(GetWristPosition().value())) return GetElevatorPosition();
         return std::nullopt;
     }
 
@@ -68,7 +68,7 @@ private:
     Limelight *limelightLow; 
 
     std::optional<Position> elevatorPosition;
-    std::optional<Position> clawPosition;
+    std::optional<Position> wristPosition;
     std::optional<Position> desiredPosition; 
 
     frc::SendableChooser<std::string> autoChooser;

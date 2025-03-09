@@ -60,13 +60,17 @@ Claw::Claw()
     frc::SmartDashboard::PutNumber("Wrist kV", kV.value());
     frc::SmartDashboard::PutNumber("Wrist kA", kA.value());
 
+    frc::SmartDashboard::PutBoolean("Wrist Disable Motion Profiling", false);
+
     controller.SetTolerance(kTolerance);
 }
 
 void Claw::SetWristPower(double power)
 {
     // Sets the duty cycle of the motor
-    wristMotor.SetControl(controls::DutyCycleOut{power});
+    wristMotor.SetControl(controls::DutyCycleOut{power}
+                        .WithLimitReverseMotion(GetCurrentAngle() <= kLowLimit)
+                        .WithLimitForwardMotion(GetCurrentAngle() >= kHighLimit));
 }
 
 bool Claw::GoToAngle(units::degree_t angle)
@@ -74,9 +78,12 @@ bool Claw::GoToAngle(units::degree_t angle)
     controller.SetGoal(angle);
     units::volt_t pidSet{controller.Calculate(GetCurrentAngle())};
     units::volt_t feedforwardSet = feedforward.Calculate(GetCurrentAngle(), controller.GetSetpoint().velocity);
-    wristMotor.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
-                        .WithLimitReverseMotion(GetCurrentAngle() <= kLowLimit)
-                        .WithLimitForwardMotion(GetCurrentAngle() >= kHighLimit));
+    if (frc::SmartDashboard::GetBoolean("Wrist Disable Motion Profiling", false) == false)
+    {
+        wristMotor.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
+                            .WithLimitReverseMotion(GetCurrentAngle() <= kLowLimit)
+                            .WithLimitForwardMotion(GetCurrentAngle() >= kHighLimit));
+    }
 
     // Returns true if the change in angle is less than the deadzone
     return IsAtPosition();

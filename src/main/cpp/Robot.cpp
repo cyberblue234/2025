@@ -39,13 +39,17 @@ void Robot::AutonomousInit()
 	if (autoCmd) autoCmd->Schedule();
 }
 
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousPeriodic() 
+{
+	autonomous.UpdateTelemetry();
+}
 
 void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic()
 {
 	controls.Periodic();
+	controls.UpdateTelemetry();
 }
 
 void Robot::TestPeriodic() {}
@@ -62,9 +66,6 @@ void Robot::SimulationPeriodic()
 void Robot::UpdateTelemetry()
 {
 	frc::SmartDashboard::PutNumber("Battery Voltage", frc::RobotController::GetBatteryVoltage().value());
-
-	controls.UpdateTelemetry();
-	autonomous.UpdateTelemetry();
 	swerve.UpdateTelemetry();
 	elevator.UpdateTelemtry();
 	claw.UpdateTelemetry();

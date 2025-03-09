@@ -176,9 +176,10 @@ namespace ControlsConstants
     constexpr int kCoralStationButton = 2;
     constexpr int kProcessorButton = 1;
     constexpr int kStopperButton = 5;
+    constexpr int kCoralHomeButton = 6;
+    constexpr int kAlgaeHomeButton = 10;
 
-    constexpr int kOutputButton = 7;
-    constexpr int kIntakeButton = 10;
+    constexpr int kIOButton = 7;
     
 }
 
@@ -330,10 +331,11 @@ namespace ClawConstants
 
     // Intake and output powers for coral and algae
     constexpr double kCoralIntakePower = -0.2;
-    constexpr double kAlgaeIntakePower = -0.3;
+    constexpr double kAlgaeIntakePower = 0.3;
     // Outputting should be negative compared to intaking
     constexpr double kCoralOutputPower = 0.2;
-    constexpr double kAlgaeOutputPower = 0.3;
+    constexpr double kProcessorPower = -0.3;
+    constexpr double kBargePower = -1.0;
     constexpr double kManualIOPower = 0.2;
 
     constexpr units::turn_t canCoderMagnetOffset = 0.1582_tr;
@@ -388,15 +390,17 @@ struct Position
 };
 namespace Positions
 {
-    constexpr Position L1           = Position(1.0_ft,   5.0_deg,  ClawConstants::kCoralOutputPower);
-    constexpr Position L2           = Position(2.0_ft,  10.0_deg,  ClawConstants::kCoralOutputPower);
-    constexpr Position L3           = Position(3.0_ft,  5.0_deg,  ClawConstants::kCoralOutputPower);
-    constexpr Position L4           = Position(4.0_ft, 10.0_deg, -ClawConstants::kCoralOutputPower);
-    constexpr Position AlgaeLow     = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kAlgaeIntakePower);
-    constexpr Position AlgaeHigh    = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kAlgaeIntakePower);
-    constexpr Position CoralStation = Position(1.9_ft,   110.0_deg,  ClawConstants::kCoralIntakePower, true);
-    constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kAlgaeOutputPower);
-    constexpr Position Barge        = Position(ElevatorConstants::kHeightOffset,   0.0_deg,  ClawConstants::kAlgaeOutputPower);
+    constexpr Position L1           = Position(1.0_ft, 70.0_deg,  ClawConstants::kCoralOutputPower);
+    constexpr Position L2           = Position(2.0_ft, 80.0_deg,  ClawConstants::kCoralOutputPower);
+    constexpr Position L3           = Position(3.0_ft, 90.0_deg,  ClawConstants::kCoralOutputPower);
+    constexpr Position L4           = Position(4.0_ft, 100.0_deg, -ClawConstants::kCoralOutputPower);
+    constexpr Position AlgaeLow     = Position(2.5_ft, 95.0_deg,  ClawConstants::kAlgaeIntakePower);
+    constexpr Position AlgaeHigh    = Position(3.5_ft, 105.0_deg,  ClawConstants::kAlgaeIntakePower);
+    constexpr Position CoralStation = Position(1.9_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true);
+    constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset, 0.0_deg,  ClawConstants::kProcessorPower);
+    constexpr Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 0.0_deg,  ClawConstants::kBargePower);
+    constexpr Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 0.0_deg,  0.0);
+    constexpr Position AlgaeHome    = Position(ElevatorConstants::kHeightOffset, 100.0_deg,  0.0);
 }
 
 /// @brief Clamps the input to a specifed range

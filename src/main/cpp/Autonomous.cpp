@@ -77,9 +77,9 @@ void Autonomous::GoToPosition(Position pos)
     if (isElevatorAtPos == true) SetElevatorPosition(pos);
     else SetElevatorPosition(std::nullopt);
 
-    bool isClawAtPosition = claw->GoToPosition(pos);
-    if (isClawAtPosition == true) SetClawPosition(pos);
-    else SetClawPosition(std::nullopt); 
+    bool isWristAtPosition = claw->GoToPosition(pos);
+    if (isWristAtPosition == true) SetWristPosition(pos);
+    else SetWristPosition(std::nullopt); 
 }
 
 frc2::CommandPtr Autonomous::GoToL1()
@@ -169,69 +169,7 @@ frc2::CommandPtr Autonomous::GoToCoralStation()
 
 void Autonomous::UpdateTelemetry()
 {
-    frc::SmartDashboard::PutString("Claw Position", GetClawPosition() ? GetClawPosition().value().to_string() : "None");
+    frc::SmartDashboard::PutString("Wrist Position", GetWristPosition() ? GetWristPosition().value().to_string() : "None");
     frc::SmartDashboard::PutString("Elevator Position", GetElevatorPosition() ? GetElevatorPosition().value().to_string() : "None");
     frc::SmartDashboard::PutString("Current Position", GetCurrentPosition() ? GetCurrentPosition().value().to_string() : "None");
 }
-
-// frc2::CommandPtr RobotContainer::GetShootCommand()
-// {
-// 	return frc2::RunCommand
-// 	(
-// 		[this]
-// 		{
-// 			this->GetShooter()->ShootAtSpeaker();
-// 			this->GetSwerve()->AlignToSpeaker();
-// 		}
-// 	).Until
-// 	(
-// 		[this]
-// 		{
-// 			return this->GetShooter()->GetAverageRPM() >= this->GetShooter()->GetSpeakerRPM() - 100;
-// 		}
-// 	).AndThen
-// 	(
-// 		frc2::RunCommand
-// 		(
-// 			[this]
-// 			{
-// 				this->GetFeeder()->ShootAtSpeaker();
-// 			}
-// 		).Until
-// 		(
-// 			[this]
-// 			{
-// 				return this->GetFeeder()->GetTopSensorInput() == false;
-// 			}
-// 		)
-// 	).AndThen
-// 	(
-// 		frc2::InstantCommand
-// 		(
-// 			[this]
-// 			{
-// 				this->GetShooter()->StopMotors();
-// 				this->GetElevator()->StopMotors();
-// 				this->GetFeeder()->StopMotor();
-// 			}
-// 		).ToPtr()
-// 	);
-// }
-
-// frc2::CommandPtr RobotContainer::GetIntakeCommand()
-// {
-// 	return frc2::RunCommand
-// 	(
-// 		[this]
-// 		{
-// 			this->GetIntake()->IntakeFromGround();
-// 			this->GetFeeder()->IntakeFromGround();
-// 		}
-// 	).ToPtr().Until
-// 	(
-// 		[this]
-// 		{
-// 			return this->GetFeeder()->IsNoteSecured();
-// 		}
-// 	);
-// }

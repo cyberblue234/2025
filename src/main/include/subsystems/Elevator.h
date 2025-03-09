@@ -111,7 +111,7 @@ private:
         frc::DCMotor::KrakenX60(2),
         kHeightOffset,
         kMaxElevatorHeight,
-        false,
+        true,
         kHeightOffset
     };
 };

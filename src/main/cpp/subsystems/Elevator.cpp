@@ -43,6 +43,8 @@ Elevator::Elevator()
     frc::SmartDashboard::PutNumber("Elevator kV", kV.value());
     frc::SmartDashboard::PutNumber("Elevator kA", kA.value());
 
+    frc::SmartDashboard::PutBoolean("Elevator Disable Motion Profiling", false);
+
     controller.SetTolerance(kTolerance);
 }
 
@@ -82,9 +84,12 @@ bool Elevator::GoToHeight(const units::meter_t desiredHeight)
         }
         units::volt_t pidSet{controller.Calculate(GetHeight())};
         units::volt_t feedforwardSet = feedforward.Calculate(controller.GetSetpoint().velocity);
-        motor1.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
+        if (frc::SmartDashboard::GetBoolean("Elevator Disable Motion Profiling", false) == false)
+        {
+            motor1.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
                         .WithLimitForwardMotion(GetEncoder() > kMaxEncoderValue)
                         .WithLimitReverseMotion(IsBottomLimitSwitchClosed()));
+        }
     }
     // Returns true if the position is within the deadzone
     return IsAtPosition();
