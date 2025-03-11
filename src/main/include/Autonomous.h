@@ -23,7 +23,7 @@ public:
     frc2::CommandPtr GetAutoCommand();
 
     frc2::CommandPtr IO();
-	void GoToPosition(Position pos);
+
     frc2::CommandPtr GoToL1();
     frc2::CommandPtr GoToL2();
     frc2::CommandPtr GoToL3();

@@ -117,11 +117,20 @@ void Controls::ElevatorControls()
     if (GetDesiredPosition().has_value() && frc::SmartDashboard::GetBoolean("Elevator Disable Motion Profiling", false) == false)
     {
         // Runs the elevator to the position
-        bool isElevatorAtPos = elevator->GoToPosition(GetDesiredPosition().value());
-        // Set the elevator current position if the height is within the deadzone of the setpoint
-        if (isElevatorAtPos == true) SetElevatorPosition(GetDesiredPosition());
-        // If the elevator height is not within the deadzone, set the current elevator pos to null
-        else SetElevatorPosition(std::nullopt);
+        units::meter_t deltaHeight = GetDesiredPosition().value().height - elevator->GetHeight();
+        if ((claw->GetCurrentAngle() <= 10_deg && ((deltaHeight > 0_m && elevator->GetHeight() >= 2_ft)) || (deltaHeight < 0_m && elevator->GetHeight() <= 2.5_ft)) 
+            || claw->GetCurrentAngle() >= 150_deg && (deltaHeight < 0_m && elevator->GetHeight() < 8_in))
+        {
+            elevator->SetMotors(0);   
+        }
+        else
+        {
+            bool isElevatorAtPos = elevator->GoToPosition(GetDesiredPosition().value());
+            // Set the elevator current position if the height is within the deadzone of the setpoint
+            if (isElevatorAtPos == true) SetElevatorPosition(GetDesiredPosition());
+            // If the elevator height is not within the deadzone, set the current elevator pos to null
+            else SetElevatorPosition(std::nullopt);
+        }       
     }  
     else if (controlBoard.GetRawAxis(kManualElevatorAxis) > 0.5) 
     {
@@ -150,9 +159,18 @@ void Controls::ClawControls()
 {
     if (GetDesiredPosition().has_value() && frc::SmartDashboard::GetBoolean("Wrist Disable Motion Profiling", false) == false)
     {
-        bool isWristAtPosition = claw->GoToPosition(GetDesiredPosition().value());
-        if (isWristAtPosition == true) SetWristPosition(GetDesiredPosition());
-        else SetWristPosition(std::nullopt);
+        units::degree_t desiredAngle = GetDesiredPosition().value().angle;
+        units::degree_t deltaAngle = desiredAngle - claw->GetCurrentAngle();
+        if (elevator->GetHeight() <= 8_in && (deltaAngle > 0_deg && claw->GetCurrentAngle() >= 150_deg))
+        {
+            claw->SetWristPower(0.0);
+        }
+        else
+        {
+            bool isWristAtPosition = claw->GoToPosition(GetDesiredPosition().value());
+            if (isWristAtPosition == true) SetWristPosition(GetDesiredPosition());
+            else SetWristPosition(std::nullopt);
+        }      
     }
     else if (controlBoard.GetRawAxis(kManualWristAxis) < -0.5)
     {
@@ -174,15 +192,15 @@ void Controls::ClawControls()
     
     if (controlBoard.GetRawButton(kIOButton))
     {
-        if (GetCurrentPosition().has_value())
+        if (GetDesiredPosition().has_value())
         {
             // If we are intaking a coral and there the proximity sensor detects a coral, stop the IO motor
-            if (GetCurrentPosition().value().isForCoralIntake == true && claw->IsCoralInClaw() == true)
+            if (GetDesiredPosition().value().isForCoralIntake == true && claw->IsCoralInClaw() == true)
             {
                 claw->SetIOPower(0.0);
             }
             // Otherwise, set the IO motor to the constant at the current Position
-            else claw->SetIOPower(GetCurrentPosition().value().ioMotorPower);
+            else claw->SetIOPower(GetDesiredPosition().value().ioMotorPower);
         }
     }
     else if (controlBoard.GetRawAxis(kManualIntakeAxis) < -0.5) 

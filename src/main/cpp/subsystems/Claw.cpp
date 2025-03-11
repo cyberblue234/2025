@@ -75,8 +75,8 @@ void Claw::SetWristPower(double power)
 bool Claw::GoToAngle(units::degree_t angle)
 {
     controller.SetGoal(angle);
-    units::volt_t pidSet{controller.Calculate(GetCurrentAngle())};
-    units::volt_t feedforwardSet = feedforward.Calculate(GetCurrentAngle(), controller.GetSetpoint().velocity);
+    units::volt_t pidSet{-controller.Calculate(GetCurrentAngle())};
+    units::volt_t feedforwardSet = -feedforward.Calculate(GetCurrentAngle(), controller.GetSetpoint().velocity);
     
     if (frc::SmartDashboard::GetBoolean("Wrist Disable Motion Profiling", false) == false)
     {

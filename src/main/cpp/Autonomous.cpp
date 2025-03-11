@@ -69,18 +69,6 @@ frc2::CommandPtr Autonomous::IO()
     );
 }
 
-void Autonomous::GoToPosition(Position pos)
-{
-    frc::SmartDashboard::PutString("Desired Position", pos.to_string());
-
-    bool isElevatorAtPos = elevator->GoToPosition(pos);
-    if (isElevatorAtPos == true) SetElevatorPosition(pos);
-    else SetElevatorPosition(std::nullopt);
-
-    bool isWristAtPosition = claw->GoToPosition(pos);
-    if (isWristAtPosition == true) SetWristPosition(pos);
-    else SetWristPosition(std::nullopt); 
-}
 
 frc2::CommandPtr Autonomous::GoToL1()
 {
@@ -88,7 +76,13 @@ frc2::CommandPtr Autonomous::GoToL1()
     (
         [this]
         {
-            this->GoToPosition(Positions::L1);
+            bool isElevatorAtPos = elevator->GoToPosition(Positions::L1);
+            if (isElevatorAtPos == true) SetElevatorPosition(Positions::L1);
+            else SetElevatorPosition(std::nullopt);
+
+            bool isWristAtPosition = claw->GoToPosition(Positions::L1);
+            if (isWristAtPosition == true) SetWristPosition(Positions::L1);
+            else SetWristPosition(std::nullopt);
         }
     ).Until
     (
@@ -105,7 +99,13 @@ frc2::CommandPtr Autonomous::GoToL2()
     (
         [this]
         {
-            this->GoToPosition(Positions::L2);
+            bool isElevatorAtPos = elevator->GoToPosition(Positions::L2);
+            if (isElevatorAtPos == true) SetElevatorPosition(Positions::L2);
+            else SetElevatorPosition(std::nullopt);
+
+            bool isWristAtPosition = claw->GoToPosition(Positions::L2);
+            if (isWristAtPosition == true) SetWristPosition(Positions::L2);
+            else SetWristPosition(std::nullopt);
         }
     ).Until
     (
@@ -122,7 +122,13 @@ frc2::CommandPtr Autonomous::GoToL3()
     (
         [this]
         {
-            this->GoToPosition(Positions::L3);
+            bool isElevatorAtPos = elevator->GoToPosition(Positions::L3);
+            if (isElevatorAtPos == true) SetElevatorPosition(Positions::L3);
+            else SetElevatorPosition(std::nullopt);
+
+            bool isWristAtPosition = claw->GoToPosition(Positions::L3);
+            if (isWristAtPosition == true) SetWristPosition(Positions::L3);
+            else SetWristPosition(std::nullopt);
         }
     ).Until
     (
@@ -139,7 +145,13 @@ frc2::CommandPtr Autonomous::GoToL4()
     (
         [this]
         {
-            this->GoToPosition(Positions::L4);
+            bool isElevatorAtPos = elevator->GoToPosition(Positions::L4);
+            if (isElevatorAtPos == true) SetElevatorPosition(Positions::L4);
+            else SetElevatorPosition(std::nullopt);
+
+            bool isWristAtPosition = claw->GoToPosition(Positions::L4);
+            if (isWristAtPosition == true) SetWristPosition(Positions::L4);
+            else SetWristPosition(std::nullopt);
         }
     ).Until
     (
@@ -156,7 +168,13 @@ frc2::CommandPtr Autonomous::GoToCoralStation()
     (
         [this]
         {
-            this->GoToPosition(Positions::CoralStation);
+            bool isElevatorAtPos = elevator->GoToPosition(Positions::CoralStation);
+            if (isElevatorAtPos == true) SetElevatorPosition(Positions::CoralStation);
+            else SetElevatorPosition(std::nullopt);
+
+            bool isWristAtPosition = claw->GoToPosition(Positions::CoralStation);
+            if (isWristAtPosition == true) SetWristPosition(Positions::CoralStation);
+            else SetWristPosition(std::nullopt);
         }
     ).Until
     (

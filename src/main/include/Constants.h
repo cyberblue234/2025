@@ -320,12 +320,12 @@ namespace ElevatorConstants
 
 namespace ClawConstants
 {
-    constexpr double kP = -0.18;
+    constexpr double kP = 0.18;
     constexpr double kI = 0.0;
     constexpr double kD = 0.0;
-    constexpr units::volt_t kS{-0.1595};
+    constexpr units::volt_t kS{0.1595};
     constexpr units::volt_t kG{0.0};
-    constexpr units::kv_degrees_t kV{-0.07};
+    constexpr units::kv_degrees_t kV{0.07};
     constexpr units::ka_degrees_t kA{0.0};
     constexpr frc::TrapezoidProfile<units::degrees>::Constraints kTrapezoidProfileContraints{200_deg_per_s, 180_deg_per_s_sq};
 
