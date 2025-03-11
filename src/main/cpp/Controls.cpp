@@ -113,26 +113,24 @@ void Controls::DriveControls()
 void Controls::ElevatorControls() 
 {
     // If there is a desired position
-    if (frc::SmartDashboard::GetBoolean("Elevator Disable Motion Profiling", false) == false)
+
+    if (GetDesiredPosition().has_value() && frc::SmartDashboard::GetBoolean("Elevator Disable Motion Profiling", false) == false)
     {
-        if (GetDesiredPosition().has_value())
-        {
-            // Runs the elevator to the position
-            bool isElevatorAtPos = elevator->GoToPosition(GetDesiredPosition().value());
-            // Set the elevator current position if the height is within the deadzone of the setpoint
-            if (isElevatorAtPos == true) SetElevatorPosition(GetDesiredPosition());
-            // If the elevator height is not within the deadzone, set the current elevator pos to null
-            else SetElevatorPosition(std::nullopt);
-        }
-    }
-    else if (controlBoard.GetRawAxis(kManualElevatorAxis) < -0.5) 
+        // Runs the elevator to the position
+        bool isElevatorAtPos = elevator->GoToPosition(GetDesiredPosition().value());
+        // Set the elevator current position if the height is within the deadzone of the setpoint
+        if (isElevatorAtPos == true) SetElevatorPosition(GetDesiredPosition());
+        // If the elevator height is not within the deadzone, set the current elevator pos to null
+        else SetElevatorPosition(std::nullopt);
+    }  
+    else if (controlBoard.GetRawAxis(kManualElevatorAxis) > 0.5) 
     {
         // Manual control up
         elevator->SetMotors(kElevatorPower);
         elevator->ResetMotionController();
         SetElevatorPosition(std::nullopt);
     }
-    else if (controlBoard.GetRawAxis(kManualElevatorAxis) > 0.5)
+    else if (controlBoard.GetRawAxis(kManualElevatorAxis) < -0.5)
     {
         // Manual control down
         elevator->SetMotors(-kElevatorPower);
@@ -150,14 +148,11 @@ void Controls::ElevatorControls()
 
 void Controls::ClawControls()
 {
-    if (frc::SmartDashboard::GetBoolean("Wrist Disable Motion Profiling", false) == false)
+    if (GetDesiredPosition().has_value() && frc::SmartDashboard::GetBoolean("Wrist Disable Motion Profiling", false) == false)
     {
-        if (GetDesiredPosition().has_value())
-        {
-            bool isWristAtPosition = claw->GoToPosition(GetDesiredPosition().value());
-            if (isWristAtPosition == true) SetWristPosition(GetDesiredPosition());
-            else SetWristPosition(std::nullopt);
-        }
+        bool isWristAtPosition = claw->GoToPosition(GetDesiredPosition().value());
+        if (isWristAtPosition == true) SetWristPosition(GetDesiredPosition());
+        else SetWristPosition(std::nullopt);
     }
     else if (controlBoard.GetRawAxis(kManualWristAxis) < -0.5)
     {
@@ -192,17 +187,9 @@ void Controls::ClawControls()
     }
     else if (controlBoard.GetRawAxis(kManualIntakeAxis) < -0.5) 
     {
-        claw->SetIOPower(kManualIOPower);
+        claw->SetIOPower(-kManualIOPower);
     }
     else if (controlBoard.GetRawAxis(kManualIntakeAxis) > 0.5)
-    {
-        claw->SetIOPower(-kManualIOPower);
-    }
-    else if (gamepad.GetXButton()) 
-    {
-        claw->SetIOPower(-kManualIOPower);
-    }
-    else if (gamepad.GetBButton())
     {
         claw->SetIOPower(kManualIOPower);
     }

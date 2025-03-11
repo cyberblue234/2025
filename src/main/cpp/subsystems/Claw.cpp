@@ -29,7 +29,7 @@ Claw::Claw()
     canCoderWristConfig.MagnetSensor.MagnetOffset = canCoderMagnetOffset;
     // Sets the range of the CANcoder. When it is at 0.5 turn, the CANcoders range is from [-0.2, 0.8)
     canCoderWristConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.8_tr;
-    canCoderWristConfig.MagnetSensor.SensorDirection = signals::SensorDirectionValue::CounterClockwise_Positive;
+    canCoderWristConfig.MagnetSensor.SensorDirection = signals::SensorDirectionValue::Clockwise_Positive;
 
     canCoderWrist.GetConfigurator().Apply(canCoderWristConfig);
 
@@ -69,8 +69,7 @@ void Claw::SetWristPower(double power)
 {
     // Sets the duty cycle of the motor
     wristMotor.SetControl(controls::DutyCycleOut{power}
-                        .WithLimitReverseMotion(GetCurrentAngle() <= kLowLimit)
-                        .WithLimitForwardMotion(GetCurrentAngle() >= kHighLimit));
+                        .WithLimitForwardMotion(GetCurrentAngle() <= kLowLimit));
 }
 
 bool Claw::GoToAngle(units::degree_t angle)
@@ -78,11 +77,12 @@ bool Claw::GoToAngle(units::degree_t angle)
     controller.SetGoal(angle);
     units::volt_t pidSet{controller.Calculate(GetCurrentAngle())};
     units::volt_t feedforwardSet = feedforward.Calculate(GetCurrentAngle(), controller.GetSetpoint().velocity);
+    
     if (frc::SmartDashboard::GetBoolean("Wrist Disable Motion Profiling", false) == false)
     {
         wristMotor.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
-                            .WithLimitReverseMotion(GetCurrentAngle() <= kLowLimit)
-                            .WithLimitForwardMotion(GetCurrentAngle() >= kHighLimit));
+                            .WithLimitReverseMotion(GetCurrentAngle() >= kHighLimit)
+                            .WithLimitForwardMotion(GetCurrentAngle() <= kLowLimit));
     }
 
     // Returns true if the change in angle is less than the deadzone
@@ -108,6 +108,7 @@ void Claw::UpdateTelemetry()
     frc::SmartDashboard::PutNumber("Proximity Sensor Distance", GetDistance().convert<units::inch>().value());
     frc::SmartDashboard::PutNumber("Wrist Angle", GetCurrentAngle().value());
     frc::SmartDashboard::PutNumber("Wrist Setpoint", controller.GetSetpoint().position.value());
+    frc::SmartDashboard::PutNumber("Wrist motor output", wristMotor.GetMotorVoltage().GetValueAsDouble());
 
     double newP = frc::SmartDashboard::GetNumber("Wrist P", kP);
     if (newP != controller.GetP()) controller.SetP(newP);

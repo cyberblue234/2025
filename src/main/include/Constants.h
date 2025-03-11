@@ -162,20 +162,20 @@ namespace RobotMap
 namespace ControlsConstants
 {
     // Analog inputs
-    constexpr int kManualWristAxis = 1;
-    constexpr int kManualElevatorAxis = 2;
+    constexpr int kManualWristAxis = 2;
+    constexpr int kManualElevatorAxis = 1;
     constexpr int kClimberAxis = 3;
     constexpr int kManualIntakeAxis = 0;
 
-    constexpr int kL1Button = 4;
-    constexpr int kL2Button = 9;
-    constexpr int kL3Button = 3;
-    constexpr int kL4Button = 11;
+    constexpr int kL1Button = 5;
+    constexpr int kL2Button = 3;
+    constexpr int kL3Button = 1;
+    constexpr int kL4Button = 6;
     constexpr int kAlgaeHighButton = 8;
     constexpr int kAlgaeLowButton = 11;
-    constexpr int kCoralStationButton = 2;
+    constexpr int kCoralStationButton = 4;
     constexpr int kProcessorButton = 7;
-    constexpr int kBargeButton = 5;
+    constexpr int kBargeButton = 2;
     constexpr int kCoralHomeButton = 9;
     constexpr int kAlgaeHomeButton = 12;
 
@@ -233,7 +233,7 @@ namespace SwerveModuleConstants
     // PIDs of the turn motor
     namespace Turn
     {
-        constexpr double kP = 15.0;
+        constexpr double kP = 20.0;
         constexpr double kI = 0.0;
         constexpr double kD = 0.5;
     }
@@ -320,18 +320,18 @@ namespace ElevatorConstants
 
 namespace ClawConstants
 {
-    constexpr double kP = 0.0;
+    constexpr double kP = -0.18;
     constexpr double kI = 0.0;
     constexpr double kD = 0.0;
-    constexpr units::volt_t kS{0.0};
+    constexpr units::volt_t kS{-0.1595};
     constexpr units::volt_t kG{0.0};
-    constexpr units::kv_degrees_t kV{0.0};
+    constexpr units::kv_degrees_t kV{-0.07};
     constexpr units::ka_degrees_t kA{0.0};
-    constexpr frc::TrapezoidProfile<units::degrees>::Constraints kTrapezoidProfileContraints{10_deg_per_s, 10_deg_per_s_sq};
+    constexpr frc::TrapezoidProfile<units::degrees>::Constraints kTrapezoidProfileContraints{200_deg_per_s, 180_deg_per_s_sq};
 
     // Intake and output powers for coral and algae
     constexpr double kCoralIntakePower = -0.2;
-    constexpr double kAlgaeIntakePower = 0.3;
+    constexpr double kAlgaeIntakePower = 0.5;
     // Outputting should be negative compared to intaking
     constexpr double kCoralOutputPower = 0.2;
     constexpr double kProcessorPower = -0.3;
@@ -340,14 +340,14 @@ namespace ClawConstants
 
     constexpr units::turn_t canCoderMagnetOffset = 0.1582_tr;
 
-    constexpr units::degree_t kTolerance = 1.0_deg;
+    constexpr units::degree_t kTolerance = 2.0_deg;
 
-    constexpr units::degree_t kLowLimit = 0_deg;
-    constexpr units::degree_t kHighLimit = 150_deg;
+    constexpr units::degree_t kLowLimit = 10_deg;
+    constexpr units::degree_t kHighLimit = 180_deg;
 
     constexpr units::turn_t kWristGearRatio = 233.45_tr;
 
-    constexpr double kWristPower = 0.15;
+    constexpr double kWristPower = 0.2;
 }
 
 namespace ClimberConstants
@@ -390,17 +390,17 @@ struct Position
 };
 namespace Positions
 {
-    constexpr Position L1           = Position(1.0_ft, 70.0_deg,  ClawConstants::kCoralOutputPower);
-    constexpr Position L2           = Position(2.0_ft, 80.0_deg,  ClawConstants::kCoralOutputPower);
-    constexpr Position L3           = Position(3.0_ft, 90.0_deg,  ClawConstants::kCoralOutputPower);
-    constexpr Position L4           = Position(4.0_ft, 100.0_deg, -ClawConstants::kCoralOutputPower);
-    constexpr Position AlgaeLow     = Position(2.5_ft, 95.0_deg,  ClawConstants::kAlgaeIntakePower);
-    constexpr Position AlgaeHigh    = Position(3.5_ft, 105.0_deg,  ClawConstants::kAlgaeIntakePower);
+    constexpr Position L1           = Position(1.6_ft, 150.0_deg,  ClawConstants::kCoralOutputPower);
+    constexpr Position L2           = Position(2.25_ft, 150.0_deg,  ClawConstants::kCoralOutputPower);
+    constexpr Position L3           = Position(3.65_ft, 150.0_deg,  ClawConstants::kCoralOutputPower);
+    constexpr Position L4           = Position(4.9_ft, 60.0_deg, -ClawConstants::kCoralOutputPower);
+    constexpr Position AlgaeLow     = Position(2.2_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower);
+    constexpr Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower);
     constexpr Position CoralStation = Position(1.9_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true);
-    constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset, 0.0_deg,  ClawConstants::kProcessorPower);
+    constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset, 160.0_deg,  ClawConstants::kProcessorPower);
     constexpr Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 0.0_deg,  ClawConstants::kBargePower);
-    constexpr Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 0.0_deg,  0.0);
-    constexpr Position AlgaeHome    = Position(ElevatorConstants::kHeightOffset, 100.0_deg,  0.0);
+    constexpr Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 30.0_deg,  0.0);
+    constexpr Position AlgaeHome    = Position(ElevatorConstants::kHeightOffset, 75.0_deg,  0.0);
 }
 
 /// @brief Clamps the input to a specifed range
