@@ -37,6 +37,8 @@ public:
     /// @brief Pneumatics controls
     void PneumaticsControls();
 
+    frc2::CommandPtr GetBargeCommand();
+
     /// @brief Sets current elevator position
     void SetElevatorPosition(std::optional<Position> pos) { elevatorPosition = pos; }
     /// @brief Gets current elevator position
@@ -95,6 +97,8 @@ private:
     std::optional<Position> desiredPosition; 
 
     std::optional<frc2::CommandPtr> path;
+
+    frc2::CommandPtr barge = GetBargeCommand();
 
     bool fieldRelative = true;
 };

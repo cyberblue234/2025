@@ -18,8 +18,17 @@ void Controls::Periodic()
     DriveControls();
     // Must call before elevator and claw controls, otherwise they would be behind 20ms
     SetDesiredPosition();
-    ElevatorControls();
-    ClawControls();
+
+    if (GetDesiredPosition().has_value() && GetDesiredPosition().value() == Positions::Barge)
+    {
+        barge.Schedule();
+    }
+    else
+    {
+        if (barge.IsScheduled()) barge.Cancel();
+        ElevatorControls();
+        ClawControls();
+    }
     ClimberControls();
     PneumaticsControls();
 }
@@ -118,8 +127,8 @@ void Controls::ElevatorControls()
     {
         // Runs the elevator to the position
         units::meter_t deltaHeight = GetDesiredPosition().value().height - elevator->GetHeight();
-        if ((claw->GetCurrentAngle() <= 10_deg && ((deltaHeight > 0_m && elevator->GetHeight() >= 2_ft)) || (deltaHeight < 0_m && elevator->GetHeight() <= 2.5_ft)) 
-            || claw->GetCurrentAngle() >= 150_deg && (deltaHeight < 0_m && elevator->GetHeight() < 8_in))
+        if ((claw->GetCurrentAngle() <= 10_deg && ((deltaHeight > 0_m && elevator->GetHeight() >= 2_ft) || (deltaHeight < 0_m && elevator->GetHeight() <= 2.5_ft))) 
+            || (claw->GetCurrentAngle() >= 150_deg && (deltaHeight < 0_m && elevator->GetHeight() < 8_in)))
         {
             elevator->SetMotors(0);   
         }
@@ -242,6 +251,38 @@ void Controls::PneumaticsControls()
     // pneumatics->SetStopper(controlBoard.GetRawButton(kStopperButton));
 }
 
+frc2::CommandPtr Controls::GetBargeCommand()
+{
+    return frc2::RunCommand
+    (
+        [this]
+        {
+            bool isElevatorAtPos = elevator->GoToPosition(Positions::Barge);
+            if (isElevatorAtPos == true) SetElevatorPosition(Positions::Barge);
+            else SetElevatorPosition(std::nullopt);
+
+            bool isWristAtPosition = claw->GoToPosition(Positions::Barge);
+            if (isWristAtPosition == true) SetWristPosition(Positions::Barge);
+            else SetWristPosition(std::nullopt);
+
+            if (elevator->GetHeight() - Positions::Barge.height < 0.5_ft)
+            {
+                claw->SetIOPower(kAlgaeIntakePower);
+            }
+            else
+            {
+                claw->SetIOPower(kBargePower);
+            }
+        }
+    ).Until
+    (
+        [this]
+        {
+            return GetElevatorPosition().has_value();
+        }
+    );
+}
+
 void Controls::SetDesiredPosition()
 {
     if (controlBoard.GetRawButton(kL1Button))
@@ -283,6 +324,10 @@ void Controls::SetDesiredPosition()
     else if (controlBoard.GetRawButton(kAlgaeHomeButton))
     {
         desiredPosition = Positions::AlgaeHome;
+    }
+    else if (controlBoard.GetRawButton(kBargeButton))
+    {
+        desiredPosition = Positions::Barge;
     }
     else
     {
