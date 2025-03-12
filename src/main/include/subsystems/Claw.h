@@ -9,13 +9,10 @@
 #include <frc/simulation/SingleJointedArmSim.h>
 #include <frc/system/plant/LinearSystemId.h>
 
-#include "rev/SparkFlex.h"
-
 #include "Constants.h"
 
 using namespace ClawConstants;
 using namespace ctre::phoenix6;
-using namespace rev::spark;
 
 /// @brief Class representation of the claw. Includes both the wrist and intake/output (IO) motor
 class Claw
@@ -64,7 +61,7 @@ public:
 private:
     // Creates the motors, CANcoder, and proximity sensor
     hardware::TalonFX wristMotor{RobotMap::Claw::kWristMotorID, "rio"};
-    SparkFlex ioMotor{RobotMap::Claw::kIOMotorID, SparkFlex::MotorType::kBrushless};
+    hardware::TalonFX ioMotor{RobotMap::Claw::kIOMotorID, "rio"};
     hardware::CANcoder canCoderWrist{RobotMap::Claw::kCanCoderID,"rio"};
     hardware::CANrange proxSensor{RobotMap::Claw::kCanRangeID, "rio"};
 

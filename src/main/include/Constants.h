@@ -137,7 +137,7 @@ namespace RobotMap
         //TalonFX
         constexpr int kWristMotorID = 11;
         //SparkFlex
-        constexpr int kIOMotorID = 1;
+        constexpr int kIOMotorID = 54;
         //CANcoder
         constexpr int kCanCoderID = 5;
 
@@ -392,13 +392,13 @@ namespace Positions
     constexpr Position L1           = Position(1.6_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
     constexpr Position L2           = Position(2.25_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
     constexpr Position L3           = Position(3.65_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
-    constexpr Position L4           = Position(4.9_ft, 60.0_deg, -ClawConstants::kCoralOutputPower, false);
+    constexpr Position L4           = Position(4.8_ft, 50.0_deg, -ClawConstants::kCoralOutputPower, false);
     constexpr Position AlgaeLow     = Position(2.2_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
     constexpr Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
     constexpr Position CoralStation = Position(1.9_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true);
     constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset, 160.0_deg,  ClawConstants::kProcessorPower, false);
     constexpr Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 63.0_deg,  ClawConstants::kBargePower, false);
-    constexpr Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 30.0_deg,  0.0, false);
+    constexpr Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 15.0_deg,  ClawConstants::kCoralIntakePower, false);
     constexpr Position AlgaeHome    = Position(ElevatorConstants::kHeightOffset, 75.0_deg,  0.0, false);
 }
 

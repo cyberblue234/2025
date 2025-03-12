@@ -11,19 +11,19 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
+                  "name": "Score"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Score"
+                  "name": "L4"
                 }
               }
             ]
@@ -36,19 +36,19 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "CoralStation"
+                  "name": "Intake"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
+                  "name": "CoralStation"
                 }
               }
             ]
@@ -61,19 +61,19 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
+                  "name": "Score"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Score"
+                  "name": "L4"
                 }
               }
             ]

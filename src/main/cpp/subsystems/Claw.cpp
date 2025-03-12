@@ -33,14 +33,20 @@ Claw::Claw()
 
     canCoderWrist.GetConfigurator().Apply(canCoderWristConfig);
 
-    // Creates the configurator for the IO motor - it's REV, so there are differences in configuration
-    SparkBaseConfig ioConfig;
-    // Brake mode
-    ioConfig.SetIdleMode(SparkBaseConfig::IdleMode::kBrake);
-    // Limits the current so we don't burn out the motor
-    ioConfig.SmartCurrentLimit(60);
-    // Applies the configuration, resetting the parameters that it can, and persisting avaiable parameters
-    ioMotor.Configure(ioConfig, SparkBase::ResetMode::kResetSafeParameters, SparkBase::PersistMode::kPersistParameters);
+    // Starts the configuration process for the wrist motor
+    // This line resets any previous configurations to ensure a clean slate
+    ioMotor.GetConfigurator().Apply(configs::TalonFXConfiguration{});
+    configs::TalonFXConfiguration ioMotorConfig{};
+
+    // Stops the motor if there is no input - desirable for ensuring the wrist stays at the desired position
+    ioMotorConfig.MotorOutput.NeutralMode = signals::NeutralModeValue::Brake;
+
+    // Stator limit makes sure we don't burn up our motors if they get jammed
+    ioMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    ioMotorConfig.CurrentLimits.StatorCurrentLimit = 120.0_A;
+
+    // Applies the configuration
+    ioMotor.GetConfigurator().Apply(ioMotorConfig);
 
     proxSensor.GetConfigurator().Apply(configs::CANrangeConfiguration{});
     configs::CANrangeConfiguration proxSensorConfig{};

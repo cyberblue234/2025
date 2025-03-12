@@ -84,13 +84,7 @@ frc2::CommandPtr Autonomous::GoToL1()
             if (isWristAtPosition == true) SetWristPosition(Positions::L1);
             else SetWristPosition(std::nullopt);
         }
-    ).Until
-    (
-        [this]
-        {
-            return this->GetCurrentPosition().has_value();
-        }
-    );
+    ).ToPtr();
 }
 
 frc2::CommandPtr Autonomous::GoToL2()
@@ -107,13 +101,7 @@ frc2::CommandPtr Autonomous::GoToL2()
             if (isWristAtPosition == true) SetWristPosition(Positions::L2);
             else SetWristPosition(std::nullopt);
         }
-    ).Until
-    (
-        [this]
-        {
-            return this->GetCurrentPosition().has_value();
-        }
-    );
+    ).ToPtr();
 }
 
 frc2::CommandPtr Autonomous::GoToL3()
@@ -130,13 +118,7 @@ frc2::CommandPtr Autonomous::GoToL3()
             if (isWristAtPosition == true) SetWristPosition(Positions::L3);
             else SetWristPosition(std::nullopt);
         }
-    ).Until
-    (
-        [this]
-        {
-            return this->GetCurrentPosition().has_value();
-        }
-    );
+    ).ToPtr();
 }
 
 frc2::CommandPtr Autonomous::GoToL4()
@@ -153,13 +135,7 @@ frc2::CommandPtr Autonomous::GoToL4()
             if (isWristAtPosition == true) SetWristPosition(Positions::L4);
             else SetWristPosition(std::nullopt);
         }
-    ).Until
-    (
-        [this]
-        {
-            return this->GetCurrentPosition().has_value();
-        }
-    );
+    ).ToPtr();
 }
 
 frc2::CommandPtr Autonomous::GoToCoralStation()
@@ -176,13 +152,7 @@ frc2::CommandPtr Autonomous::GoToCoralStation()
             if (isWristAtPosition == true) SetWristPosition(Positions::CoralStation);
             else SetWristPosition(std::nullopt);
         }
-    ).Until
-    (
-        [this]
-        {
-            return this->GetCurrentPosition().has_value();
-        }
-    );
+    ).ToPtr();
 }
 
 void Autonomous::UpdateTelemetry()

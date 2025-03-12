@@ -23,10 +23,7 @@ void Robot::RobotPeriodic()
 	clawMech->SetAngle(claw.GetCurrentAngle() - 90_deg);
 }
 
-void Robot::DisabledInit() 
-{
-	swerve.ResetGyro();
-}
+void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() 
 {

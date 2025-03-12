@@ -116,16 +116,6 @@ void SwerveModule::UpdateTelemetry()
     TelemetryHelperNumber("Velocity", GetVelocity().value());
     TelemetryHelperNumber("Drive Output Voltage", GetDriveOutputVoltage().value());
     TelemetryHelperNumber("Turn Output Voltage",  GetTurnOutputVoltage().value());
-    TelemetryHelperNumber("Drive Torque Current", GetDriveTorqueCurrent().value());
-    TelemetryHelperNumber("Turn Torque Current",  GetTurnTorqueCurrent().value());
-    TelemetryHelperNumber("Drive Stator Current", GetDriveStatorCurrent().value());
-    TelemetryHelperNumber("Turn Stator Current",  GetTurnStatorCurrent().value());
-    TelemetryHelperNumber("Drive Supply Current", GetDriveSupplyCurrent().value());
-    TelemetryHelperNumber("Turn Supply Current",  GetTurnSupplyCurrent().value());
-    TelemetryHelperNumber("Drive Motor Temp", GetDriveTemp().value());
-    TelemetryHelperNumber("Turn Motor Temp",  GetTurnTemp().value());
-    TelemetryHelperNumber("Drive Processor Temp", GetDriveProcessorTemp().value());
-    TelemetryHelperNumber("Turn Processor Temp",  GetTurnProcessorTemp().value());
 }
 
 
