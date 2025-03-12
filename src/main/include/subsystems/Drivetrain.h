@@ -71,7 +71,7 @@ public:
     /// @param branch Branch to pathfind to
     /// @param usePPLibPathFinding Set true to use PPLib pathfinding, false for internal pathfinding (temp)
     /// @return CommandPtr of the path to run - std::nullopt if the path can not exist
-    std::optional<frc2::CommandPtr> PathfindToBranch(Sides side, bool usePPLibPathfinding);
+    std::optional<frc2::CommandPtr> PathfindToBranch(Sides side, units::meter_t offset, bool usePPLibPathfinding);
 
     /// @brief Pathfind to the alliance-specific specified coral loading station
     /// @param station Station to pathfind to
@@ -222,33 +222,6 @@ private:
     nt::StructArrayPublisher<frc::SwerveModuleState> moduleStatesPublisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructArrayTopic<frc::SwerveModuleState>("moduleStates").Publish();
 
     frc::AprilTagFieldLayout aprilTagLocations{frc::AprilTagFieldLayout::LoadField(frc::AprilTagField::k2025ReefscapeAndyMark)};
-
-    // /// @brief Gets the pose of the different branches - will flip the pose if on the blue alliance
-    // /// @param branch Branch to get the pose of
-    // /// @return Pose2d of the branch pose
-    // static frc::Pose2d FormatBranch(ReefBranches branch)
-    // {
-    //     frc::Pose2d pose;
-    //     switch(branch)
-    //     {
-    //         case 0:  pose = frc::Pose2d(14.40_m, 3.87_m, frc::Rotation2d(180_deg)); break;
-    //         case 1:  pose = frc::Pose2d(14.40_m, 4.16_m, frc::Rotation2d(180_deg)); break;
-    //         case 6:  pose = frc::Pose2d(11.74_m, 4.16_m, frc::Rotation2d(0_deg)); break;
-    //         case 7:  pose = frc::Pose2d(11.74_m, 3.87_m, frc::Rotation2d(0_deg)); break;
-
-    //         case 2:  pose = frc::Pose2d(13.85_m, 5.05_m, frc::Rotation2d(-120_deg)); break;
-    //         case 3:  pose = frc::Pose2d(13.59_m, 5.22_m, frc::Rotation2d(-120_deg)); break;
-    //         case 4:  pose = frc::Pose2d(12.58_m, 5.22_m, frc::Rotation2d(-60_deg)); break;
-    //         case 5:  pose = frc::Pose2d(12.28_m, 5.06_m, frc::Rotation2d(-60_deg)); break;
-    //         case 8:  pose = frc::Pose2d(12.28_m, 2.97_m, frc::Rotation2d(60_deg)); break;
-    //         case 9:  pose = frc::Pose2d(12.58_m, 2.84_m, frc::Rotation2d(60_deg)); break;
-    //         case 10: pose = frc::Pose2d(13.58_m, 2.84_m, frc::Rotation2d(120_deg)); break;
-    //         case 11: pose = frc::Pose2d(13.85_m, 2.97_m, frc::Rotation2d(120_deg)); break;
-
-    //         default: break;
-    //     }
-    //     return FlipPose(pose);
-    // }
 
     /// @brief Gets the pose of the left or right station - will flip the pose if on the blue alliance
     /// @param station Station to get the pose of

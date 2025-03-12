@@ -39,34 +39,45 @@ void Controls::DriveControls()
 
     if (gamepad.GetLeftBumperButtonPressed()) 
     {
+        units::meter_t offset = 0.5_ft;
+        if (GetDesiredPosition().has_value())
+        {
+            if (GetDesiredPosition().value() == Positions::L1 || GetDesiredPosition().value() == Positions::L4)
+                offset = 0_ft;
+        }
         path = swerve->PathfindToBranch(Drivetrain::Sides::Left, true);
         if (path) path->Schedule();
     }
     else if (gamepad.GetRightBumperButtonPressed()) 
     {
+        units::meter_t offset = 0.5_ft;
+        if (GetDesiredPosition().has_value())
+        {
+            if (GetDesiredPosition().value() == Positions::L1 || GetDesiredPosition().value() == Positions::L4)
+                offset = 0_ft;
+        }
         path = swerve->PathfindToBranch(Drivetrain::Sides::Right, true);
         if (path) path->Schedule();
     }
-    else if (gamepad.GetLeftBumperButtonReleased() || gamepad.GetRightBumperButtonReleased()) { if (path) path->Cancel(); }
-
-    // if (gamepad.GetLeftTriggerAxis() >= 0.8)
-    // {
-    //     path = swerve->PathfindToProcessor(true);
-    //     if (!path.value().IsScheduled()) path->Schedule();
-    // }
-    // else if (gamepad.GetLeftTriggerAxis() >= 0.1) { if (path) path->Cancel(); }
-
-    // if (gamepad.GetPOV() == 270)
-    // {
-    //     path = swerve->PathfindToCoralStation(Drivetrain::Sides::Left, true);
-    //     if (!path.value().IsScheduled()) path->Schedule();
-    // }
-    // else if (gamepad.GetPOV() == 90)
-    // {
-    //     path = swerve->PathfindToCoralStation(Drivetrain::Sides::Right, true);
-    //     if (!path.value().IsScheduled()) path->Schedule();
-    // }
-    // else { if (path) path->Cancel(); }
+    else if (gamepad.GetAButtonPressed())
+    {
+        path = swerve->PathfindToProcessor(true);
+        if (!path.value().IsScheduled()) path->Schedule();
+    }
+    else if (gamepad.GetXButtonPressed())
+    {
+        path = swerve->PathfindToCoralStation(Drivetrain::Sides::Left, true);
+        if (path) path->Schedule();
+    }
+    else if (gamepad.GetBButtonPressed())
+    {
+        path = swerve->PathfindToCoralStation(Drivetrain::Sides::Right, true);
+        if (path) path->Schedule();
+    }
+    else if (gamepad.GetLeftBumperButtonReleased() || gamepad.GetRightBumperButtonReleased() 
+            || gamepad.GetAButtonReleased()
+            || gamepad.GetXButtonReleased() || gamepad.GetBButtonReleased()) 
+        { if (path) path->Cancel(); }    
 
 
     // Ensures driver control is disabled while pathfinding is occuring
@@ -77,13 +88,25 @@ void Controls::DriveControls()
 
     if (gamepad.GetPOV() == 0)
     {
-        frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds{0.2_mps, 0.0_mps, 0.0_rad_per_s};
+        frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds{0.3_mps, 0.0_mps, 0.0_rad_per_s};
         swerve->Drive(setSpeeds, false);
         return;
     }
     else if (gamepad.GetPOV() == 180)
     {
-        frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds{-0.2_mps, 0.0_mps, 0.0_rad_per_s};
+        frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds{-0.3_mps, 0.0_mps, 0.0_rad_per_s};
+        swerve->Drive(setSpeeds, false);
+        return;
+    }
+    else if (gamepad.GetPOV() == 90)
+    {
+        frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds{0.0_mps, 0.3_mps, 0.0_rad_per_s};
+        swerve->Drive(setSpeeds, false);
+        return;
+    }
+    else if (gamepad.GetPOV() == 270)
+    {
+        frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds{0.0_mps, -0.3_mps, 0.0_rad_per_s};
         swerve->Drive(setSpeeds, false);
         return;
     }
@@ -99,6 +122,7 @@ void Controls::DriveControls()
     const double scalar = x * x + y * y;
     // Adds a speed adjusmtment based on the right trigger - the more it is pressed, the slower the bot will travel for a maximum reduction of -80%
     const double speedAdjust = 1 - 0.8 * gamepad.GetRightTriggerAxis(); 
+    if (elevator->GetHeight() > 2_ft && speedAdjust > 0.3) speedAdjust = 0.3;
 
     const units::meters_per_second_t xSpeed = ApplyDeadband(x * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;
     const units::meters_per_second_t ySpeed = ApplyDeadband(y * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;
