@@ -75,17 +75,22 @@ void Drivetrain::Drive(frc::ChassisSpeeds speeds, bool fieldRelative)
     moduleStatesPublisher.Set(states);
 }
 
-std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(Sides side, bool usePPLibPathfinding)
+std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(Sides side, units::meter_t offset, bool usePPLibPathfinding)
 {
     frc::Pose2d aprilTagPose = GetClosestBranchTagPose();
-    units::meter_t deltaX = units::math::cos(aprilTagPose.Rotation().Degrees() + 90_deg) * kDeltaReefAprilTagToBranch;
-    units::meter_t deltaY = units::math::sin(aprilTagPose.Rotation().Degrees() + 90_deg) * kDeltaReefAprilTagToBranch;
+
+    units::degree_t theta = aprilTagPose.Rotation().Degrees() + 90_deg;
+    units::meter_t deltaX1 = units::math::cos(theta) * kDeltaReefAprilTagToBranch;
+    units::meter_t deltaY2 = units::math::sin(theta) * kDeltaReefAprilTagToBranch;
     if (side == Sides::Left)
     {
-        deltaX = -deltaX;
-        deltaY = -deltaY;
+        deltaX1 = -deltaX;
+        deltaY2 = -deltaY;
     }
-    frc::Pose2d pose{aprilTagPose.X() + deltaX, aprilTagPose.Y() + deltaY, aprilTagPose.Rotation().Degrees() + 180_deg};
+    units::meter_t deltaX2 = units::math::sin(theta) * offset;
+    units::meter_t deltaY2 = -units::math::cos(theta) * offset;
+
+    frc::Pose2d pose{aprilTagPose.X() + deltaX1 + deltaX2, aprilTagPose.Y() + deltaY1 + deltaY2, aprilTagPose.Rotation().Degrees() + 180_deg};
     // Uses PPLib pathfinding with given constraints
     if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, pathfindingConstraints);
     // Uses internal pathfinding

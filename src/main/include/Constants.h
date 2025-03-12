@@ -281,7 +281,7 @@ namespace PathPlannerConstants
         constexpr double kI = 0.0;
         constexpr double kD = 0.1;
     }
-    constexpr pathplanner::PathConstraints pathfindingConstraints{1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq};
+    constexpr pathplanner::PathConstraints pathfindingConstraints{0.5_mps, 0.25_mps_sq, 240_deg_per_s, 240_deg_per_s_sq};
 }
 
 /// @brief Constants for the Elevator Class
@@ -374,33 +374,34 @@ struct Position
     /// @brief Set to true when intaking coral - will be used to stop the IO motor when we have a coral in the claw
     const bool isForCoralIntake = false;
 
+    const std::string name;
+
     const Position operator=(const Position &rhs)
     {
-        return {rhs.height, rhs.angle, rhs.ioMotorPower, rhs.isForCoralIntake};
+        return {rhs.height, rhs.angle, rhs.ioMotorPower, rhs.isForCoralIntake, rhs.name};
     }
     bool operator==(const Position &rhs)
     {
-        return this->height == rhs.height && this->angle == this->angle 
-                && this->ioMotorPower == rhs.ioMotorPower && this->isForCoralIntake == rhs.isForCoralIntake;
+        return this->name == rhs.name;
     }
     std::string to_string()
     {
-        return "Height: " + units::to_string(height.convert<units::feet>()) + "; Angle: " + units::to_string(angle) + "; IO Power: " + std::to_string(ioMotorPower);
+        return name + "; Height: " + units::to_string(height.convert<units::feet>()) + "; Angle: " + units::to_string(angle) + "; IO Power: " + std::to_string(ioMotorPower);
     }
 };
 namespace Positions
 {
-    constexpr Position L1           = Position(1.6_ft, 150.0_deg,  ClawConstants::kCoralOutputPower);
-    constexpr Position L2           = Position(2.25_ft, 150.0_deg,  ClawConstants::kCoralOutputPower);
-    constexpr Position L3           = Position(3.65_ft, 150.0_deg,  ClawConstants::kCoralOutputPower);
-    constexpr Position L4           = Position(4.9_ft, 60.0_deg, -ClawConstants::kCoralOutputPower);
-    constexpr Position AlgaeLow     = Position(2.2_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower);
-    constexpr Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower);
-    constexpr Position CoralStation = Position(1.9_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true);
-    constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset, 160.0_deg,  ClawConstants::kProcessorPower);
-    constexpr Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 0.0_deg,  ClawConstants::kBargePower);
-    constexpr Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 30.0_deg,  0.0);
-    constexpr Position AlgaeHome    = Position(ElevatorConstants::kHeightOffset, 75.0_deg,  0.0);
+    constexpr Position L1           = Position(1.6_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, "L1");
+    constexpr Position L2           = Position(2.25_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, "L2");
+    constexpr Position L3           = Position(3.65_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, "L3");
+    constexpr Position L4           = Position(4.9_ft, 60.0_deg, -ClawConstants::kCoralOutputPower, "L4");
+    constexpr Position AlgaeLow     = Position(2.2_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, "AlgaeLow");
+    constexpr Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, "AlgaeHigh");
+    constexpr Position CoralStation = Position(1.9_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true, "CoralStation");
+    constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset, 160.0_deg,  ClawConstants::kProcessorPower, "Processor");
+    constexpr Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 0.0_deg,  ClawConstants::kBargePower, "Barge");
+    constexpr Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 30.0_deg,  0.0, "CoralHome");
+    constexpr Position AlgaeHome    = Position(ElevatorConstants::kHeightOffset, 75.0_deg,  0.0, "AlgaeHome");
 }
 
 /// @brief Clamps the input to a specifed range
