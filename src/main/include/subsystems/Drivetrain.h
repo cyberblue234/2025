@@ -231,8 +231,8 @@ private:
         frc::Pose2d pose;
         switch(station)
         {
-            case Sides::Left: pose = frc::Pose2d(16.15_m, 1.29_m, frc::Rotation2d(126.0_deg)); break;
-            case Sides::Right: pose = frc::Pose2d(16.15_m, 6.82_m, frc::Rotation2d(-126_deg)); break;
+            case Sides::Left: pose = frc::Pose2d(16.15_m, 1.29_m, frc::Rotation2d(-126.0_deg)); break;
+            case Sides::Right: pose = frc::Pose2d(16.15_m, 6.82_m, frc::Rotation2d(126_deg)); break;
 
             default: break;
         }

@@ -45,7 +45,7 @@ void Controls::DriveControls()
             if (GetDesiredPosition().value() == Positions::L1 || GetDesiredPosition().value() == Positions::L4)
                 offset = 0_ft;
         }
-        path = swerve->PathfindToBranch(Drivetrain::Sides::Left, true);
+        path = swerve->PathfindToBranch(Drivetrain::Sides::Left, offset, true);
         if (path) path->Schedule();
     }
     else if (gamepad.GetRightBumperButtonPressed()) 
@@ -56,7 +56,7 @@ void Controls::DriveControls()
             if (GetDesiredPosition().value() == Positions::L1 || GetDesiredPosition().value() == Positions::L4)
                 offset = 0_ft;
         }
-        path = swerve->PathfindToBranch(Drivetrain::Sides::Right, true);
+        path = swerve->PathfindToBranch(Drivetrain::Sides::Right, offset, true);
         if (path) path->Schedule();
     }
     else if (gamepad.GetAButtonPressed())
@@ -100,13 +100,13 @@ void Controls::DriveControls()
     }
     else if (gamepad.GetPOV() == 90)
     {
-        frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds{0.0_mps, 0.3_mps, 0.0_rad_per_s};
+        frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds{0.0_mps, -0.3_mps, 0.0_rad_per_s};
         swerve->Drive(setSpeeds, false);
         return;
     }
     else if (gamepad.GetPOV() == 270)
     {
-        frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds{0.0_mps, -0.3_mps, 0.0_rad_per_s};
+        frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds{0.0_mps, 0.3_mps, 0.0_rad_per_s};
         swerve->Drive(setSpeeds, false);
         return;
     }
@@ -121,8 +121,7 @@ void Controls::DriveControls()
     // The scalar helps to smooth out driving while preserving full control over the speed
     const double scalar = x * x + y * y;
     // Adds a speed adjusmtment based on the right trigger - the more it is pressed, the slower the bot will travel for a maximum reduction of -80%
-    const double speedAdjust = 1 - 0.8 * gamepad.GetRightTriggerAxis(); 
-    if (elevator->GetHeight() > 2_ft && speedAdjust > 0.3) speedAdjust = 0.3;
+    double speedAdjust = 1 - 0.8 * gamepad.GetRightTriggerAxis(); 
 
     const units::meters_per_second_t xSpeed = ApplyDeadband(x * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;
     const units::meters_per_second_t ySpeed = ApplyDeadband(y * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;

@@ -81,11 +81,11 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(Sides side, units::
 
     units::degree_t theta = aprilTagPose.Rotation().Degrees() + 90_deg;
     units::meter_t deltaX1 = units::math::cos(theta) * kDeltaReefAprilTagToBranch;
-    units::meter_t deltaY2 = units::math::sin(theta) * kDeltaReefAprilTagToBranch;
+    units::meter_t deltaY1 = units::math::sin(theta) * kDeltaReefAprilTagToBranch;
     if (side == Sides::Left)
     {
-        deltaX1 = -deltaX;
-        deltaY2 = -deltaY;
+        deltaX1 = -deltaX1;
+        deltaY1 = -deltaY1;
     }
     units::meter_t deltaX2 = units::math::sin(theta) * offset;
     units::meter_t deltaY2 = -units::math::cos(theta) * offset;

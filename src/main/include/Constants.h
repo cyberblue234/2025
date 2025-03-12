@@ -374,34 +374,32 @@ struct Position
     /// @brief Set to true when intaking coral - will be used to stop the IO motor when we have a coral in the claw
     const bool isForCoralIntake = false;
 
-    const std::string name;
-
     const Position operator=(const Position &rhs)
     {
-        return {rhs.height, rhs.angle, rhs.ioMotorPower, rhs.isForCoralIntake, rhs.name};
+        return {rhs.height, rhs.angle, rhs.ioMotorPower, rhs.isForCoralIntake};
     }
     bool operator==(const Position &rhs)
     {
-        return this->name == rhs.name;
+        return this->height == rhs.height && this->angle == rhs.angle && this->ioMotorPower == rhs.ioMotorPower && this->isForCoralIntake == rhs.isForCoralIntake;
     }
     std::string to_string()
     {
-        return name + "; Height: " + units::to_string(height.convert<units::feet>()) + "; Angle: " + units::to_string(angle) + "; IO Power: " + std::to_string(ioMotorPower);
+        return "Height: " + units::to_string(height.convert<units::feet>()) + "; Angle: " + units::to_string(angle) + "; IO Power: " + std::to_string(ioMotorPower);
     }
 };
 namespace Positions
-{
-    constexpr Position L1           = Position(1.6_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, "L1");
-    constexpr Position L2           = Position(2.25_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, "L2");
-    constexpr Position L3           = Position(3.65_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, "L3");
-    constexpr Position L4           = Position(4.9_ft, 60.0_deg, -ClawConstants::kCoralOutputPower, "L4");
-    constexpr Position AlgaeLow     = Position(2.2_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, "AlgaeLow");
-    constexpr Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, "AlgaeHigh");
-    constexpr Position CoralStation = Position(1.9_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true, "CoralStation");
-    constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset, 160.0_deg,  ClawConstants::kProcessorPower, "Processor");
-    constexpr Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 63.0_deg,  ClawConstants::kBargePower, "Barge");
-    constexpr Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 30.0_deg,  0.0, "CoralHome");
-    constexpr Position AlgaeHome    = Position(ElevatorConstants::kHeightOffset, 75.0_deg,  0.0, "AlgaeHome");
+{    
+    constexpr Position L1           = Position(1.6_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
+    constexpr Position L2           = Position(2.25_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
+    constexpr Position L3           = Position(3.65_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
+    constexpr Position L4           = Position(4.9_ft, 60.0_deg, -ClawConstants::kCoralOutputPower, false);
+    constexpr Position AlgaeLow     = Position(2.2_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
+    constexpr Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
+    constexpr Position CoralStation = Position(1.9_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true);
+    constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset, 160.0_deg,  ClawConstants::kProcessorPower, false);
+    constexpr Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 63.0_deg,  ClawConstants::kBargePower, false);
+    constexpr Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 30.0_deg,  0.0, false);
+    constexpr Position AlgaeHome    = Position(ElevatorConstants::kHeightOffset, 75.0_deg,  0.0, false);
 }
 
 /// @brief Clamps the input to a specifed range
