@@ -21,7 +21,7 @@ void Controls::Periodic()
 
     if (GetDesiredPosition().has_value() && GetDesiredPosition().value() == Positions::Barge)
     {
-        barge.Schedule();
+        if (!barge.IsScheduled()) barge.Schedule();
     }
     else
     {
@@ -261,11 +261,16 @@ frc2::CommandPtr Controls::GetBargeCommand()
             if (isElevatorAtPos == true) SetElevatorPosition(Positions::Barge);
             else SetElevatorPosition(std::nullopt);
 
-            bool isWristAtPosition = claw->GoToPosition(Positions::Barge);
-            if (isWristAtPosition == true) SetWristPosition(Positions::Barge);
-            else SetWristPosition(std::nullopt);
-
-            if (elevator->GetHeight() - Positions::Barge.height < 0.5_ft)
+            if (elevator->GetHeight() < 3.9_ft)
+            {
+                claw->GoToAngle(80_deg);
+            }
+            else
+            {
+                claw->GoToAngle(Positions::Barge.angle);
+            }
+            
+            if (Positions::Barge.height - elevator->GetHeight() > 0.5_ft)
             {
                 claw->SetIOPower(kAlgaeIntakePower);
             }

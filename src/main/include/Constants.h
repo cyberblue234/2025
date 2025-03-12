@@ -398,7 +398,7 @@ namespace Positions
     constexpr Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower);
     constexpr Position CoralStation = Position(1.9_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true);
     constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset, 160.0_deg,  ClawConstants::kProcessorPower);
-    constexpr Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 0.0_deg,  ClawConstants::kBargePower);
+    constexpr Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 63.0_deg,  ClawConstants::kBargePower);
     constexpr Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 30.0_deg,  0.0);
     constexpr Position AlgaeHome    = Position(ElevatorConstants::kHeightOffset, 75.0_deg,  0.0);
 }
