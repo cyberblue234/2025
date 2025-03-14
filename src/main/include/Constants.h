@@ -236,6 +236,7 @@ namespace SwerveModuleConstants
         constexpr double kP = 20.0;
         constexpr double kI = 0.0;
         constexpr double kD = 0.5;
+        constexpr frc::TrapezoidProfile<units::degrees>::Constraints kTrapezoidProfileContraints{720_deg_per_s, 720_deg_per_s_sq};
     }
 }
 
