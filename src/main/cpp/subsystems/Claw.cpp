@@ -114,7 +114,6 @@ void Claw::UpdateTelemetry()
     frc::SmartDashboard::PutNumber("Proximity Sensor Distance", GetDistance().convert<units::inch>().value());
     frc::SmartDashboard::PutNumber("Wrist Angle", GetCurrentAngle().value());
     frc::SmartDashboard::PutNumber("Wrist Setpoint", controller.GetSetpoint().position.value());
-    frc::SmartDashboard::PutNumber("Wrist motor output", wristMotor.GetMotorVoltage().GetValueAsDouble());
 
     double newP = frc::SmartDashboard::GetNumber("Wrist P", kP);
     if (newP != controller.GetP()) controller.SetP(newP);
@@ -148,12 +147,7 @@ void Claw::SimMode()
     wristMotorSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
     canCoderWristSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
 
-    units::volt_t motorVoltage = wristMotorSim.GetMotorVoltage();
-
-    clawSim.SetInputVoltage(motorVoltage);
-    clawSim.Update(20_ms); // assume 20 ms loop time
-
-    wristMotorSim.SetRawRotorPosition(clawSim.GetAngle() * kWristGearRatio.value());
-    wristMotorSim.SetRotorVelocity(clawSim.GetVelocity() * kWristGearRatio.value());
-    canCoderWristSim.SetRawPosition(clawSim.GetAngle());
+    wristMotorSim.SetRawRotorPosition(controller.GetSetpoint().position * kWristGearRatio.value());
+    wristMotorSim.SetRotorVelocity(controller.GetSetpoint().velocity * kWristGearRatio.value());
+    canCoderWristSim.SetRawPosition(controller.GetSetpoint().position);
 }

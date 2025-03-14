@@ -7,6 +7,7 @@ Drivetrain::Drivetrain(Limelight *limelightHigh, Limelight *limelightLow)
     this->limelightLow = limelightLow;
 
     // Resets gyro to ensure proper initialization
+    gyro.GetConfigurator().Apply(configs::Pigeon2Configuration{});
     ResetGyro();
 
     // Gets the settings from PathPlanner GUI
@@ -40,8 +41,6 @@ Drivetrain::Drivetrain(Limelight *limelightHigh, Limelight *limelightLow)
 
     // Gives a reference to the field object, which allows it to update without a periodic call
     frc::SmartDashboard::PutData("Field", &field);
-
-    gyro.GetConfigurator().Apply(configs::Pigeon2Configuration{});
 
     moduleStatesPublisher.Set(wpi::array<frc::SwerveModuleState, 4U>{frontLeft.GetState(), frontRight.GetState(), backLeft.GetState(), backRight.GetState()});
 }
@@ -154,18 +153,30 @@ void Drivetrain::UpdateOdometry()
 
     // Gets the estimated pose from the limelight
     // Uses MegaTag 2 which utilizes current gyro rotation in order to ensure better quality estimations
-    PoseEstimate visionHigh = limelightHigh->GetPose(GetBlueOriginGyroAngle().Degrees(), GetYawRate());
+    odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.3, 0.3, 9999999.0});
+    PoseEstimate visionHighMT2 = limelightHigh->GetPose(GetPose().Rotation().Degrees(), GetYawRate());
     // Rejects the estimation if the rotation rate is too great or if the limelight doesn't see any tags
-    if ((abs(GetYawRate().value()) > 720 || visionHigh.tagCount == 0) == false)
+    if ((abs(GetYawRate().value()) > 720 || visionHighMT2.tagCount == 0) == false)
     {
-        odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
-        odometry.AddVisionMeasurement(visionHigh.pose, frc::Timer::GetFPGATimestamp());
+        odometry.AddVisionMeasurement(visionHighMT2.pose, frc::Timer::GetFPGATimestamp());
     }
-    PoseEstimate visionLow = limelightLow->GetPose(GetBlueOriginGyroAngle().Degrees(), GetYawRate());
-    if ((abs(GetYawRate().value()) > 720 || visionLow.tagCount == 0) == false)
+    PoseEstimate visionLowMT2 = limelightLow->GetPose(GetPose().Rotation().Degrees(), GetYawRate());
+    if ((abs(GetYawRate().value()) > 720 || visionLowMT2.tagCount == 0) == false)
     {
-        odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
-        odometry.AddVisionMeasurement(visionLow.pose, frc::Timer::GetFPGATimestamp());
+        odometry.AddVisionMeasurement(visionLowMT2.pose, frc::Timer::GetFPGATimestamp());
+    }
+
+    odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{1.0, 1.0, 0.25});
+    PoseEstimate visionHighMT1 = limelightHigh->GetBotPose();
+    // Rejects the estimation if the rotation rate is too great or if the limelight doesn't see any tags
+    if ((abs(GetYawRate().value()) > 720 || visionHighMT1.tagCount == 0) == false)
+    {
+        odometry.AddVisionMeasurement(visionHighMT1.pose, frc::Timer::GetFPGATimestamp());
+    }
+    PoseEstimate visionLowMT1 = limelightLow->GetBotPose();
+    if ((abs(GetYawRate().value()) > 720 || visionLowMT1.tagCount == 0) == false)
+    {
+        odometry.AddVisionMeasurement(visionLowMT1.pose, frc::Timer::GetFPGATimestamp());
     }
     
     field.SetRobotPose(odometry.GetEstimatedPosition());

@@ -181,18 +181,10 @@ void Elevator::SimMode()
     motor1Sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
     motor2Sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
 
-    // get the motor voltage of the TalonFX
-    units::volt_t motorVoltage = motor1Sim.GetMotorVoltage();
+    simLimSwitch = controller.GetSetpoint().position == kHeightOffset;
 
-    // use the motor voltage to calculate new position and velocity
-    // using WPILib's DCMotorSim class for physics simulation
-    elevatorSim.SetInputVoltage(motorVoltage);
-    elevatorSim.Update(20_ms); // assume 20 ms loop time
-
-    simLimSwitch = elevatorSim.HasHitLowerLimit();
-
-    motor1Sim.SetRawRotorPosition((elevatorSim.GetPosition() - kHeightOffset) / kMetersPerMotorTurn);
-    motor2Sim.SetRawRotorPosition((elevatorSim.GetPosition() - kHeightOffset) / kMetersPerMotorTurn);
-    motor1Sim.SetRotorVelocity(elevatorSim.GetVelocity() / kMetersPerMotorTurn);
-    motor2Sim.SetRotorVelocity(elevatorSim.GetVelocity() / kMetersPerMotorTurn);
+    motor1Sim.SetRawRotorPosition((controller.GetSetpoint().position - kHeightOffset) / kMetersPerMotorTurn);
+    motor2Sim.SetRawRotorPosition((controller.GetSetpoint().position - kHeightOffset) / kMetersPerMotorTurn);
+    motor1Sim.SetRotorVelocity(controller.GetSetpoint().velocity / kMetersPerMotorTurn);
+    motor2Sim.SetRotorVelocity(controller.GetSetpoint().velocity / kMetersPerMotorTurn);
 }

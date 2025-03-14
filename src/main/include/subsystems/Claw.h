@@ -75,17 +75,4 @@ private:
 
     frc::ProfiledPIDController<units::degrees> controller{ClawConstants::kP, ClawConstants::kI, ClawConstants::kD, ClawConstants::kTrapezoidProfileContraints};
     frc::ArmFeedforward feedforward{ClawConstants::kS, ClawConstants::kG, ClawConstants::kV, ClawConstants::kA};
-
-    // Creates a simulation tool for the wrist part of the claw
-    frc::sim::SingleJointedArmSim clawSim
-    {
-        frc::DCMotor::KrakenX60(1),
-        kWristGearRatio.value(),
-        frc::sim::SingleJointedArmSim::EstimateMOI(0.56_m, 5_kg),
-        0.56_m,
-        -std::numbers::pi / 2 * 1_rad,
-        std::numbers::pi / 2 * 1_rad - 0.01_rad,
-        false,
-        0_rad
-    };
 };

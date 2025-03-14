@@ -203,7 +203,8 @@ private:
         kBackLeftLocation,
         kBackRightLocation
     };
-
+    wpi::array<double, 3> driveStdDev{0.2, 0.2, 0.2};
+    wpi::array<double, 3> visionStdDev{0.0, 0.0, 0.0};
     // Odometry object that allows for vision input with a standard deviation
     frc::SwerveDrivePoseEstimator<4> odometry
     {
@@ -213,7 +214,9 @@ private:
             frontLeft.GetPosition(), frontRight.GetPosition(),
             backLeft.GetPosition(), backRight.GetPosition()
         },
-        frc::Pose2d()
+        frc::Pose2d(),
+        driveStdDev,
+        visionStdDev
     };
 
     // Creates a field object for use of odometry and PathPlanner debugging

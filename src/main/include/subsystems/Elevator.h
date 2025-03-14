@@ -99,20 +99,4 @@ private:
     frc::TrapezoidProfile<units::meters>::Constraints upTrapezoidProfileContraints = ElevatorConstants::kUpTrapezoidProfileContraints;
     frc::TrapezoidProfile<units::meters>::Constraints downTrapezoidProfileContraints = ElevatorConstants::kDownTrapezoidProfileContraints;
     frc::ElevatorFeedforward feedforward{ElevatorConstants::kS, ElevatorConstants::kG, ElevatorConstants::kV, ElevatorConstants::kA};
-
-    frc::sim::ElevatorSim elevatorSim
-    {
-        frc::LinearSystemId::ElevatorSystem
-        (
-            frc::DCMotor::KrakenX60(2),
-            9.07_kg,
-            kSprocketPitchDiameter / 2,
-            kMotorGearing.value()
-        ),
-        frc::DCMotor::KrakenX60(2),
-        kHeightOffset,
-        kMaxElevatorHeight,
-        true,
-        kHeightOffset
-    };
 };
