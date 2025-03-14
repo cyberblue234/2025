@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.062457191780823,
-        "y": 7.03013698630137
+        "x": 16.002354452054796,
+        "y": 6.894905821917808
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.106161990313211,
-        "y": 6.614313604665852
+        "x": 14.046059250587184,
+        "y": 6.47908244028229
       },
       "isLocked": false,
       "linkedName": "RightCoralStation"
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "L4",
-      "waypointRelativePos": 0.7525423728813566,
+      "waypointRelativePos": 0.6033898305084762,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",

@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 16.062457191780823,
-        "y": 7.03
+        "x": 16.002,
+        "y": 6.894905821917808
       },
       "prevControl": {
-        "x": 14.669898716489536,
-        "y": 6.054920058203222
+        "x": 14.609441524708712,
+        "y": 5.91982588012103
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "CoralStation",
-      "waypointRelativePos": 0.08813559322033901,
+      "waypointRelativePos": 0.20677966101694914,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",

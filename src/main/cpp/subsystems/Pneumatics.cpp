@@ -2,5 +2,5 @@
 
 void Pneumatics::SetStopper(bool extended)
 {
-    stopperSolenoid.Set(extended);
+    // stopperSolenoid.Set(extended);
 }

@@ -295,7 +295,7 @@ frc2::CommandPtr Controls::GetBargeCommand()
             
             if (Positions::Barge.height - elevator->GetHeight() > 0.5_ft)
             {
-                claw->SetIOPower(kAlgaeIntakePower);
+                claw->SetIOPower(0.0);
             }
             else
             {

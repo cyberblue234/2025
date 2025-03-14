@@ -137,7 +137,7 @@ namespace RobotMap
         //TalonFX
         constexpr int kWristMotorID = 11;
         //SparkFlex
-        constexpr int kIOMotorID = 54;
+        constexpr int kIOMotorID = 12;
         //CANcoder
         constexpr int kCanCoderID = 5;
 
@@ -391,7 +391,7 @@ namespace Positions
 {    
     constexpr Position L1           = Position(1.6_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
     constexpr Position L2           = Position(2.25_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
-    constexpr Position L3           = Position(3.65_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
+    constexpr Position L3           = Position(3.53_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
     constexpr Position L4           = Position(4.8_ft, 50.0_deg, -ClawConstants::kCoralOutputPower, false);
     constexpr Position AlgaeLow     = Position(2.2_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
     constexpr Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);

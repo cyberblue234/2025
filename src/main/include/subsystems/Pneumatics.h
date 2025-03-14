@@ -13,12 +13,12 @@ public:
 
     /// @brief Returns a pointer to the stopperSolenoid object
     /// @return frc::Solenoid* of the stopper solenoid
-    frc::Solenoid *GetStopperSolenoid() { return &stopperSolenoid; }
+    // frc::Solenoid *GetStopperSolenoid() { return &stopperSolenoid; }
 private:
-    frc::Solenoid stopperSolenoid
-    {
-        RobotMap::Pneumatics::kPneumaticHubID, 
-        frc::PneumaticsModuleType::REVPH, 
-        RobotMap::Pneumatics::kStopperSlot, 
-    };
+    // frc::Solenoid stopperSolenoid
+    // {
+    //     RobotMap::Pneumatics::kPneumaticHubID, 
+    //     frc::PneumaticsModuleType::REVPH, 
+    //     RobotMap::Pneumatics::kStopperSlot, 
+    // };
 };
