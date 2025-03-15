@@ -21,7 +21,7 @@ Autonomous::Autonomous(Drivetrain *swerve, Elevator *elevator, Claw *claw, Climb
     frc::SmartDashboard::PutBoolean("Simulated Coral in Claw", this->simCoralInClaw);
 
     std::vector<std::string> autos = pathplanner::AutoBuilder::getAllAutoNames();
-    autoChooser.SetDefaultOption(autos[0], autos[0]);
+    autoChooser.SetDefaultOption("Nothing", "Nothing");
 	for (auto i = autos.begin(); i != autos.end(); ++i)
 	{
 		autoChooser.AddOption(*i, *i);
@@ -30,9 +30,11 @@ Autonomous::Autonomous(Drivetrain *swerve, Elevator *elevator, Claw *claw, Climb
 	frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 }
 
-frc2::CommandPtr Autonomous::GetAutoCommand()
+std::optional<frc2::CommandPtr> Autonomous::GetAutoCommand()
 {
-    return pathplanner::PathPlannerAuto(autoChooser.GetSelected()).ToPtr();
+    std::string auton = autoChooser.GetSelected();
+    if (auton == "Nothing") return {};
+    return pathplanner::PathPlannerAuto(auton).ToPtr();
 }
 
 

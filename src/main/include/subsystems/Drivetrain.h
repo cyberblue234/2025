@@ -92,6 +92,7 @@ public:
 
     /// @brief Calls odometry update
     void UpdateOdometry();
+    void UpdateLimelights();
     /// @brief Updates SmartDashboard values
     void UpdateTelemetry();
     /// @brief Gets the gyro angle from the robot perspective
@@ -203,8 +204,7 @@ private:
         kBackLeftLocation,
         kBackRightLocation
     };
-    wpi::array<double, 3> driveStdDev{0.2, 0.2, 0.2};
-    wpi::array<double, 3> visionStdDev{0.0, 0.0, 0.0};
+
     // Odometry object that allows for vision input with a standard deviation
     frc::SwerveDrivePoseEstimator<4> odometry
     {
@@ -214,9 +214,7 @@ private:
             frontLeft.GetPosition(), frontRight.GetPosition(),
             backLeft.GetPosition(), backRight.GetPosition()
         },
-        frc::Pose2d(),
-        driveStdDev,
-        visionStdDev
+        frc::Pose2d()
     };
 
     // Creates a field object for use of odometry and PathPlanner debugging
