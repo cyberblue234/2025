@@ -72,7 +72,7 @@ private:
     hardware::TalonFX motor2{RobotMap::Elevator::kMotor2ID, "rio"};
 
     // Creates the limit switch - it is a digital (true or false) input
-    frc::DigitalInput bottomLimitSwitch{RobotMap::Elevator::kBottomLimitSwitchID};
+    frc::DigitalInput bottomLimitSwitch{2};
     // Simulated representation of the limit switch
     bool simLimSwitch = true;
 

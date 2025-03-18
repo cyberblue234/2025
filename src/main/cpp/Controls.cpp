@@ -257,11 +257,11 @@ void Controls::ClimberControls()
 {
     if (controlBoard.GetRawAxis(kClimberAxis) < -0.5)
     {
-        climber->SetPower(kClimberPower);
+        climber->SetPower(-1.0);
     }
     else if (controlBoard.GetRawAxis(kClimberAxis) > 0.5)
     {
-        climber->SetPower(-kClimberPower);
+        climber->SetPower(1.0);
     }
     else
     {

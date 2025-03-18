@@ -75,7 +75,7 @@ void Claw::SetWristPower(double power)
 {
     // Sets the duty cycle of the motor
     wristMotor.SetControl(controls::DutyCycleOut{power}
-                        .WithLimitForwardMotion(GetCurrentAngle() <= kLowLimit));
+                        .WithLimitForwardMotion(GetCurrentAngle() <= 1_deg));
 }
 
 bool Claw::GoToAngle(units::degree_t angle)
