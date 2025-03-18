@@ -21,7 +21,7 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
 
     // Stator limit makes sure we don't burn up our motors if they get jammed
     driveMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    driveMotorConfig.CurrentLimits.StatorCurrentLimit = 120.0_A;
+    driveMotorConfig.CurrentLimits.StatorCurrentLimit = Drive::kCurrentLimit;
 
     // Configures PID and feedforward values
     driveMotorConfig.Slot0.kP = Drive::kP;
@@ -45,17 +45,13 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     turnMotorConfig.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
 
     turnMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    turnMotorConfig.CurrentLimits.StatorCurrentLimit = 120.0_A;
+    turnMotorConfig.CurrentLimits.StatorCurrentLimit = Turn::kCurrentLimit;
+
+    turnMotorConfig.Slot0.kP = Turn::kP;
+    turnMotorConfig.Slot0.kI = Turn::kI;
+    turnMotorConfig.Slot0.kD = Turn::kD;
 
     turnMotor.GetConfigurator().Apply(turnMotorConfig);
-
-    configs::SlotConfigs turnPIDConfig{};
-
-    turnPIDConfig.kP = Turn::kP;
-    turnPIDConfig.kI = Turn::kI;
-    turnPIDConfig.kD = Turn::kD;
-
-    turnMotor.GetConfigurator().Apply(turnPIDConfig);
 
     canCoder.GetConfigurator().Apply(configs::CANcoderConfiguration{});
     configs::CANcoderConfiguration canCoderConfig{};
