@@ -37,26 +37,10 @@ void Controls::DriveControls()
 {
     if (gamepad.GetYButton()) swerve->ResetDrivingGyro();
 
-    if (gamepad.GetLeftBumperButtonPressed()) 
+    if (gamepad.GetLeftBumperButtonPressed() || gamepad.GetRightBumperButtonPressed()) 
     {
-        units::meter_t offset = 0.5_ft;
-        if (GetDesiredPosition().has_value())
-        {
-            if (GetDesiredPosition().value() == Positions::L1 || GetDesiredPosition().value() == Positions::L4)
-                offset = 0_ft;
-        }
-        path = swerve->PathfindToBranch(Drivetrain::Sides::Left, offset, true);
-        if (path) path->Schedule();
-    }
-    else if (gamepad.GetRightBumperButtonPressed()) 
-    {
-        units::meter_t offset = 0.5_ft;
-        if (GetDesiredPosition().has_value())
-        {
-            if (GetDesiredPosition().value() == Positions::L1 || GetDesiredPosition().value() == Positions::L4)
-                offset = 0_ft;
-        }
-        path = swerve->PathfindToBranch(Drivetrain::Sides::Right, offset, true);
+        units::meter_t offset = RobotConstants::kRobotLength / 2 + RobotConstants::kBumperWidth + 0.25_ft;
+        path = swerve->PathfindToBranch(gamepad.GetLeftBumperButton() ? Drivetrain::Sides::Left : Drivetrain::Sides::Right, offset, true);
         if (path) path->Schedule();
     }
     else if (gamepad.GetAButtonPressed())

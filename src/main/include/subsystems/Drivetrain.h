@@ -88,7 +88,7 @@ public:
     /// @param pose Pose to pathfind to
     /// @param endHeading The heading to drive at of the end pose. Note, this is NOT the same as the end goal state - that should be included in pose
     /// @return CommandPtr of the path to run - std::nullopt if the path can not exist
-    std::optional<frc2::CommandPtr> PathfindToPose(frc::Pose2d pose, frc::Rotation2d endHeading, bool preventFlipping);
+    std::optional<frc2::CommandPtr> PathfindToPose(frc::Pose2d pose, frc::Rotation2d endHeading, bool preventFlipping, PathConstraints pathConstraints);
 
     /// @brief Calls odometry update
     void UpdateOdometry();

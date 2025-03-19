@@ -53,6 +53,8 @@
 #include <frc/trajectory/TrapezoidProfile.h>
 
 #include <pathplanner/lib/path/PathConstraints.h>
+#include <pathplanner/lib/config/ModuleConfig.h>
+#include <pathplanner/lib/config/RobotConfig.h>
 
 #include <frc/RobotController.h>
 #include <frc/RobotBase.h>
@@ -198,47 +200,18 @@ namespace units
     using ka_degrees_t = unit_t<frc::SimpleMotorFeedforward<degrees>::ka_unit>;
 }
 
-/// @brief Constants for the SwerveModule class
-namespace SwerveModuleConstants
-{   
-    // Gearing between the drive motor and wheel in turns - how many turns of the drive motor does it take to drive the wheel one full revolution
-    constexpr units::turn_t kDriveGearRatio = 6.39_tr;
-    // Gearing between the turn motor and wheel in turns - how many turns of the turn motor does it take to turn the wheel one full revolution
-    constexpr units::turn_t kTurnGearRatio = 12.1_tr;
-    // Radius of the wheel
-    constexpr units::meter_t kWheelRadius = 2_in;
-    // Width of the wheel
-    constexpr units::meter_t kWheelWidth = 2_in;
-    // MOI of the drive motor - 1/2 * m * r^2
-    constexpr units::kilogram_square_meter_t kDriveMOI{0.01};
-    // MOI of the turn motor - 1/12 * m * w^2
-    constexpr units::kilogram_square_meter_t kTurnMOI{0.025};
-    // The amount of meters the robot drives per turn of the drive motor. The circumference of the wheel is the distance the robot drives for one full revolution of the wheel. Dividing by the gear ratio gets you to meters per one turn of the drive motor
-    constexpr units::meters_per_turn_t kDriveDistanceRatio = kWheelRadius * 2 * std::numbers::pi / kDriveGearRatio;
-    // Because we use the CANcoder to determine turning distance, the ratio is just one revolution of the wheel (360° or 2π) for every turn
-    constexpr units::radians_per_turn_t kTurnDistanceRatio = 2_rad * std::numbers::pi / 1_tr;
+namespace RobotConstants
+{
+    constexpr units::meter_t kRobotWidth = 28_in;
+    constexpr units::meter_t kRobotLength = 31_in;
+    constexpr units::meter_t kBumperWidth = 3_in;
+    constexpr units::meter_t kRobotWidthWithBumper = kRobotWidth + kBumperWidth * 2;
+    constexpr units::meter_t kRobotLengthWithBumper = kRobotLength + kBumperWidth * 2;
 
-    // PIDs and feedforward constants of the drive motor
-    namespace Drive
-    {
-        constexpr double kP = 0.0;
-        constexpr double kI = 0.0;
-        constexpr double kD = 0.0;
-        constexpr units::volt_t kS{0.24};
-        constexpr units::kv_meters_t kV{2.46 * kDriveDistanceRatio.value()}; // values from https://www.reca.lc/drive?appliedVoltageRamp=%7B%22s%22%3A1200%2C%22u%22%3A%22V%2Fs%22%7D&batteryAmpHours=%7B%22s%22%3A18%2C%22u%22%3A%22A%2Ah%22%7D&batteryResistance=%7B%22s%22%3A0.015%2C%22u%22%3A%22Ohm%22%7D&batteryVoltageAtRest=%7B%22s%22%3A12.5%2C%22u%22%3A%22V%22%7D&efficiency=97&filtering=1&gearRatioMax=%7B%22magnitude%22%3A15%2C%22ratioType%22%3A%22Reduction%22%7D&gearRatioMin=%7B%22magnitude%22%3A3%2C%22ratioType%22%3A%22Reduction%22%7D&maxSimulationTime=%7B%22s%22%3A4%2C%22u%22%3A%22s%22%7D&maxSpeedAccelerationThreshold=%7B%22s%22%3A0.15%2C%22u%22%3A%22ft%2Fs2%22%7D&motor=%7B%22quantity%22%3A4%2C%22name%22%3A%22Kraken%20X60%2A%22%7D&motorCurrentLimit=%7B%22s%22%3A120%2C%22u%22%3A%22A%22%7D&numCyclesPerMatch=24&peakBatteryDischarge=20&ratio=%7B%22magnitude%22%3A6.54%2C%22ratioType%22%3A%22Reduction%22%7D&sprintDistance=%7B%22s%22%3A21%2C%22u%22%3A%22ft%22%7D&swerve=1&targetTimeToGoal=%7B%22s%22%3A2%2C%22u%22%3A%22s%22%7D&throttleResponseMax=0.99&throttleResponseMin=0.5&weightAuxilliary=%7B%22s%22%3A23%2C%22u%22%3A%22lbs%22%7D&weightDistributionFrontBack=0.5&weightDistributionLeftRight=0.5&weightInspected=%7B%22s%22%3A105%2C%22u%22%3A%22lbs%22%7D&wheelBaseLength=%7B%22s%22%3A27%2C%22u%22%3A%22in%22%7D&wheelBaseWidth=%7B%22s%22%3A20%2C%22u%22%3A%22in%22%7D&wheelCOFDynamic=0.9&wheelCOFLateral=1.1&wheelCOFStatic=1&wheelDiameter=%7B%22s%22%3A4%2C%22u%22%3A%22in%22%7D
-        constexpr units::ka_meters_t kA{0.20 * kDriveDistanceRatio.value()};
-
-        constexpr units::ampere_t kCurrentLimit = 100_A;
-    }
-    // PIDs of the turn motor
-    namespace Turn
-    {
-        constexpr double kP = 20.0;
-        constexpr double kI = 0.0;
-        constexpr double kD = 0.5;
-
-        constexpr units::ampere_t kCurrentLimit = 30_A;
-    }
+    constexpr units::kilogram_t kBatteryMass = 12.89_lb;
+    constexpr units::kilogram_t kBumperMass = 10_lb;
+    constexpr units::kilogram_t kMass = 115_lb + kBumperMass + kBatteryMass; 
+    constexpr units::kilogram_square_meter_t kMOI = (1 / 12) * kMass * (kRobotWidthWithBumper * kRobotWidthWithBumper + kRobotLengthWithBumper * kRobotLengthWithBumper);
 }
 
 /// @brief Constants for the Drivetrain class
@@ -266,6 +239,53 @@ namespace DrivetrainConstants
     constexpr units::meter_t kDeltaReefAprilTagToBranch = 6.5_in;
 }
 
+/// @brief Constants for the SwerveModule class
+namespace SwerveModuleConstants
+{   
+    // Gearing between the drive motor and wheel in turns - how many turns of the drive motor does it take to drive the wheel one full revolution
+    constexpr units::turn_t kDriveGearRatio = 6.39_tr;
+    // Gearing between the turn motor and wheel in turns - how many turns of the turn motor does it take to turn the wheel one full revolution
+    constexpr units::turn_t kTurnGearRatio = 12.1_tr;
+    // Radius of the wheel
+    constexpr units::meter_t kWheelRadius = 2_in;
+    // Width of the wheel
+    constexpr units::meter_t kWheelWidth = 2_in;
+    // MOI of the drive motor - 1/2 * m * r^2
+    constexpr units::kilogram_square_meter_t kDriveMOI{0.01};
+    // MOI of the turn motor - 1/12 * m * w^2
+    constexpr units::kilogram_square_meter_t kTurnMOI{0.025};
+    // The amount of meters the robot drives per turn of the drive motor. The circumference of the wheel is the distance the robot drives for one full revolution of the wheel. Dividing by the gear ratio gets you to meters per one turn of the drive motor
+    constexpr units::meters_per_turn_t kDriveDistanceRatio = kWheelRadius * 2 * std::numbers::pi / kDriveGearRatio;
+    // Because we use the CANcoder to determine turning distance, the ratio is just one revolution of the wheel (360° or 2π) for every turn
+    constexpr units::radians_per_turn_t kTurnDistanceRatio = 2_rad * std::numbers::pi / 1_tr;
+
+    constexpr double kWheelCOF = 1.0;
+
+    // PIDs and feedforward constants of the drive motor
+    namespace Drive
+    {
+        constexpr double kP = 0.0;
+        constexpr double kI = 0.0;
+        constexpr double kD = 0.0;
+        constexpr units::volt_t kS{0.24};
+        constexpr units::kv_meters_t kV{2.46 * kDriveDistanceRatio.value()}; // values from https://www.reca.lc/drive?appliedVoltageRamp=%7B%22s%22%3A1200%2C%22u%22%3A%22V%2Fs%22%7D&batteryAmpHours=%7B%22s%22%3A18%2C%22u%22%3A%22A%2Ah%22%7D&batteryResistance=%7B%22s%22%3A0.015%2C%22u%22%3A%22Ohm%22%7D&batteryVoltageAtRest=%7B%22s%22%3A12.5%2C%22u%22%3A%22V%22%7D&efficiency=97&filtering=1&gearRatioMax=%7B%22magnitude%22%3A15%2C%22ratioType%22%3A%22Reduction%22%7D&gearRatioMin=%7B%22magnitude%22%3A3%2C%22ratioType%22%3A%22Reduction%22%7D&maxSimulationTime=%7B%22s%22%3A4%2C%22u%22%3A%22s%22%7D&maxSpeedAccelerationThreshold=%7B%22s%22%3A0.15%2C%22u%22%3A%22ft%2Fs2%22%7D&motor=%7B%22quantity%22%3A4%2C%22name%22%3A%22Kraken%20X60%2A%22%7D&motorCurrentLimit=%7B%22s%22%3A120%2C%22u%22%3A%22A%22%7D&numCyclesPerMatch=24&peakBatteryDischarge=20&ratio=%7B%22magnitude%22%3A6.54%2C%22ratioType%22%3A%22Reduction%22%7D&sprintDistance=%7B%22s%22%3A21%2C%22u%22%3A%22ft%22%7D&swerve=1&targetTimeToGoal=%7B%22s%22%3A2%2C%22u%22%3A%22s%22%7D&throttleResponseMax=0.99&throttleResponseMin=0.5&weightAuxilliary=%7B%22s%22%3A23%2C%22u%22%3A%22lbs%22%7D&weightDistributionFrontBack=0.5&weightDistributionLeftRight=0.5&weightInspected=%7B%22s%22%3A105%2C%22u%22%3A%22lbs%22%7D&wheelBaseLength=%7B%22s%22%3A27%2C%22u%22%3A%22in%22%7D&wheelBaseWidth=%7B%22s%22%3A20%2C%22u%22%3A%22in%22%7D&wheelCOFDynamic=0.9&wheelCOFLateral=1.1&wheelCOFStatic=1&wheelDiameter=%7B%22s%22%3A4%2C%22u%22%3A%22in%22%7D
+        constexpr units::ka_meters_t kA{0.20 * kDriveDistanceRatio.value()};
+
+        constexpr units::ampere_t kCurrentLimit = 100_A;
+    }
+    // PIDs of the turn motor
+    namespace Turn
+    {
+        constexpr double kP = 20.0;
+        constexpr double kI = 0.0;
+        constexpr double kD = 0.5;
+
+        constexpr units::ampere_t kCurrentLimit = 30_A;
+    }
+    
+    inline pathplanner::ModuleConfig moduleConfigs{kWheelRadius, DrivetrainConstants::kMaxSpeed, kWheelCOF, frc::DCMotor::KrakenX60(1), kDriveGearRatio.value(), Drive::kCurrentLimit, 1};
+}
+
 /// @brief Constants for PathPlanner
 namespace PathPlannerConstants
 {
@@ -283,7 +303,12 @@ namespace PathPlannerConstants
         constexpr double kI = 0.0;
         constexpr double kD = 0.1;
     }
-    constexpr pathplanner::PathConstraints pathfindingConstraints{0.5_mps, 0.25_mps_sq, 240_deg_per_s, 240_deg_per_s_sq};
+    
+    inline pathplanner::RobotConfig kConfig{RobotConstants::kMass, RobotConstants::kMOI, SwerveModuleConstants::moduleConfigs, std::vector<frc::Translation2d>{DrivetrainConstants::kFrontLeftLocation, DrivetrainConstants::kFrontRightLocation, DrivetrainConstants::kBackLeftLocation, DrivetrainConstants::kBackRightLocation}};
+    
+    constexpr pathplanner::PathConstraints kReefPathfindingConstraints{0.5_mps, 0.25_mps_sq, 240_deg_per_s, 240_deg_per_s_sq};
+    constexpr pathplanner::PathConstraints kCoralStationPathfindingConstraints{1_mps, 0.5_mps_sq, 360_deg_per_s, 360_deg_per_s_sq};
+    constexpr pathplanner::PathConstraints kProcessorPathfindingConstraints{1_mps, 0.5_mps_sq, 360_deg_per_s, 360_deg_per_s_sq};
 }
 
 /// @brief Constants for the Elevator Class

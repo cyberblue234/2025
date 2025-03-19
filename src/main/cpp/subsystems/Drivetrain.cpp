@@ -10,8 +10,6 @@ Drivetrain::Drivetrain(Limelight *limelightHigh, Limelight *limelightLow)
     gyro.GetConfigurator().Apply(configs::Pigeon2Configuration{});
     ResetGyro();
 
-    // Gets the settings from PathPlanner GUI
-    RobotConfig config = RobotConfig::fromGUISettings();
     // Configure the AutoBuilder last
     AutoBuilder::configure(
         [this](){ return GetPose(); }, // Robot pose supplier
@@ -19,7 +17,7 @@ Drivetrain::Drivetrain(Limelight *limelightHigh, Limelight *limelightLow)
         [this](){ return GetRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](auto speeds, auto feedforwards){ Drive(speeds, false); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
         std::make_shared<PPHolonomicDriveController>(translationPIDs, rotationPIDs),
-        config, // The robot configuration
+        PathPlannerConstants::kConfig, // The robot configuration
         []() {
             // Boolean supplier that controls when the path will be mirrored for the blue alliance
             // This will flip the path being followed to the blue side of the field.
@@ -89,39 +87,39 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(Sides side, units::
     units::meter_t deltaX2 = units::math::sin(theta) * offset;
     units::meter_t deltaY2 = -units::math::cos(theta) * offset;
 
-    frc::Pose2d pose{aprilTagPose.X() + deltaX1 + deltaX2, aprilTagPose.Y() + deltaY1 + deltaY2, aprilTagPose.Rotation().Degrees() + 180_deg};
+    frc::Pose2d pose{aprilTagPose.X() + deltaX1 + deltaX2, aprilTagPose.Y() + deltaY1 + deltaY2, aprilTagPose.Rotation().Degrees() + 180_deg}; 
     // Uses PPLib pathfinding with given constraints
-    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, pathfindingConstraints);
+    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, kReefPathfindingConstraints);
     // Uses internal pathfinding
-    return PathfindToPose(pose, pose.Rotation(), true);
+    return PathfindToPose(pose, pose.Rotation(), true, kReefPathfindingConstraints);
 }
 
 std::optional<frc2::CommandPtr> Drivetrain::PathfindToCoralStation(Sides station, bool usePPLibPathfinding)
 {
     frc::Pose2d pose = FormatStation(station);
     // Uses PPLib pathfinding with given constraints
-    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, pathfindingConstraints);
+    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, kCoralStationPathfindingConstraints);
     // Uses internal pathfinding
-    return PathfindToPose(pose, pose.Rotation().RotateBy(180_deg), true);
+    return PathfindToPose(pose, pose.Rotation().RotateBy(180_deg), true, kCoralStationPathfindingConstraints);
 }
 
 std::optional<frc2::CommandPtr> Drivetrain::PathfindToProcessor(bool usePPLibPathfinding)
 {
     frc::Pose2d pose = FormatProcessor();
     // Uses PPLib pathfinding with given constraints
-    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, pathfindingConstraints);
+    if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, kProcessorPathfindingConstraints);
     // Uses internal pathfinding
-    return PathfindToPose(pose, pose.Rotation(), true);
+    return PathfindToPose(pose, pose.Rotation(), true, kProcessorPathfindingConstraints);
 }
 
-std::optional<frc2::CommandPtr> Drivetrain::PathfindToPose(frc::Pose2d pose, frc::Rotation2d endHeading, bool preventFlipping)
+std::optional<frc2::CommandPtr> Drivetrain::PathfindToPose(frc::Pose2d pose, frc::Rotation2d endHeading, bool preventFlipping, PathConstraints pathConstraints)
 {
     // Finds the difference of the two x and the two y values
     double xDiff = pose.X().value() - GetPose().X().value();
     double yDiff = pose.Y().value() - GetPose().Y().value();
     // cos(x) is equal to the lengh of the adjacent side divided by the length of the hypotenuse
     // The inverse of cos will give you the angle to drive at, in quadrants one and two
-    // If you multiply that by the sign of the yDiff, you will get the final hedaing in radians
+    // If you multiply that by the sign of the yDiff, you will get the final heading in radians
     units::radian_t heading = units::radian_t(sgn(yDiff) * acos((xDiff) / (pow(pow(xDiff, 2) + pow(yDiff, 2), 0.5))));
     // Creates a vector of two poses with the rotation being the heading to drive at
     // The first pose is the current pose, and the second is the pose to drive to
@@ -133,7 +131,7 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToPose(frc::Pose2d pose, frc
     // Creates a path based on the vector of poses and PathPlanner constraints
     auto path = std::make_shared<PathPlannerPath>(
         PathPlannerPath::waypointsFromPoses(poses),
-        PathConstraints(1_mps, 1_mps_sq, 720_deg_per_s, 720_deg_per_s_sq),
+        pathConstraints,
         std::nullopt,
         GoalEndState(0.0_mps, pose.Rotation())
     );
