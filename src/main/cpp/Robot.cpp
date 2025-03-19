@@ -47,6 +47,8 @@ void Robot::TeleopPeriodic()
 {
 	controls.Periodic();
 	controls.UpdateTelemetry();
+
+	swerve.UpdateLimelights();
 }
 
 void Robot::TestPeriodic() {}
@@ -66,6 +68,7 @@ void Robot::UpdateTelemetry()
 	swerve.UpdateTelemetry();
 	elevator.UpdateTelemtry();
 	claw.UpdateTelemetry();
+	climber.UpdateTelemetry();
 	limelightHigh.UpdateTelemetry();
 	limelightLow.UpdateTelemetry();
 }

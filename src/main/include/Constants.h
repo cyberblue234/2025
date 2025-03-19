@@ -360,7 +360,7 @@ namespace ClimberConstants
 namespace LimelightConstants
 {
     constexpr frc::Pose3d kHighOffset{8.25_in, 10.25_in, 36_in, frc::Rotation3d{-90_deg, 0_deg, 0_deg}};
-    constexpr frc::Pose3d kLowOffset{11.75_in, 0_in, 7.5_in, frc::Rotation3d{180_deg, 0_deg, 0_deg}};
+    constexpr frc::Pose3d kLowOffset{11.75_in, 0_in, 7.5_in, frc::Rotation3d{0_deg, 0_deg, 0_deg}};
 }
 
 /// @brief Struct for the different possible positions

@@ -72,7 +72,7 @@ private:
     hardware::TalonFX motor2{RobotMap::Elevator::kMotor2ID, "rio"};
 
     // Creates the limit switch - it is a digital (true or false) input
-    frc::DigitalInput bottomLimitSwitch{RobotMap::Elevator::kBottomLimitSwitchID};
+    frc::DigitalInput bottomLimitSwitch{2};
     // Simulated representation of the limit switch
     bool simLimSwitch = true;
 
@@ -99,4 +99,20 @@ private:
     frc::TrapezoidProfile<units::meters>::Constraints upTrapezoidProfileContraints = ElevatorConstants::kUpTrapezoidProfileContraints;
     frc::TrapezoidProfile<units::meters>::Constraints downTrapezoidProfileContraints = ElevatorConstants::kDownTrapezoidProfileContraints;
     frc::ElevatorFeedforward feedforward{ElevatorConstants::kS, ElevatorConstants::kG, ElevatorConstants::kV, ElevatorConstants::kA};
+
+    frc::sim::ElevatorSim elevatorSim
+    {
+        frc::LinearSystemId::ElevatorSystem
+        (
+            frc::DCMotor::KrakenX60(2),
+            9.07_kg,
+            kSprocketPitchDiameter / 2,
+            kMotorGearing.value()
+        ),
+        frc::DCMotor::KrakenX60(2),
+        kHeightOffset,
+        kMaxElevatorHeight,
+        true,
+        kHeightOffset
+    };
 };

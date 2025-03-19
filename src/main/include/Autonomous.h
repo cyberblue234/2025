@@ -20,7 +20,7 @@ class Autonomous
 {
 public:
     Autonomous(Drivetrain *swerve, Elevator *elevator, Claw *claw, Climber *climber, Pneumatics *pneumatics,  Limelight *limelightHigh, Limelight *limelightLow);
-    frc2::CommandPtr GetAutoCommand();
+    std::optional<frc2::CommandPtr> GetAutoCommand();
 
     frc2::CommandPtr IO();
 

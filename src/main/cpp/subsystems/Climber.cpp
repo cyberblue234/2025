@@ -15,5 +15,19 @@ Climber::Climber()
 void Climber::SetPower(double power)
 {
     // Sets the duty cycle of the climb motor
-    climbMotor.Set(power);
+    if (power < 0)
+    {
+        if (limit.Get() == false)
+            climbMotor.Set(power);
+        else 
+            climbMotor.Set(0.0);
+    }
+    else climbMotor.Set(power);
+    
+}
+
+void Climber::UpdateTelemetry()
+{
+    frc::SmartDashboard::PutNumber("Climber Encoder", climbMotor.GetEncoder().GetPosition());
+    frc::SmartDashboard::PutBoolean("Climber Limit", limit.Get());
 }
