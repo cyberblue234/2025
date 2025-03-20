@@ -87,7 +87,8 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(Sides side, units::
     units::meter_t deltaX2 = units::math::sin(theta) * offset;
     units::meter_t deltaY2 = -units::math::cos(theta) * offset;
 
-    frc::Pose2d pose{aprilTagPose.X() + deltaX1 + deltaX2, aprilTagPose.Y() + deltaY1 + deltaY2, aprilTagPose.Rotation().Degrees() + 180_deg}; 
+    frc::Pose2d pose{aprilTagPose.X() + deltaX1 + deltaX2, aprilTagPose.Y() + deltaY1 + deltaY2, aprilTagPose.Rotation().Degrees() + 180_deg};
+    // return DriveToPose(pose, pose.Rotation(), frc::TrajectoryConfig{kReefPathfindingConstraints.getMaxVelocity(), kReefPathfindingConstraints.getMaxAcceleration()});
     // Uses PPLib pathfinding with given constraints
     if (usePPLibPathfinding) return AutoBuilder::pathfindToPose(pose, kReefPathfindingConstraints);
     // Uses internal pathfinding
@@ -142,6 +143,54 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToPose(frc::Pose2d pose, frc
     return AutoBuilder::followPath(path);
 }
 
+frc2::CommandPtr Drivetrain::DriveToPose(frc::Pose2d pose, frc::Rotation2d endHeading, frc::TrajectoryConfig config)
+{
+    // // Finds the difference of the two x and the two y values
+    // double xDiff = pose.X().value() - GetPose().X().value();
+    // double yDiff = pose.Y().value() - GetPose().Y().value();
+    // // cos(x) is equal to the lengh of the adjacent side divided by the length of the hypotenuse
+    // // The inverse of cos will give you the angle to drive at, in quadrants one and two
+    // // If you multiply that by the sign of the yDiff, you will get the final heading in radians
+    // units::radian_t heading = units::radian_t(sgn(yDiff) * acos((xDiff) / (pow(pow(xDiff, 2) + pow(yDiff, 2), 0.5))));
+    // // Creates a vector of two poses with the rotation being the heading to drive at
+    // The first pose is the current pose, and the second is the pose to drive to
+    std::vector<frc::Pose2d> poses 
+    {
+        GetPose(),
+        pose
+    };
+
+    trajectory = frc::TrajectoryGenerator::GenerateTrajectory(poses, config);
+    // std::vector<frc::Pose2d> poses;
+    // for (frc::Trajectory::State state : trajectory.States())
+    // {
+    //     poses.push_back(state.pose);
+    // }
+    // trajectoryPublisher.Set(poses);
+    field.GetObject("trajectory")->SetTrajectory(trajectory);
+    trajectoryTimer.Reset();
+    trajectoryTimer.Start();
+
+    return frc2::RunCommand
+    (
+        [this]
+        {
+            const frc::Trajectory::State goal = trajectory.Sample(trajectoryTimer.Get());
+            const frc::ChassisSpeeds speeds = driveController.Calculate(GetPose(), goal, trajectory.Sample(trajectory.TotalTime()).pose.Rotation());
+            Drive(speeds, true);
+        }
+    ).Until
+    (
+        [this]
+        {
+            return trajectoryTimer.Get() > trajectory.TotalTime();
+        }
+    ).AndThen
+    (
+        frc2::InstantCommand([this] {trajectoryTimer.Stop(); }).ToPtr()
+    );
+}
+
 void Drivetrain::UpdateOdometry()
 {
     // Updates the odometry with the gyro angle and the wheel positions (drive distance and turn angle)
@@ -157,14 +206,14 @@ void Drivetrain::UpdateLimelights()
 {
     // Gets the estimated pose from the limelight
     // Uses MegaTag 2 which utilizes current gyro rotation in order to ensure better quality estimations
-    PoseEstimate visionHigh = limelightHigh->GetPose(GetBlueOriginGyroAngle().Degrees(), GetYawRate());
+    PoseEstimate visionHigh = limelightHigh->GetPose(GetRobotGyroAngle().Degrees(), GetYawRate());
     // Rejects the estimation if the rotation rate is too great or if the limelight doesn't see any tags
     if ((abs(GetYawRate().value()) > 720 || visionHigh.tagCount == 0) == false)
     {
         odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
         odometry.AddVisionMeasurement(visionHigh.pose, frc::Timer::GetFPGATimestamp());
     }
-    PoseEstimate visionLow = limelightLow->GetPose(GetBlueOriginGyroAngle().Degrees(), GetYawRate());
+    PoseEstimate visionLow = limelightLow->GetPose(GetRobotGyroAngle().Degrees(), GetYawRate());
     if ((abs(GetYawRate().value()) > 720 || visionLow.tagCount == 0) == false)
     {
         odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
@@ -183,7 +232,6 @@ void Drivetrain::UpdateTelemetry()
     frc::SmartDashboard::PutNumber("Y Acceleration", GetYAcceleration().value());
     frc::SmartDashboard::PutNumber("Gyro Robot Yaw", GetRobotGyroAngle().Degrees().value());
     frc::SmartDashboard::PutNumber("Gyro Driver Yaw", GetDriverGyroAngle().Degrees().value());
-    frc::SmartDashboard::PutNumber("Gyro Blue Origin Yaw", GetBlueOriginGyroAngle().Degrees().value());
     frc::SmartDashboard::PutNumber("Odom X", odometry.GetEstimatedPosition().X().value());
     frc::SmartDashboard::PutNumber("Odom Y", odometry.GetEstimatedPosition().Y().value());
     frc::SmartDashboard::PutNumber("Odom Rot", odometry.GetEstimatedPosition().Rotation().Degrees().value());

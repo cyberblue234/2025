@@ -292,7 +292,7 @@ namespace PathPlannerConstants
     // PIDs for the translation component of PathPlanner
     namespace Translation
     {
-        constexpr double kP = 5.0;
+        constexpr double kP = 8.0;
         constexpr double kI = 0.0;
         constexpr double kD = 0.1;
     }

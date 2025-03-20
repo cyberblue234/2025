@@ -22,6 +22,10 @@
 #include <frc2/command/SubsystemBase.h>
 
 #include <frc/controller/PIDController.h>
+#include <frc/controller/HolonomicDriveController.h>
+
+#include <frc/trajectory/TrajectoryGenerator.h>
+#include <frc/trajectory/TrajectoryConfig.h>
 
 #include <ctre/phoenix6/Pigeon2.hpp>
 #include <ctre/phoenix6/sim/Pigeon2SimState.hpp>
@@ -90,6 +94,10 @@ public:
     /// @return CommandPtr of the path to run - std::nullopt if the path can not exist
     std::optional<frc2::CommandPtr> PathfindToPose(frc::Pose2d pose, frc::Rotation2d endHeading, bool preventFlipping, PathConstraints pathConstraints);
 
+    frc2::CommandPtr DriveToPose(frc::Pose2d pose, frc::Rotation2d endHeading, frc::TrajectoryConfig config);
+    frc::Trajectory trajectory;
+    frc::Timer trajectoryTimer;
+
     /// @brief Calls odometry update
     void UpdateOdometry();
     void UpdateLimelights();
@@ -101,9 +109,6 @@ public:
     /// @brief Gets the gyro angle from the driver's perspective
     /// @return Rotation2d of the current gyro angle
     frc::Rotation2d GetDriverGyroAngle() { return GetRobotGyroAngle().RotateBy(drivingOffset); }
-    /// @brief Gets the gyro angle from the perspective of a blue origin
-    /// @return Rotation2d of the current gyro angle
-    frc::Rotation2d GetBlueOriginGyroAngle() { return GetRobotGyroAngle().RotateBy(blueOriginOffset); }
     /// @brief Gets the rate of the gyro yaw
     /// @return Rate of gyro yaw in degrees per second
     units::degrees_per_second_t GetYawRate() { return gyro.GetAngularVelocityZWorld().GetValue(); }
@@ -118,14 +123,6 @@ public:
     void ResetGyro() { gyro.Reset(); };
     /// @brief Sets the driving offset to the negated current angle
     void ResetDrivingGyro() { drivingOffset = -GetRobotGyroAngle().Degrees(); }
-
-    void ConfigureBlueOriginOffset() 
-    {
-        auto alliance = frc::DriverStation::GetAlliance();
-        if (alliance) {
-            if (alliance.value() == frc::DriverStation::Alliance::kBlue) blueOriginOffset = 180_deg;
-        }
-    }
 
     /// @brief Resets drive encoders to 0
     void ResetDriveDistances() 
@@ -184,7 +181,6 @@ private:
     hardware::Pigeon2 gyro{RobotMap::Drivetrain::kGyroID, "rio"};
     ctre::phoenix6::sim::Pigeon2SimState& gyroSim = gyro.GetSimState();
     units::degree_t drivingOffset = 180_deg;
-    units::degree_t blueOriginOffset = 0_deg;
 
     // Creates the two limelight objects, one is higher on the robot and one is lower
     Limelight *limelightHigh;
@@ -217,6 +213,12 @@ private:
         frc::Pose2d()
     };
 
+    frc::PIDController frcTranslationPIDs{3, 0, 0};
+    frc::ProfiledPIDController<units::radians> frcRotationPIDs{1, 0, 0, 
+        frc::TrapezoidProfile<units::radian>::Constraints{
+            6.28_rad_per_s, 3.14_rad_per_s / 1_s}};
+    frc::HolonomicDriveController driveController{frcTranslationPIDs, frcTranslationPIDs, frcRotationPIDs};
+
     // Creates a field object for use of odometry and PathPlanner debugging
     frc::Field2d field{};
     nt::StructPublisher<frc::Pose2d> odometryPublisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructTopic<frc::Pose2d>("odom").Publish();
@@ -232,8 +234,8 @@ private:
         frc::Pose2d pose;
         switch(station)
         {
-            case Sides::Left: pose = frc::Pose2d(16.15_m, 1.29_m, frc::Rotation2d(-126.0_deg)); break;
-            case Sides::Right: pose = frc::Pose2d(16.15_m, 6.82_m, frc::Rotation2d(126_deg)); break;
+            case Sides::Left: pose = frc::Pose2d(15.912_m, 1.095_m, frc::Rotation2d(-55.0_deg)); break;
+            case Sides::Right: pose = frc::Pose2d(15.912_m, 6.97_m, frc::Rotation2d(55_deg)); break;
 
             default: break;
         }

@@ -7,6 +7,8 @@
 #include <cstring>
 #include <fcntl.h>
 
+#include <frc/DriverStation.h>
+
 #include "Constants.h"
 
 

@@ -59,7 +59,10 @@ PoseEstimate Limelight::GetPose(units::degree_t yaw, units::degrees_per_second_t
 {
     // Sets the robot angle and angular velocity
     SetRobotOrientation(yaw, yawRate);
-    // Gets the estimated position
+    auto alliance = frc::DriverStation::GetAlliance();
+    if (alliance) {
+        if (alliance == frc::DriverStation::Alliance::kBlue) return GetBotPoseMegatag2Red();
+    }
     return GetBotPoseMegatag2Blue();
 }
 

@@ -25,10 +25,7 @@ void Robot::RobotPeriodic()
 
 void Robot::DisabledInit() {}
 
-void Robot::DisabledPeriodic() 
-{
-	swerve.ConfigureBlueOriginOffset();
-}
+void Robot::DisabledPeriodic() {}
 
 void Robot::AutonomousInit() 
 {
