@@ -384,7 +384,7 @@ namespace ClimberConstants
 
 namespace LimelightConstants
 {
-    constexpr frc::Pose3d kHighOffset{8.25_in, 10.25_in, 36_in, frc::Rotation3d{-90_deg, 0_deg, 0_deg}};
+    constexpr frc::Pose3d kHighOffset{8.75_in, 12_in, 37.875_in, frc::Rotation3d{0_deg, 0_deg, 0_deg}};
     constexpr frc::Pose3d kLowOffset{11.75_in, 0_in, 7.5_in, frc::Rotation3d{0_deg, 0_deg, 0_deg}};
 }
 
@@ -417,9 +417,9 @@ struct Position
 namespace Positions
 {    
     constexpr Position L1           = Position(1.6_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
-    constexpr Position L2           = Position(2.25_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
-    constexpr Position L3           = Position(3.53_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
-    constexpr Position L4           = Position(4.8_ft, 50.0_deg, -ClawConstants::kCoralOutputPower, false);
+    constexpr Position L2           = Position(1.0_ft, 13.5_deg,  -ClawConstants::kCoralOutputPower, false);
+    constexpr Position L3           = Position(2.5_ft, 13.5_deg,  -ClawConstants::kCoralOutputPower, false);
+    constexpr Position L4           = Position(4.45_ft, 13.5_deg, -ClawConstants::kCoralOutputPower, false);
     constexpr Position AlgaeLow     = Position(2.2_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
     constexpr Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
     constexpr Position CoralStation = Position(1.9_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true);

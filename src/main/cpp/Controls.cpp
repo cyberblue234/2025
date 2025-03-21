@@ -39,7 +39,7 @@ void Controls::DriveControls()
 
     if (gamepad.GetLeftBumperButtonPressed() || gamepad.GetRightBumperButtonPressed()) 
     {
-        units::meter_t offset = RobotConstants::kRobotLength / 2 + RobotConstants::kBumperWidth + 0.25_ft;
+        units::meter_t offset = RobotConstants::kRobotLength / 2 + RobotConstants::kBumperWidth;
         path = swerve->PathfindToBranch(gamepad.GetLeftBumperButton() ? Drivetrain::Sides::Left : Drivetrain::Sides::Right, offset, false);
         if (path) path->Schedule();
     }
