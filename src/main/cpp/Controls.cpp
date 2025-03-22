@@ -35,7 +35,10 @@ void Controls::Periodic()
 
 void Controls::DriveControls()
 {
-    if (gamepad.GetYButton()) swerve->ResetDrivingGyro();
+    if (gamepad.GetYButton())
+    {
+        swerve->ResetGyro();
+    }
 
     if (gamepad.GetLeftBumperButtonPressed() || gamepad.GetRightBumperButtonPressed()) 
     {

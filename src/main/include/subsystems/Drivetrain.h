@@ -170,6 +170,8 @@ public:
         return aprilTagLocations.GetTagPose(id).value().ToPose2d();
     }
 
+    void SetStdDevs(wpi::array<double, 3> stdDevs) { odometry.SetVisionMeasurementStdDevs(stdDevs); }
+
 private:
     // Creates the four swerve modules - see SwerveModule.h
     SwerveModule frontLeft{"Front Left", RobotMap::Drivetrain::kFrontLeftDriveID, RobotMap::Drivetrain::kFrontLeftTurnID, RobotMap::Drivetrain::kFrontLeftCanCoderID, kFrontLeftMagnetOffset};

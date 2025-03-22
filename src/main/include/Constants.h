@@ -209,7 +209,7 @@ namespace RobotConstants
     constexpr units::meter_t kRobotLengthWithBumper = kRobotLength + kBumperWidth * 2;
 
     constexpr units::kilogram_t kBatteryMass = 12.89_lb;
-    constexpr units::kilogram_t kBumperMass = 10_lb;
+    constexpr units::kilogram_t kBumperMass = 16.6_lb;
     constexpr units::kilogram_t kMass = 115_lb + kBumperMass + kBatteryMass; 
     constexpr units::kilogram_square_meter_t kMOI = (1 / 12) * kMass * (kRobotWidthWithBumper * kRobotWidthWithBumper + kRobotLengthWithBumper * kRobotLengthWithBumper);
 }
@@ -360,7 +360,7 @@ namespace ClawConstants
     constexpr double kCoralIntakePower = -0.2;
     constexpr double kAlgaeIntakePower = 0.5;
     // Outputting should be negative compared to intaking
-    constexpr double kCoralOutputPower = 0.2;
+    constexpr double kCoralOutputPower = 0.5;
     constexpr double kProcessorPower = -0.3;
     constexpr double kBargePower = -1.0;
     constexpr double kManualIOPower = 0.2;
@@ -385,7 +385,10 @@ namespace ClimberConstants
 namespace LimelightConstants
 {
     constexpr frc::Pose3d kHighOffset{8.75_in, 12_in, 37.875_in, frc::Rotation3d{0_deg, 0_deg, 0_deg}};
-    constexpr frc::Pose3d kLowOffset{11.75_in, 0_in, 7.5_in, frc::Rotation3d{0_deg, 0_deg, 0_deg}};
+    constexpr frc::Pose3d kLowOffset{11.5_in, 0.1875_in, 7.875_in, frc::Rotation3d{0_deg, 0_deg, 0_deg}};
+
+    constexpr wpi::array<double, 3> autonStdDevs{1.8, 1.8, 1.8};
+    constexpr wpi::array<double, 3> teleopStdDevs{0.9, 0.9, 0.9};
 }
 
 /// @brief Struct for the different possible positions

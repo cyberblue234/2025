@@ -210,16 +210,16 @@ void Drivetrain::UpdateLimelights()
     // Rejects the estimation if the rotation rate is too great or if the limelight doesn't see any tags
     if ((abs(GetYawRate().value()) > 720 || visionHigh.tagCount == 0) == false)
     {
-        wpi::array<double, 3> stdDevs{limelightHigh->GetStdDevs()[0], limelightHigh->GetStdDevs()[1], limelightHigh->GetStdDevs()[2]};
-        odometry.SetVisionMeasurementStdDevs(stdDevs);
+        // wpi::array<double, 3> stdDevs{limelightHigh->GetStdDevs()[0], limelightHigh->GetStdDevs()[1], 99999999.0};
+        // odometry.SetVisionMeasurementStdDevs(stdDevs);
+        SetStdDevs(wpi::array<double, 3>{0.9 + visionHigh.avgTagDist, 0.9 + visionHigh.avgTagDist, 0.9 + visionHigh.avgTagDist});
         odometry.AddVisionMeasurement(visionHigh.pose, frc::Timer::GetFPGATimestamp());
     }
-    // PoseEstimate visionLow = limelightLow->GetPose(GetRobotGyroAngle().Degrees(), GetYawRate());
-    // if ((abs(GetYawRate().value()) > 720 || visionLow.tagCount == 0) == false)
-    // {
-    //     odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3>{0.7, 0.7, 9999999.0});
-    //     odometry.AddVisionMeasurement(visionLow.pose, frc::Timer::GetFPGATimestamp());
-    // }
+    PoseEstimate visionLow = limelightLow->GetPose(GetRobotGyroAngle().Degrees(), GetYawRate());
+    if ((abs(GetYawRate().value()) > 720 || visionLow.tagCount == 0) == false)
+    {
+        odometry.AddVisionMeasurement(visionLow.pose, frc::Timer::GetFPGATimestamp());
+    }
 }
 
 void Drivetrain::UpdateTelemetry()

@@ -15,6 +15,7 @@ void Robot::RobotPeriodic()
 {
 	UpdateTelemetry();
 	swerve.UpdateOdometry();
+	swerve.UpdateLimelights();
 	elevator.UpdateElevator();
 
 	frc2::CommandScheduler::GetInstance().Run();
@@ -44,8 +45,6 @@ void Robot::TeleopPeriodic()
 {
 	controls.Periodic();
 	controls.UpdateTelemetry();
-
-	swerve.UpdateLimelights();
 }
 
 void Robot::TestPeriodic() {}
