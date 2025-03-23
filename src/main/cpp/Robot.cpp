@@ -32,6 +32,8 @@ void Robot::AutonomousInit()
 {
 	autoCmd = autonomous.GetAutoCommand();
 	if (autoCmd) autoCmd->Schedule();
+
+	swerve.SetStdDevs(LimelightConstants::autonStdDevs);
 }
 
 void Robot::AutonomousPeriodic() 
@@ -39,7 +41,10 @@ void Robot::AutonomousPeriodic()
 	autonomous.UpdateTelemetry();
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() 
+{
+	swerve.SetStdDevs(LimelightConstants::teleopStdDevs);
+}
 
 void Robot::TeleopPeriodic()
 {

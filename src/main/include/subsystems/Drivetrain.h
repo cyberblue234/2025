@@ -170,7 +170,10 @@ public:
         return aprilTagLocations.GetTagPose(id).value().ToPose2d();
     }
 
-    void SetStdDevs(wpi::array<double, 3> stdDevs) { odometry.SetVisionMeasurementStdDevs(stdDevs); }
+    void SetStdDevs(wpi::array<double, 3> stdDevs) 
+    { 
+        currentVisionStdDevs = stdDevs;
+    }
 
 private:
     // Creates the four swerve modules - see SwerveModule.h
@@ -214,6 +217,7 @@ private:
         },
         frc::Pose2d()
     };
+    wpi::array<double, 3> currentVisionStdDevs{0.9, 0.9, 0.9};
 
     frc::PIDController frcTranslationPIDs{3, 0, 0};
     frc::ProfiledPIDController<units::radians> frcRotationPIDs{1, 0, 0, 
