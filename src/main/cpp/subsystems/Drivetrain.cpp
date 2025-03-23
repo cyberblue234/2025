@@ -194,16 +194,6 @@ frc2::CommandPtr Drivetrain::DriveToPose(frc::Pose2d pose, frc::Rotation2d endHe
 void Drivetrain::UpdateOdometry()
 {
     // Updates the odometry with the gyro angle and the wheel positions (drive distance and turn angle)
-    odometry.Update(GetRobotGyroAngle(),
-                    {frontLeft.GetPosition(), frontRight.GetPosition(),
-                     backLeft.GetPosition(), backRight.GetPosition()});
-    
-    field.SetRobotPose(odometry.GetEstimatedPosition());
-    odometryPublisher.Set(GetPose());
-}
-
-void Drivetrain::UpdateLimelights()
-{
     // Gets the estimated pose from the limelight
     // Uses MegaTag 2 which utilizes current gyro rotation in order to ensure better quality estimations
     PoseEstimate visionHigh = limelightHigh->GetPose(GetRobotGyroAngle().Degrees(), GetYawRate());
@@ -216,11 +206,17 @@ void Drivetrain::UpdateLimelights()
         odometry.AddVisionMeasurement(visionHigh.pose, frc::Timer::GetFPGATimestamp());
     }
     PoseEstimate visionLow = limelightLow->GetPose(GetRobotGyroAngle().Degrees(), GetYawRate());
-    if ((abs(GetYawRate().value()) > 720 || visionLow.tagCount <= 1) == false)
+    if ((abs(GetYawRate().value()) <= 720 && (visionLow.tagCount > 1 || (visionLow.tagCount == 1 && IsAprilTagOnReef(visionLow.rawFiducials[0].id)))))
     {
         SetStdDevs(wpi::array<double, 3>{currentVisionStdDevs[0] + visionLow.avgTagDist, currentVisionStdDevs[1] + visionLow.avgTagDist, currentVisionStdDevs[2] + visionLow.avgTagDist});
         odometry.AddVisionMeasurement(visionLow.pose, frc::Timer::GetFPGATimestamp());
     }
+    odometry.Update(GetRobotGyroAngle(),
+                    {frontLeft.GetPosition(), frontRight.GetPosition(),
+                     backLeft.GetPosition(), backRight.GetPosition()});
+    odometry.ResetRotation(GetRobotGyroAngle());
+    field.SetRobotPose(odometry.GetEstimatedPosition());
+    odometryPublisher.Set(GetPose());
 }
 
 void Drivetrain::UpdateTelemetry()

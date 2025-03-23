@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 15.987328767123287,
-        "y": 6.9700342465753415
+        "x": 16.182662671232876,
+        "y": 6.8348030821917805
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.031033565655676,
-        "y": 6.554210864939823
+        "x": 14.226367469765265,
+        "y": 6.418979700556262
       },
       "isLocked": false,
       "linkedName": "RightCoralStation"
@@ -33,13 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "L4",
-      "waypointRelativePos": 0.6033898305084762,
-      "endWaypointRelativePos": 1.0,
+      "name": "Home",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.9457627118644099,
       "command": {
         "type": "named",
         "data": {
-          "name": "L4"
+          "name": "Home"
         }
       }
     }

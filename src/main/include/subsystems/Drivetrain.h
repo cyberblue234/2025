@@ -151,14 +151,8 @@ public:
 
     frc::Pose2d GetClosestBranchTagPose()
     {
-        auto alliance = frc::DriverStation::GetAlliance();
-        int startingID = 6;
-        if (alliance.value() == frc::DriverStation::Alliance::kBlue)
-        {
-            startingID = 17;
-        }
         std::vector<frc::Pose2d> aprilTagPoses;
-        for (int id = startingID; id <= startingID + 5; id++)
+        for (int id : GetReefAprilTagIDs())
         {
             aprilTagPoses.push_back(GetAprilTagIDPose(id));
         }
@@ -173,6 +167,31 @@ public:
     void SetStdDevs(wpi::array<double, 3> stdDevs) 
     { 
         currentVisionStdDevs = stdDevs;
+    }
+
+    const std::vector<int> GetReefAprilTagIDs()
+    {
+        auto alliance = frc::DriverStation::GetAlliance();
+        int startingID = 6;
+        if (alliance.value() == frc::DriverStation::Alliance::kBlue)
+        {
+            startingID = 17;
+        }
+        std::vector<int> ids;
+        for (int id = startingID; id <= startingID + 5; id++)
+        {
+            ids.push_back(id);
+        }
+        return ids;
+    }
+
+    bool IsAprilTagOnReef(int id)
+    {
+        for (int reefID : GetReefAprilTagIDs())
+        {
+            if (id == reefID) return true;
+        }
+        return false;
     }
 
 private:
