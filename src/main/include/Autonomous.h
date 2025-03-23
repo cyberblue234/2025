@@ -29,6 +29,7 @@ public:
     frc2::CommandPtr GoToL3();
     frc2::CommandPtr GoToL4();
     frc2::CommandPtr GoToCoralStation();
+    frc2::CommandPtr GoToCoralHome();
 
     /// @brief Sets current elevator position
     void SetElevatorPosition(std::optional<Position> pos) { elevatorPosition = pos; }

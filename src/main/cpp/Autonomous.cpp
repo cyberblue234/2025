@@ -17,6 +17,7 @@ Autonomous::Autonomous(Drivetrain *swerve, Elevator *elevator, Claw *claw, Climb
     NamedCommands::registerCommand("L3", GoToL3());
 	NamedCommands::registerCommand("L4", GoToL4());
     NamedCommands::registerCommand("CoralStation", GoToCoralStation());
+    NamedCommands::registerCommand("Home", GoToCoralHome());
 
     frc::SmartDashboard::PutBoolean("Simulated Coral in Claw", this->simCoralInClaw);
 
@@ -67,6 +68,12 @@ frc2::CommandPtr Autonomous::IO()
                 if (this->GetCurrentPosition().has_value() == false) return false;
                 return frc::SmartDashboard::GetBoolean("Simulated Coral in Claw", this->simCoralInClaw) == this->GetCurrentPosition().value().isForCoralIntake;
             }
+        }
+    ).AndThen
+    (
+        [this]
+        {
+            claw->SetIOPower(0.0);
         }
     );
 }
@@ -152,6 +159,23 @@ frc2::CommandPtr Autonomous::GoToCoralStation()
 
             bool isWristAtPosition = claw->GoToPosition(Positions::CoralStation);
             if (isWristAtPosition == true) SetWristPosition(Positions::CoralStation);
+            else SetWristPosition(std::nullopt);
+        }
+    ).ToPtr();
+}
+
+frc2::CommandPtr Autonomous::GoToCoralHome()
+{
+    return frc2::RunCommand
+    (
+        [this]
+        {
+            bool isElevatorAtPos = elevator->GoToPosition(Positions::CoralHome);
+            if (isElevatorAtPos == true) SetElevatorPosition(Positions::CoralHome);
+            else SetElevatorPosition(std::nullopt);
+
+            bool isWristAtPosition = claw->GoToPosition(Positions::CoralHome);
+            if (isWristAtPosition == true) SetWristPosition(Positions::CoralHome);
             else SetWristPosition(std::nullopt);
         }
     ).ToPtr();
