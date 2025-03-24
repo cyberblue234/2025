@@ -149,7 +149,7 @@ private:
     frc::SimpleMotorFeedforward<units::meters> driveFeedforward{Drive::kS, Drive::kV, Drive::kA};
 
     frc::ProfiledPIDController<units::degrees> turnController{Turn::kP, Turn::kI, Turn::kD, Turn::kTrapezoidProfileContraints};
-
+    frc::SimpleMotorFeedforward<units::degrees> turnFeedforward{Turn::kS, Turn::kV, Turn::kA};
     // Creates a simluation tool for the drive motor
     /// @todo Think about doing kV and kA
     frc::sim::DCMotorSim driveMotorSimModel{

@@ -78,6 +78,9 @@ SwerveModule::SwerveModule(std::string name, int driveMotorID, int turnMotorID, 
     frc::SmartDashboard::PutNumber("Turn D", Turn::kD);
     frc::SmartDashboard::PutNumber("Turn Trapezoid Max Velocity", Turn::kTrapezoidProfileContraints.maxVelocity.value());
     frc::SmartDashboard::PutNumber("Turn Trapezoid Max Acceleration", Turn::kTrapezoidProfileContraints.maxAcceleration.value());
+    frc::SmartDashboard::PutNumber("Turn kS", Turn::kS.value());
+    frc::SmartDashboard::PutNumber("Turn kV", Turn::kV.value());
+    frc::SmartDashboard::PutNumber("Turn kA", Turn::kA.value());
 }
 
 void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
@@ -94,8 +97,13 @@ void SwerveModule::SetDesiredState(frc::SwerveModuleState &state)
     // The deltaAngle added to the CANcoder position allows for a clean transition between the CANcoders discontinuity point at 1 turn
     if (frc::RobotBase::IsReal())
     {
-        turnController.SetGoal(state.angle.Degrees());
+        units::degree_t normalizedAngle{std::fmod(state.angle.Degrees().value(), 360.0)};
+        if (normalizedAngle < 0_deg) normalizedAngle += 360_deg;
+        TelemetryHelperNumber("NormalizedAngle", normalizedAngle.value());
+        turnController.SetGoal(normalizedAngle);
         units::volt_t turnOutput{turnController.Calculate(GetAngle().Degrees())};
+        TelemetryHelperNumber("Setpoint", turnController.GetSetpoint().position.value());
+        turnOutput += turnFeedforward.Calculate(turnController.GetSetpoint().velocity);
         turnMotor.SetControl(controls::VoltageOut{turnOutput});
     }
     else
@@ -139,11 +147,18 @@ void SwerveModule::UpdateTelemetry()
     if (newMaxAccel != turnController.GetConstraints().maxAcceleration.value()) 
         turnController.SetConstraints(frc::TrapezoidProfile<units::degrees>::Constraints{turnController.GetConstraints().maxVelocity, units::degrees_per_second_squared_t{newMaxAccel}});
 
-    double newKs = frc::SmartDashboard::GetNumber("Drive kS", Drive::kS.value());
+    double newKs = frc::SmartDashboard::GetNumber("Turn kS", Turn::kS.value());
+    if (newKs != turnFeedforward.GetKs().value()) turnFeedforward.SetKs(units::volt_t{newKs});
+    double newKv = frc::SmartDashboard::GetNumber("Turn kV", Turn::kV.value());
+    if (newKv != turnFeedforward.GetKv().value()) turnFeedforward.SetKv(units::kv_degrees_t{newKv});
+    double newKa = frc::SmartDashboard::GetNumber("Turn kA", Turn::kA.value());
+    if (newKa != turnFeedforward.GetKa().value()) turnFeedforward.SetKa(units::ka_degrees_t{newKa});
+
+    newKs = frc::SmartDashboard::GetNumber("Drive kS", Drive::kS.value());
     if (newKs != driveFeedforward.GetKs().value()) driveFeedforward.SetKs(units::volt_t{newKs});
-    double newKv = frc::SmartDashboard::GetNumber("Drive kV", Drive::kV.value());
+    newKv = frc::SmartDashboard::GetNumber("Drive kV", Drive::kV.value());
     if (newKv != driveFeedforward.GetKv().value()) driveFeedforward.SetKv(units::kv_meters_t{newKv});
-    double newKa = frc::SmartDashboard::GetNumber("Drive kA", Drive::kA.value());
+    newKa = frc::SmartDashboard::GetNumber("Drive kA", Drive::kA.value());
     if (newKa != driveFeedforward.GetKa().value()) driveFeedforward.SetKa(units::ka_meters_t{newKa});
 }
 
