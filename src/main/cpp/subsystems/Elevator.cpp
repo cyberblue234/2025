@@ -56,7 +56,7 @@ void Elevator::SetMotors(double power)
         power = 0;
     }
     motor1.SetControl(controls::DutyCycleOut{power}
-                    .WithLimitForwardMotion(GetEncoder() > kMaxEncoderValue)
+                    .WithLimitForwardMotion(GetEncoder() > kMaxEncoderValue || IsTopLimitSwitchClosed())
                     .WithLimitReverseMotion(IsBottomLimitSwitchClosed()));
 }
 
@@ -87,7 +87,7 @@ bool Elevator::GoToHeight(const units::meter_t desiredHeight)
         if (frc::SmartDashboard::GetBoolean("Elevator Disable Motion Profiling", false) == false)
         {
             motor1.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
-                        .WithLimitForwardMotion(GetEncoder() > kMaxEncoderValue)
+                        .WithLimitForwardMotion(GetEncoder() > kMaxEncoderValue || IsTopLimitSwitchClosed())
                         .WithLimitReverseMotion(IsBottomLimitSwitchClosed()));
         }
     }

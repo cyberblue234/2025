@@ -59,6 +59,11 @@ public:
     /// @retval false if the limit switch is open
     bool IsBottomLimitSwitchClosed() { return bottomLimitSwitch.Get() && simLimSwitch; }
 
+    /// @brief Gets the state of the top limit switch
+    /// @retval true if the limit switch is closed (pressed)
+    /// @retval false if the limit switch is open
+    bool IsTopLimitSwitchClosed() { return topLimitSwitch.Get(); }
+
     void ResetMotionController() { controller.Reset(GetHeight()); }
 
     bool IsAtPosition() { return controller.AtGoal(); }
@@ -72,7 +77,8 @@ private:
     hardware::TalonFX motor2{RobotMap::Elevator::kMotor2ID, "rio"};
 
     // Creates the limit switch - it is a digital (true or false) input
-    frc::DigitalInput bottomLimitSwitch{2};
+    frc::DigitalInput bottomLimitSwitch{RobotMap::Elevator::kBottomLimitSwitchID};
+    frc::DigitalInput topLimitSwitch{RobotMap::Elevator::kTopLimitSwitchID};
     // Simulated representation of the limit switch
     bool simLimSwitch = true;
 

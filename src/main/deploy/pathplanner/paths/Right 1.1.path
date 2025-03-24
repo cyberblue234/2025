@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 12.907063356164382,
-        "y": 6.489212328767123
+        "x": 12.713385826771653,
+        "y": 6.470944881889763
       },
       "isLocked": false,
       "linkedName": "E"
@@ -71,9 +71,22 @@
       "waypointRelativePos": 0.46440677966101734,
       "endWaypointRelativePos": 1.0,
       "command": {
-        "type": "named",
+        "type": "parallel",
         "data": {
-          "name": "CoralStation"
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "CoralStation"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
         }
       }
     }

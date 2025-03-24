@@ -131,7 +131,9 @@ namespace RobotMap
         //TalonFX
         constexpr int kMotor2ID = 10;
         //DIO
-        constexpr int kBottomLimitSwitchID = 0;
+        constexpr int kBottomLimitSwitchID = 2;
+        //DIO
+        constexpr int kTopLimitSwitchID = 3;
     }
 
     namespace Claw
