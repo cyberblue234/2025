@@ -292,7 +292,7 @@ namespace PathPlannerConstants
     // PIDs for the translation component of PathPlanner
     namespace Translation
     {
-        constexpr double kP = 12.0;
+        constexpr double kP = 8.0;
         constexpr double kI = 0.0;
         constexpr double kD = 0.1;
     }
@@ -387,7 +387,7 @@ namespace LimelightConstants
     constexpr frc::Pose3d kHighOffset{8.75_in, 12_in, 37.875_in, frc::Rotation3d{0_deg, 0_deg, 0_deg}};
     constexpr frc::Pose3d kLowOffset{11.5_in, 0.1875_in, 7.875_in, frc::Rotation3d{0_deg, 0_deg, 0_deg}};
 
-    constexpr wpi::array<double, 3> autonStdDevs{1.2, 1.2, 1.3};
+    constexpr wpi::array<double, 3> autonStdDevs{1.8, 1.8, 1.8};
     constexpr wpi::array<double, 3> teleopStdDevs{0.9, 0.9, 0.9};
 }
 
