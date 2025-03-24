@@ -28,7 +28,12 @@
       "linkedName": "D"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.28342245989304765,
+      "rotationDegrees": -119.99999999999999
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -49,7 +54,7 @@
     {
       "name": "Home",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.95,
+      "endWaypointRelativePos": 0.49830508474576557,
       "command": {
         "type": "named",
         "data": {
@@ -59,7 +64,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 0.75,
+    "maxVelocity": 0.5,
     "maxAcceleration": 0.5,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
