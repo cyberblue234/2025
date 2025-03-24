@@ -9,6 +9,8 @@ void Robot::RobotInit()
 	limelightLow.SetCameraPoseRobotSpace(LimelightConstants::kLowOffset);
 	limelightHigh.SetupPortForwarding();
 	limelightLow.SetupPortForwarding();
+
+	swerve.ResetOdometryRotation();
 }
 
 void Robot::RobotPeriodic() 
@@ -26,7 +28,10 @@ void Robot::RobotPeriodic()
 
 void Robot::DisabledInit() {}
 
-void Robot::DisabledPeriodic() {}
+void Robot::DisabledPeriodic() 
+{
+	swerve.ConfigureBlueOriginOffset();
+}
 
 void Robot::AutonomousInit() 
 {

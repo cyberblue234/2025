@@ -124,6 +124,17 @@ public:
     /// @brief Sets the driving offset to the negated current angle
     void ResetDrivingGyro() { drivingOffset = -GetRobotGyroAngle().Degrees(); }
 
+    void ResetOdometryRotation() { odometry.ResetRotation(GetRobotGyroAngle()); }
+
+    void ConfigureBlueOriginOffset()
+    {
+        auto alliance = frc::DriverStation::GetAlliance();
+        if (alliance)
+        {
+            blueOriginOffset = (alliance == frc::DriverStation::Alliance::kBlue) ? 180_deg : 0_deg;
+        }
+    }
+
     /// @brief Resets drive encoders to 0
     void ResetDriveDistances() 
     {
@@ -186,6 +197,7 @@ private:
     hardware::Pigeon2 gyro{RobotMap::Drivetrain::kGyroID, "rio"};
     ctre::phoenix6::sim::Pigeon2SimState& gyroSim = gyro.GetSimState();
     units::degree_t drivingOffset = 180_deg;
+    units::degree_t blueOriginOffset = 0_deg;
 
     // Creates the two limelight objects, one is higher on the robot and one is lower
     Limelight *limelightHigh;

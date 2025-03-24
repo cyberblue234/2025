@@ -135,15 +135,16 @@ public:
     PoseEstimate GetBotPoseMegatag2Blue() { return GetBotPoseEstimate(botpose_orb_wpiblue); }
     PoseEstimate GetBotPoseMegatag2Red() { return GetBotPoseEstimate(botpose_orb_wpired); }
 
-    void SetCameraPoseRobotSpace(double forward, double side, double up, double roll, double pitch, double yaw)
+    // LL Forward, LL Right, and LL Up represent distances along the Robot's forward, right, and up vectors if you were to embody the robot. (in meters). LL Roll, Pitch, and Yaw represent the rotation of your Limelight in degrees. You can modify these values and watch the 3D model of the Limelight change in the 3D viewer. Limelight uses this configuration internally to go from the target pose in camera space -> robot pose in field space.
+    void SetCameraPoseRobotSpace(double forward, double right, double up, double roll, double pitch, double yaw)
     {
-        std::vector<double> entries = {forward, side, up, roll, pitch, yaw};
+        std::vector<double> entries = {forward, right, up, roll, pitch, yaw};
         camerapose_robotspace_set.Set(entries);
     }
+    // LL Forward, LL Right, and LL Up represent distances along the Robot's forward, right, and up vectors if you were to embody the robot. (in meters). LL Roll, Pitch, and Yaw represent the rotation of your Limelight in degrees. You can modify these values and watch the 3D model of the Limelight change in the 3D viewer. Limelight uses this configuration internally to go from the target pose in camera space -> robot pose in field space.
     void SetCameraPoseRobotSpace(frc::Pose3d offset)
     {
-        std::vector<double> entries = {offset.X().value(), offset.Y().value(), offset.Z().value(), offset.Rotation().X().convert<units::degrees>().value(), offset.Rotation().Y().convert<units::degrees>().value(), offset.Rotation().Z().convert<units::degrees>().value()};
-        camerapose_robotspace_set.Set(entries);
+        SetCameraPoseRobotSpace(offset.X().value(), offset.Y().value(), offset.Z().value(), offset.Rotation().X().convert<units::degrees>().value(), offset.Rotation().Y().convert<units::degrees>().value(), offset.Rotation().Z().convert<units::degrees>().value());
     }
     void SetPriorityID(int id)
     {

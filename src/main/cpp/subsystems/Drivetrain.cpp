@@ -194,7 +194,7 @@ frc2::CommandPtr Drivetrain::DriveToPose(frc::Pose2d pose, frc::Rotation2d endHe
 void Drivetrain::UpdateOdometry()
 {
     // Updates the odometry with the gyro angle and the wheel positions (drive distance and turn angle)
-    odometry.Update(GetRobotGyroAngle(),
+    odometry.UpdateWithTime(frc::Timer::GetFPGATimestamp(), GetRobotGyroAngle(),
                     {frontLeft.GetPosition(), frontRight.GetPosition(),
                      backLeft.GetPosition(), backRight.GetPosition()});
     
@@ -206,19 +206,19 @@ void Drivetrain::UpdateLimelights()
 {
     // Gets the estimated pose from the limelight
     // Uses MegaTag 2 which utilizes current gyro rotation in order to ensure better quality estimations
-    PoseEstimate visionHigh = limelightHigh->GetPose(GetRobotGyroAngle().Degrees(), GetYawRate());
+    PoseEstimate visionHigh = limelightHigh->GetPose(GetRobotGyroAngle().Degrees() + blueOriginOffset, GetYawRate());
     // Rejects the estimation if the rotation rate is too great or if the limelight doesn't see any tags
-    if ((abs(GetYawRate().value()) <= 720 && visionHigh.tagCount > 0))
+    if ((abs(GetYawRate().value()) <= 720 && (visionHigh.tagCount > 1 || (visionHigh.tagCount == 1 && visionHigh.rawFiducials[0].ambiguity < 0.7))))
     {
         SetStdDevs(wpi::array<double, 3>{currentVisionStdDevs[0] + visionHigh.avgTagDist, currentVisionStdDevs[1] + visionHigh.avgTagDist, currentVisionStdDevs[2] + visionHigh.avgTagDist});
-        odometry.AddVisionMeasurement(visionHigh.pose, frc::Timer::GetFPGATimestamp());
+        odometry.AddVisionMeasurement(visionHigh.pose, visionHigh.timestampSeconds);
     }
 
-    PoseEstimate visionLow = limelightLow->GetPose(GetRobotGyroAngle().Degrees(), GetYawRate());
+    PoseEstimate visionLow = limelightLow->GetPose(GetRobotGyroAngle().Degrees() + blueOriginOffset, GetYawRate());
     if ((abs(GetYawRate().value()) <= 720 && visionLow.tagCount > 0))
     {
         SetStdDevs(wpi::array<double, 3>{currentVisionStdDevs[0] + visionLow.avgTagDist, currentVisionStdDevs[1] + visionLow.avgTagDist, currentVisionStdDevs[2] + visionLow.avgTagDist});
-        odometry.AddVisionMeasurement(visionLow.pose, frc::Timer::GetFPGATimestamp());
+        odometry.AddVisionMeasurement(visionLow.pose, visionLow.timestampSeconds);
     }
 }
 
