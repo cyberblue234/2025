@@ -108,7 +108,8 @@ void Controls::DriveControls()
     // The scalar helps to smooth out driving while preserving full control over the speed
     const double scalar = x * x + y * y;
     // Adds a speed adjusmtment based on the right trigger - the more it is pressed, the slower the bot will travel for a maximum reduction of -80%
-    double speedAdjust = 1 - 0.8 * gamepad.GetRightTriggerAxis(); 
+    double speedAdjust = 1 - 0.8 * gamepad.GetRightTriggerAxis();
+    speedAdjust -= 0.3 * (elevator->GetHeight() / ElevatorConstants::kMaxElevatorHeight).value();
 
     const units::meters_per_second_t xSpeed = ApplyDeadband(x * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;
     const units::meters_per_second_t ySpeed = ApplyDeadband(y * scalar, 0.015) * DrivetrainConstants::kMaxSpeed * speedAdjust;
