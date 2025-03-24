@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 15.912200342465754,
-        "y": 1.0949914383561645
+        "x": 16.145230263157895,
+        "y": 1.175082236842105
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.955905140998142,
-        "y": 1.510814819991683
+        "x": 14.274361044458315,
+        "y": 2.4625991665987526
       },
       "isLocked": false,
       "linkedName": "LeftCoralStation"
     },
     {
       "anchor": {
-        "x": 13.553167808219177,
-        "y": 2.8229452054794524
+        "x": 13.568193493150684,
+        "y": 2.787970890410959
       },
       "prevControl": {
-        "x": 14.109536951479692,
-        "y": 2.02836772251913
+        "x": 13.895050927164757,
+        "y": 2.194148830332422
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,31 +29,45 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.8,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 0.5,
+        "maxAngularVelocity": 360.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "L4",
-      "waypointRelativePos": 0.39701492537313415,
-      "endWaypointRelativePos": 1.0,
+      "name": "Home",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.95,
       "command": {
         "type": "named",
         "data": {
-          "name": "L4"
+          "name": "Home"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 0.5,
-    "maxAcceleration": 0.35,
+    "maxVelocity": 0.75,
+    "maxAcceleration": 0.5,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.25,
     "rotation": 119.99999999999999
   },
   "reversed": false,
