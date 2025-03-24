@@ -271,7 +271,7 @@ frc2::CommandPtr Controls::GetBargeCommand()
             if (isElevatorAtPos == true) SetElevatorPosition(Positions::Barge);
             else SetElevatorPosition(std::nullopt);
 
-            if (elevator->GetHeight() < 3.9_ft)
+            if (Positions::Barge.height - elevator->GetHeight() > 10_in)
             {
                 claw->GoToAngle(80_deg);
             }
@@ -280,7 +280,7 @@ frc2::CommandPtr Controls::GetBargeCommand()
                 claw->GoToAngle(Positions::Barge.angle);
             }
             
-            if (Positions::Barge.height - elevator->GetHeight() > 0.5_ft)
+            if (Positions::Barge.height - elevator->GetHeight() > 6_in)
             {
                 claw->SetIOPower(0.0);
             }
