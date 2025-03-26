@@ -127,6 +127,11 @@ public:
     /// @param value new raw position
     void SetCanCoder(units::turn_t value) { canCoder.SetPosition(value); }
 
+    void CoastOut()
+    {
+        driveMotor.SetControl(controls::CoastOut());
+    }
+
 private:
     // The name of the swerve module, helps with telemetry
     std::string name;

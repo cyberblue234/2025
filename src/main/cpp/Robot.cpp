@@ -36,7 +36,10 @@ void Robot::DisabledPeriodic()
 void Robot::AutonomousInit() 
 {
 	autoCmd = autonomous.GetAutoCommand();
-	if (autoCmd) autoCmd->Schedule();
+	if (autoCmd) 
+	{
+		autoCmd->Schedule();
+	}
 
 	swerve.SetStdDevs(LimelightConstants::autonStdDevs);
 }

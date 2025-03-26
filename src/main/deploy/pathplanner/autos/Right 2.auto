@@ -34,7 +34,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.2
+                        "waitTime": 0.25
                       }
                     },
                     {
@@ -50,45 +50,25 @@
           }
         },
         {
-          "type": "race",
+          "type": "path",
+          "data": {
+            "pathName": "Right 2.1"
+          }
+        },
+        {
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Right 2.1"
-                      }
-                    },
-                    {
-                      "type": "deadline",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 0.1
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "CoralStation"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
+                  "name": "Intake"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
+                  "name": "CoralStation"
                 }
               }
             ]
@@ -124,7 +104,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.2
+                        "waitTime": 0.39
                       }
                     },
                     {
@@ -143,12 +123,6 @@
           "type": "path",
           "data": {
             "pathName": "Right 2.3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Right 2.4"
           }
         }
       ]

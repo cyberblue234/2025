@@ -186,6 +186,13 @@ public:
         currentVisionStdDevs = stdDevs;
     }
 
+    void SetDriveMotorsCoastOut()
+    {
+        frontLeft.CoastOut();
+        frontRight.CoastOut();
+        backLeft.CoastOut();
+        backRight.CoastOut();
+    }
 private:
     // Creates the four swerve modules - see SwerveModule.h
     SwerveModule frontLeft{"Front Left", RobotMap::Drivetrain::kFrontLeftDriveID, RobotMap::Drivetrain::kFrontLeftTurnID, RobotMap::Drivetrain::kFrontLeftCanCoderID, kFrontLeftMagnetOffset};

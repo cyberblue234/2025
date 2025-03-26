@@ -8,35 +8,35 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.736585895879402,
-        "y": 5.4052519348097015
+        "x": 14.578937007879972,
+        "y": 5.793818897640836
       },
       "isLocked": false,
       "linkedName": "D"
     },
     {
       "anchor": {
-        "x": 13.933251551739009,
-        "y": 5.530177901461354
+        "x": 16.140472440944883,
+        "y": 6.80259842519685
       },
       "prevControl": {
-        "x": 13.742562310872229,
-        "y": 5.368506588552566
+        "x": 15.504803149612256,
+        "y": 6.415669291341624
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "8_algae"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.8029850746268644,
+      "minWaypointRelativePos": 0.10149253731343286,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.25,
-        "maxAcceleration": 0.6,
+        "maxVelocity": 1.5,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 240.0,
         "maxAngularAcceleration": 240.0,
         "nominalVoltage": 12.0,
@@ -47,13 +47,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "AlgaeHigh",
-      "waypointRelativePos": 0.1016949152542373,
+      "name": "Home",
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
         "data": {
-          "name": "AlgaeHigh"
+          "name": "Home"
         }
       }
     }
@@ -68,7 +68,7 @@
   },
   "goalEndState": {
     "velocity": 0.25,
-    "rotation": -119.99999999999999
+    "rotation": -125.00000000000001
   },
   "reversed": false,
   "folder": "Right 2",

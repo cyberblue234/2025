@@ -36,7 +36,12 @@ std::optional<frc2::CommandPtr> Autonomous::GetAutoCommand()
 {
     std::string auton = autoChooser.GetSelected();
     if (auton == "Nothing") return {};
-    return pathplanner::PathPlannerAuto(auton).ToPtr();
+    return pathplanner::PathPlannerAuto(auton).FinallyDo(
+        [this]
+        {
+            swerve->SetDriveMotorsCoastOut();
+        }
+    );
 }
 
 
@@ -263,6 +268,8 @@ frc2::CommandPtr Autonomous::GoToAlgaeHigh()
         }
     );
 }
+
+
 
 void Autonomous::UpdateTelemetry()
 {
