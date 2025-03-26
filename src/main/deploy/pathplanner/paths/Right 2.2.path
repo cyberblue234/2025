@@ -64,7 +64,7 @@
     },
     {
       "name": "L4",
-      "waypointRelativePos": 0.7462686567164176,
+      "waypointRelativePos": 0.5016949152542379,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
@@ -87,7 +87,7 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "Right 1",
+  "folder": "Right 2",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 55.0

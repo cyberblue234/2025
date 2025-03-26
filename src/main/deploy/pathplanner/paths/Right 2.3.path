@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.092508561643836,
-        "y": 6.729623287671233
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 14.221639342944256,
-        "y": 5.442106357914585
-      },
-      "isLocked": false,
-      "linkedName": "RightCoralStation"
-    },
-    {
-      "anchor": {
         "x": 13.568193493150684,
         "y": 5.212029109589041
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 13.736585895879402,
+        "y": 5.4052519348097015
+      },
+      "isLocked": false,
+      "linkedName": "D"
+    },
+    {
+      "anchor": {
+        "x": 13.933251551739009,
+        "y": 5.530177901461354
+      },
       "prevControl": {
-        "x": 13.895050927164757,
-        "y": 5.805851169667578
+        "x": 13.742562310872229,
+        "y": 5.368506588552566
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "D"
+      "linkedName": "8_algae"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.28342245989304765,
-      "rotationDegrees": -119.99999999999999
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -52,24 +47,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Home",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.49830508474576557,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Home"
-        }
-      }
-    },
-    {
-      "name": "L4",
-      "waypointRelativePos": 0.7462686567164176,
+      "name": "AlgaeHigh",
+      "waypointRelativePos": 0.1016949152542373,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
         "data": {
-          "name": "L4"
+          "name": "AlgaeHigh"
         }
       }
     }
@@ -87,10 +71,10 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "Right 1",
+  "folder": "Right 2",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }

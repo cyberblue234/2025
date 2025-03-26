@@ -58,7 +58,7 @@
     {
       "name": "Home",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.2,
+      "endWaypointRelativePos": 0.4474576271186442,
       "command": {
         "type": "named",
         "data": {
@@ -104,7 +104,7 @@
     "rotation": 55.0
   },
   "reversed": false,
-  "folder": "Right 1",
+  "folder": "Right 2",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -59.99999999999999

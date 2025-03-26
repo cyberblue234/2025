@@ -324,7 +324,7 @@ namespace ElevatorConstants
     constexpr units::volt_t kG{0.1};
     constexpr units::kv_meters_t kV{9.0};
     constexpr units::ka_meters_t kA{0.3};
-    constexpr frc::TrapezoidProfile<units::meters>::Constraints kUpTrapezoidProfileContraints{3.5_mps, 3.5_mps_sq};
+    constexpr frc::TrapezoidProfile<units::meters>::Constraints kUpTrapezoidProfileContraints{2.7_mps, 2.7_mps_sq};
     constexpr frc::TrapezoidProfile<units::meters>::Constraints kDownTrapezoidProfileContraints{2.5_mps, 2.5_mps_sq};                                                       //Te he, hello Elliott. Don't delete me :( - Ayla
     
     // The gearing between the motor and the sprocket

@@ -3,45 +3,40 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.092508561643836,
-        "y": 6.729623287671233
+        "x": 10.44,
+        "y": 5.54
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.221639342944256,
-        "y": 5.442106357914585
+        "x": 11.930393835616437,
+        "y": 5.45244006849315
       },
       "isLocked": false,
-      "linkedName": "RightCoralStation"
+      "linkedName": "Right1"
     },
     {
       "anchor": {
-        "x": 13.568193493150684,
-        "y": 5.212029109589041
+        "x": 12.576498287671233,
+        "y": 5.227054794520548
       },
       "prevControl": {
-        "x": 13.895050927164757,
-        "y": 5.805851169667578
+        "x": 12.306035958904111,
+        "y": 5.602696917808219
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "D"
+      "linkedName": "E"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.28342245989304765,
-      "rotationDegrees": -119.99999999999999
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.8029850746268644,
+      "maxWaypointRelativePos": 0.6,
       "constraints": {
         "maxVelocity": 1.25,
-        "maxAcceleration": 0.6,
+        "maxAcceleration": 0.5,
         "maxAngularVelocity": 240.0,
         "maxAngularAcceleration": 240.0,
         "nominalVoltage": 12.0,
@@ -52,24 +47,24 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Home",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.49830508474576557,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Home"
-        }
-      }
-    },
-    {
       "name": "L4",
-      "waypointRelativePos": 0.7462686567164176,
+      "waypointRelativePos": 0.4745762711864414,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
         "data": {
           "name": "L4"
+        }
+      }
+    },
+    {
+      "name": "Score",
+      "waypointRelativePos": 0.9559322033898315,
+      "endWaypointRelativePos": 1.0,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Score"
         }
       }
     }
@@ -84,13 +79,13 @@
   },
   "goalEndState": {
     "velocity": 0.25,
-    "rotation": -119.99999999999999
+    "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": "Right 1",
+  "folder": "Right 2",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

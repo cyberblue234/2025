@@ -44,6 +44,8 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic() 
 {
 	autonomous.UpdateTelemetry();
+
+
 }
 
 void Robot::TeleopInit() 

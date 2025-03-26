@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.092508561643836,
-        "y": 6.729623287671233
+        "x": 13.933251551739009,
+        "y": 5.530177901461354
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.221639342944256,
-        "y": 5.442106357914585
+        "x": 13.82362883974789,
+        "y": 5.305493987894511
       },
       "isLocked": false,
-      "linkedName": "RightCoralStation"
+      "linkedName": "8_algae"
     },
     {
       "anchor": {
-        "x": 13.568193493150684,
-        "y": 5.212029109589041
+        "x": 13.71911445980293,
+        "y": 5.160750842406619
       },
       "prevControl": {
-        "x": 13.895050927164757,
-        "y": 5.805851169667578
+        "x": 13.82509948631508,
+        "y": 5.387173399046231
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "D"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.28342245989304765,
-      "rotationDegrees": -119.99999999999999
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -52,24 +47,26 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Home",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.49830508474576557,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Home"
-        }
-      }
-    },
-    {
-      "name": "L4",
-      "waypointRelativePos": 0.7462686567164176,
+      "name": "AlgaeHigh And Intake",
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": 1.0,
       "command": {
-        "type": "named",
+        "type": "parallel",
         "data": {
-          "name": "L4"
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AlgaeHigh"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
         }
       }
     }
@@ -87,10 +84,10 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "Right 1",
+  "folder": "Right 2",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }
