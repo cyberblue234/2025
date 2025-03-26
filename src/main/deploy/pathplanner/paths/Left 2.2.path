@@ -1,0 +1,96 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 16.11283464566929,
+        "y": 1.23885826772
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 14.241965426969712,
+        "y": 2.52637519747
+      },
+      "isLocked": false,
+      "linkedName": "LeftCoralStation"
+    },
+    {
+      "anchor": {
+        "x": 13.568193493150684,
+        "y": 2.78797089041
+      },
+      "prevControl": {
+        "x": 13.895050927164757,
+        "y": 2.19414883033
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "K"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.28342245989304765,
+      "rotationDegrees": 119.99999999999999
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.8029850746268644,
+      "constraints": {
+        "maxVelocity": 1.25,
+        "maxAcceleration": 0.6,
+        "maxAngularVelocity": 240.0,
+        "maxAngularAcceleration": 240.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Home",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.49830508474576557,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Home"
+        }
+      }
+    },
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.5016949152542379,
+      "endWaypointRelativePos": 1.0,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 0.5,
+    "maxAcceleration": 0.5,
+    "maxAngularVelocity": 240.0,
+    "maxAngularAcceleration": 240.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.25,
+    "rotation": 119.99999999999999
+  },
+  "reversed": false,
+  "folder": "Left 2",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -55.0
+  },
+  "useDefaultConstraints": true
+}
