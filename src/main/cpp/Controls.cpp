@@ -40,10 +40,20 @@ void Controls::DriveControls()
         swerve->ResetGyro();
     }
 
-    if (gamepad.GetLeftBumperButtonPressed() || gamepad.GetRightBumperButtonPressed()) 
+    if ((gamepad.GetLeftBumperButtonPressed() && leftPathfindRunnable) || (gamepad.GetRightBumperButtonPressed() && rightPathfindRunnable)) 
     {
         units::meter_t offset = RobotConstants::kRobotLength / 2 + RobotConstants::kBumperWidth;
-        path = swerve->PathfindToBranch(gamepad.GetLeftBumperButton() ? Drivetrain::Sides::Left : Drivetrain::Sides::Right, offset, false);
+        Drivetrain::Sides side = Drivetrain::Sides::Right;
+        if (gamepad.GetLeftBumperButton())
+        {
+            side = Drivetrain::Sides::Left;
+            leftPathfindRunnable = false;
+        }
+        else
+        {
+            rightPathfindRunnable = false;
+        }
+        path = swerve->PathfindToBranch(side, offset, false);
         if (path) path->Schedule();
     }
     else if (gamepad.GetAButtonPressed())
@@ -126,6 +136,11 @@ void Controls::DriveControls()
     frc::SmartDashboard::PutNumber("ySpeed", ySpeed.value());
     frc::SmartDashboard::PutNumber("omegaSpeed", omegaSpeed.value());
 
+    if (std::abs(xSpeed.value()) > 0 || std::abs(ySpeed.value()) > 0)
+    {
+        leftPathfindRunnable = true;
+        rightPathfindRunnable = true;
+    }
     frc::ChassisSpeeds setSpeeds = frc::ChassisSpeeds{xSpeed, ySpeed, omegaSpeed};
     swerve->Drive(setSpeeds, fieldRelative);
 }

@@ -308,7 +308,7 @@ namespace PathPlannerConstants
     
     inline pathplanner::RobotConfig kConfig{RobotConstants::kMass, RobotConstants::kMOI, SwerveModuleConstants::moduleConfigs, std::vector<frc::Translation2d>{DrivetrainConstants::kFrontLeftLocation, DrivetrainConstants::kFrontRightLocation, DrivetrainConstants::kBackLeftLocation, DrivetrainConstants::kBackRightLocation}};
     
-    constexpr pathplanner::PathConstraints kReefPathfindingConstraints{0.65_mps, 0.5_mps_sq, 240_deg_per_s, 240_deg_per_s_sq};
+    constexpr pathplanner::PathConstraints kReefPathfindingConstraints{0.75_mps, 0.75_mps_sq, 240_deg_per_s, 240_deg_per_s_sq};
     constexpr pathplanner::PathConstraints kCoralStationPathfindingConstraints{1_mps, 0.5_mps_sq, 360_deg_per_s, 360_deg_per_s_sq};
     constexpr pathplanner::PathConstraints kProcessorPathfindingConstraints{1_mps, 0.5_mps_sq, 360_deg_per_s, 360_deg_per_s_sq};
 }

@@ -101,4 +101,7 @@ private:
     frc2::CommandPtr barge = GetBargeCommand();
 
     bool fieldRelative = true;
+
+    bool leftPathfindRunnable = true;
+    bool rightPathfindRunnable = true;
 };
