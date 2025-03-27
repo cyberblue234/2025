@@ -8,7 +8,7 @@
             "isEllipse": true,
             "centerPx": [
                 150,
-                445
+                500
             ],
             "sizePx": [
                 100,
@@ -21,8 +21,8 @@
             "isYellow": false,
             "isEllipse": true,
             "centerPx": [
-                450,
-                650
+                600,
+                600
             ],
             "sizePx": [
                 100,
@@ -35,8 +35,8 @@
             "isYellow": false,
             "isEllipse": true,
             "centerPx": [
-                600,
-                650
+                750,
+                350
             ],
             "sizePx": [
                 100,
@@ -50,7 +50,7 @@
             "isEllipse": true,
             "centerPx": [
                 600,
-                500
+                450
             ],
             "sizePx": [
                 100,
@@ -91,8 +91,8 @@
             "isYellow": false,
             "isEllipse": true,
             "centerPx": [
-                1050,
-                650
+                1100,
+                600
             ],
             "sizePx": [
                 100,
@@ -105,8 +105,8 @@
             "isYellow": false,
             "isEllipse": true,
             "centerPx": [
-                1050,
-                500
+                1100,
+                450
             ],
             "sizePx": [
                 100,
