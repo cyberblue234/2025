@@ -11,6 +11,11 @@ void Robot::RobotInit()
 	limelightLow.SetupPortForwarding();
 
 	swerve.ResetOdometryRotation();
+
+	// Starts recording to data log
+	frc::DataLogManager::Start();
+	// Record both DS control and joystick data
+	frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
 }
 
 void Robot::RobotPeriodic() 

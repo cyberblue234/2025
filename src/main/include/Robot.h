@@ -6,6 +6,9 @@
 #include <frc/smartdashboard/Mechanism2d.h>
 #include <frc/smartdashboard/MechanismLigament2d.h>
 
+#include "frc/DataLogManager.h"
+#include "frc/DriverStation.h"
+
 #include "Controls.h"
 #include "Autonomous.h"
 
