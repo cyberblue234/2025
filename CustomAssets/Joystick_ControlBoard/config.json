@@ -1,0 +1,242 @@
+{
+    "name": "Control Board",
+    "components": 
+    [
+        {
+            "type": "button",
+            "isYellow": false,
+            "isEllipse": true,
+            "centerPx": [
+                150,
+                445
+            ],
+            "sizePx": [
+                100,
+                100
+            ],
+            "sourceIndex": 10
+        },
+        {
+            "type": "button",
+            "isYellow": false,
+            "isEllipse": true,
+            "centerPx": [
+                450,
+                650
+            ],
+            "sizePx": [
+                100,
+                100
+            ],
+            "sourceIndex": 12
+        },
+        {
+            "type": "button",
+            "isYellow": false,
+            "isEllipse": true,
+            "centerPx": [
+                600,
+                650
+            ],
+            "sizePx": [
+                100,
+                100
+            ],
+            "sourceIndex": 7
+        },
+        {
+            "type": "button",
+            "isYellow": false,
+            "isEllipse": true,
+            "centerPx": [
+                600,
+                500
+            ],
+            "sizePx": [
+                100,
+                100
+            ],
+            "sourceIndex": 2
+        },
+        {
+            "type": "button",
+            "isYellow": false,
+            "isEllipse": true,
+            "centerPx": [
+                750,
+                650
+            ],
+            "sizePx": [
+                100,
+                100
+            ],
+            "sourceIndex": 11
+        },
+        {
+            "type": "button",
+            "isYellow": false,
+            "isEllipse": true,
+            "centerPx": [
+                750,
+                500
+            ],
+            "sizePx": [
+                100,
+                100
+            ],
+            "sourceIndex": 8
+        },
+        {
+            "type": "button",
+            "isYellow": false,
+            "isEllipse": true,
+            "centerPx": [
+                1050,
+                650
+            ],
+            "sizePx": [
+                100,
+                100
+            ],
+            "sourceIndex": 9
+        },
+        {
+            "type": "button",
+            "isYellow": false,
+            "isEllipse": true,
+            "centerPx": [
+                1050,
+                500
+            ],
+            "sizePx": [
+                100,
+                100
+            ],
+            "sourceIndex": 4
+        },
+        {
+            "type": "button",
+            "isYellow": false,
+            "isEllipse": true,
+            "centerPx": [
+                1250,
+                650
+            ],
+            "sizePx": [
+                100,
+                100
+            ],
+            "sourceIndex": 5
+        },
+        {
+            "type": "button",
+            "isYellow": false,
+            "isEllipse": true,
+            "centerPx": [
+                1250,
+                500
+            ],
+            "sizePx": [
+                100,
+                100
+            ],
+            "sourceIndex": 3
+        },
+        {
+            "type": "button",
+            "isYellow": false,
+            "isEllipse": true,
+            "centerPx": [
+                1250,
+                350
+            ],
+            "sizePx": [
+                100,
+                100
+            ],
+            "sourceIndex": 1
+        },
+        {
+            "type": "button",
+            "isYellow": false,
+            "isEllipse": true,
+            "centerPx": [
+                1250,
+                200
+            ],
+            "sizePx": [
+                100,
+                100
+            ],
+            "sourceIndex": 6
+        },
+        {
+            "type": "axis",
+            "isYellow": false,
+            "centerPx": [
+              250,
+              150
+            ],
+            "sizePx": [
+              100,
+              200
+            ],
+            "sourceIndex": 0,
+            "sourceRange": [
+              -1,
+              1
+            ]
+          },
+          {
+            "type": "axis",
+            "isYellow": false,
+            "centerPx": [
+              500,
+              150
+            ],
+            "sizePx": [
+              100,
+              200
+            ],
+            "sourceIndex": 2,
+            "sourceRange": [
+              -1,
+              1
+            ]
+          },
+          {
+            "type": "axis",
+            "isYellow": false,
+            "centerPx": [
+              750,
+              150
+            ],
+            "sizePx": [
+              100,
+              200
+            ],
+            "sourceIndex": 1,
+            "sourceRange": [
+              -1,
+              1
+            ]
+          },
+          {
+            "type": "axis",
+            "isYellow": false,
+            "centerPx": [
+              1000,
+              150
+            ],
+            "sizePx": [
+              100,
+              200
+            ],
+            "sourceIndex": 3,
+            "sourceRange": [
+              -1,
+              1
+            ]
+          }
+    ]
+}
