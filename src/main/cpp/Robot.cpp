@@ -4,7 +4,6 @@ void Robot::RobotInit()
 {
 	EnableLiveWindowInTest(true);
 
-	frc::SmartDashboard::PutData("Mech2d", &mech);
 	limelightHigh.SetCameraPoseRobotSpace(LimelightConstants::kHighOffset);
 	limelightLow.SetCameraPoseRobotSpace(LimelightConstants::kLowOffset);
 	limelightHigh.SetupPortForwarding();
@@ -22,21 +21,16 @@ void Robot::RobotPeriodic()
 {
 	UpdateTelemetry();
 	swerve.UpdateOdometry();
+	swerve.ConfigureBlueOriginOffset();
 	swerve.UpdateLimelights();
 	elevator.UpdateElevator();
 
 	frc2::CommandScheduler::GetInstance().Run();
-
-	elevatorMech->SetLength(elevator.GetHeight().value());
-	clawMech->SetAngle(claw.GetCurrentAngle() - 90_deg);
 }
 
 void Robot::DisabledInit() {}
 
-void Robot::DisabledPeriodic() 
-{
-	swerve.ConfigureBlueOriginOffset();
-}
+void Robot::DisabledPeriodic() {}
 
 void Robot::AutonomousInit() 
 {
@@ -52,8 +46,6 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic() 
 {
 	autonomous.UpdateTelemetry();
-
-
 }
 
 void Robot::TeleopInit() 

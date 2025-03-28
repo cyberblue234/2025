@@ -46,14 +46,6 @@ private:
     Climber climber;
     Pneumatics pneumatics;
 
-    frc::Mechanism2d mech{3, 3};
-    frc::MechanismRoot2d *root = mech.GetRoot("elevator-claw", 0.6, 0.2);
-    frc::MechanismLigament2d* elevatorMech =
-      root->Append<frc::MechanismLigament2d>("elevator", 1, 90_deg);
-    frc::MechanismLigament2d* clawMech =
-        elevatorMech->Append<frc::MechanismLigament2d>(
-            "claw", 0.5, 0_deg, 6, frc::Color8Bit{frc::Color::kPurple});
-
     Limelight limelightHigh{"limelight-high"};
     Limelight limelightLow{"limelight-low"};
 
