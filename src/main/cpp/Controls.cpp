@@ -53,9 +53,10 @@ void Controls::DriveControls()
         {
             rightPathfindRunnable = false;
         }
-        path = swerve->PathfindToBranch(side, offset, false);
         try
         {
+            path = swerve->PathfindToBranch(side, offset, false);
+        
             if (path) path->Schedule();
         }
         catch(...)
