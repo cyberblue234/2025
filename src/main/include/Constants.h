@@ -359,7 +359,7 @@ namespace ClawConstants
     constexpr frc::TrapezoidProfile<units::degrees>::Constraints kTrapezoidProfileContraints{200_deg_per_s, 180_deg_per_s_sq};
 
     // Intake and output powers for coral and algae
-    constexpr double kCoralIntakePower = -0.2;
+    constexpr double kCoralIntakePower = -0.35;
     constexpr double kAlgaeIntakePower = 0.5;
     // Outputting should be negative compared to intaking
     constexpr double kCoralOutputPower = 0.5;
@@ -425,7 +425,7 @@ namespace Positions
     constexpr Position L1           = Position(1.6_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
     constexpr Position L2           = Position(1.0_ft, 13.5_deg,  -ClawConstants::kCoralOutputPower, false);
     constexpr Position L3           = Position(2.5_ft, 13.5_deg,  -ClawConstants::kCoralOutputPower, false);
-    constexpr Position L4           = Position(4.45_ft, 13.5_deg, -ClawConstants::kCoralOutputPower, false);
+    constexpr Position L4           = Position(4.5_ft, 13.5_deg, -ClawConstants::kCoralOutputPower, false);
     constexpr Position AlgaeLow     = Position(2.2_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
     constexpr Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
     constexpr Position CoralStation = Position(1.85_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true);
