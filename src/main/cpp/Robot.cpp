@@ -30,7 +30,27 @@ void Robot::RobotPeriodic()
 
 void Robot::DisabledInit() {}
 
-void Robot::DisabledPeriodic() {}
+void Robot::DisabledPeriodic() 
+{
+	std::string auton = autonomous.GetAutoChooser();
+	if (auton != "Nothing")
+	{
+		auto paths = pathplanner::PathPlannerAuto::getPathGroupFromAutoFile(auton);
+		std::vector<frc::Pose2d> allPathsPoses{};
+		for (std::shared_ptr<pathplanner::PathPlannerPath> path : paths)
+		{
+			for (frc::Pose2d pose : path->getPathPoses())
+			{
+				allPathsPoses.push_back(pose);
+			}
+		}
+		swerve.SetFieldPath(allPathsPoses);
+	}
+	else
+	{
+		swerve.SetFieldPath(std::vector<frc::Pose2d>{swerve.GetPose()});
+	}
+}
 
 void Robot::AutonomousInit() 
 {

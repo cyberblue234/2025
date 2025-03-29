@@ -32,6 +32,8 @@ public:
     frc2::CommandPtr GoToCoralHome();
     frc2::CommandPtr GoToAlgaeHigh();
 
+    std::string GetAutoChooser() { return autoChooser.GetSelected(); }
+
     void Update();
 
     /// @brief Sets current elevator position

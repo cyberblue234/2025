@@ -193,6 +193,11 @@ public:
         backLeft.CoastOut();
         backRight.CoastOut();
     }
+
+    void SetFieldPath(std::vector<frc::Pose2d> poses)
+    {
+        field.GetObject("Auton Paths")->SetPoses(poses);
+    }
 private:
     // Creates the four swerve modules - see SwerveModule.h
     SwerveModule frontLeft{"Front Left", RobotMap::Drivetrain::kFrontLeftDriveID, RobotMap::Drivetrain::kFrontLeftTurnID, RobotMap::Drivetrain::kFrontLeftCanCoderID, kFrontLeftMagnetOffset};
