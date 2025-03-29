@@ -19,6 +19,10 @@ public:
     void SetPower(double power);
 
     void UpdateTelemetry();
+    bool GetLimit()
+    {
+        return limit.Get();
+    }
 private:
     // Creates the climber motor
     SparkFlex climbMotor{RobotMap::Climber::kClimbMotorID, SparkLowLevel::MotorType::kBrushless};

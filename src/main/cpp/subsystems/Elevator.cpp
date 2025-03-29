@@ -128,6 +128,8 @@ void Elevator::UpdateTelemtry()
 {
     frc::SmartDashboard::PutNumber("Elevator Encoder", GetEncoder().value());
     frc::SmartDashboard::PutBoolean("Elevator Bottom Limit Switch", IsBottomLimitSwitchClosed());
+    frc::SmartDashboard::PutBoolean("Elevator Top Limit Switch", IsTopLimitSwitchClosed());
+    frc::SmartDashboard::PutBoolean("Elevator Top Bypass", bypassTopLimit);
     frc::SmartDashboard::PutBoolean("Elevator Is Registered", isElevatorRegistered);
     frc::SmartDashboard::PutNumber("Elevator M1 Pos", motor1.GetPosition().GetValueAsDouble());
     frc::SmartDashboard::PutNumber("Elevator M2 Pos", motor2.GetPosition().GetValueAsDouble());

@@ -155,7 +155,8 @@ void Controls::DriveControls()
 
 void Controls::ElevatorControls() 
 {
-    // If there is a desired position
+    if (gamepad.GetBackButton()) elevator->SetBypassTopLimit(false);
+    if (gamepad.GetStartButton()) elevator->SetBypassTopLimit(true);
 
     if (GetDesiredPosition().has_value() && frc::SmartDashboard::GetBoolean("Elevator Disable Motion Profiling", false) == false)
     {
@@ -200,7 +201,11 @@ void Controls::ElevatorControls()
 
 void Controls::ClawControls()
 {
-    if (GetDesiredPosition().has_value() && frc::SmartDashboard::GetBoolean("Wrist Disable Motion Profiling", false) == false)
+    if (climber->GetLimit() == true)
+    {
+        claw->GoToPosition(Positions::CoralHome);
+    }
+    else if (GetDesiredPosition().has_value() && frc::SmartDashboard::GetBoolean("Wrist Disable Motion Profiling", false) == false)
     {
         units::degree_t desiredAngle = GetDesiredPosition().value().angle;
         units::degree_t deltaAngle = desiredAngle - claw->GetCurrentAngle();

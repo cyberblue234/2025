@@ -62,7 +62,11 @@ public:
     /// @brief Gets the state of the top limit switch
     /// @retval true if the limit switch is closed (pressed)
     /// @retval false if the limit switch is open
-    bool IsTopLimitSwitchClosed() { return topLimitSwitch.Get(); }
+    bool IsTopLimitSwitchClosed() 
+    {
+        if (bypassTopLimit) return false;
+        return topLimitSwitch.Get(); 
+    }
 
     void ResetMotionController() { controller.Reset(GetHeight()); }
 
@@ -70,6 +74,11 @@ public:
 
     /// @brief Simulation periodic
     void SimMode();
+
+    void SetBypassTopLimit(bool set)
+    {
+        bypassTopLimit = set;
+    }
 
 private:
     // Creates the motor objects
@@ -79,6 +88,7 @@ private:
     // Creates the limit switch - it is a digital (true or false) input
     frc::DigitalInput bottomLimitSwitch{RobotMap::Elevator::kBottomLimitSwitchID};
     frc::DigitalInput topLimitSwitch{RobotMap::Elevator::kTopLimitSwitchID};
+    bool bypassTopLimit = false;
     // Simulated representation of the limit switch
     bool simLimSwitch = true;
 
