@@ -87,6 +87,7 @@ private:
 
     // Creates the limit switch - it is a digital (true or false) input
     frc::DigitalInput bottomLimitSwitch{RobotMap::Elevator::kBottomLimitSwitchID};
+    int hitCount = 0;
     frc::DigitalInput topLimitSwitch{RobotMap::Elevator::kTopLimitSwitchID};
     bool bypassTopLimit = false;
     // Simulated representation of the limit switch

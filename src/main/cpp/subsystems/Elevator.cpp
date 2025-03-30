@@ -100,8 +100,13 @@ void Elevator::UpdateElevator()
     // If the limit switch is pressed AND the encoders are close to 0 or the elevator isn't registered
     if (IsBottomLimitSwitchClosed() == true && ((GetEncoder() > 0.025_tr || GetEncoder() < -0.025_tr) || isElevatorRegistered == false))
     {
-        ResetEncoders();
+        if (hitCount > 10) ResetEncoders();
+        hitCount++;
         isElevatorRegistered = true;
+    }
+    else
+    {
+        hitCount = 0;
     }
 }
 
