@@ -198,6 +198,23 @@ public:
     {
         field.GetObject("Auton Paths")->SetPoses(poses);
     }
+
+    /// @brief Flips the given pose if the alliance is blue
+    /// @param pose Pose to flip based on conditional
+    /// @return Pose2d of the possibly flipped pose - std::nullopt if the alliance doesn't exist
+    static frc::Pose2d FlipPose(frc::Pose2d pose)
+    {
+        auto alliance = frc::DriverStation::GetAlliance();
+        if (alliance) 
+        {
+            if (alliance.value() == frc::DriverStation::Alliance::kBlue)
+            {
+                return pathplanner::FlippingUtil::flipFieldPose(pose);
+            }
+            return pose;
+        }
+        else return pose;
+    }
 private:
     // Creates the four swerve modules - see SwerveModule.h
     SwerveModule frontLeft{"Front Left", RobotMap::Drivetrain::kFrontLeftDriveID, RobotMap::Drivetrain::kFrontLeftTurnID, RobotMap::Drivetrain::kFrontLeftCanCoderID, kFrontLeftMagnetOffset};
@@ -278,22 +295,5 @@ private:
     {
         frc::Pose2d pose = frc::Pose2d(11.52_m, 7.59_m, frc::Rotation2d(90_deg));
         return FlipPose(pose);
-    }
-
-    /// @brief Flips the given pose if the alliance is blue
-    /// @param pose Pose to flip based on conditional
-    /// @return Pose2d of the possibly flipped pose - std::nullopt if the alliance doesn't exist
-    static frc::Pose2d FlipPose(frc::Pose2d pose)
-    {
-        auto alliance = frc::DriverStation::GetAlliance();
-        if (alliance) 
-        {
-            if (alliance.value() == frc::DriverStation::Alliance::kBlue)
-            {
-                return pathplanner::FlippingUtil::flipFieldPose(pose);
-            }
-            return pose;
-        }
-        else return pose;
     }
 };

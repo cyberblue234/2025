@@ -100,14 +100,19 @@ frc2::CommandPtr Autonomous::GoToL1()
             if (isWristAtPosition == true) SetWristPosition(Positions::L1);
             else SetWristPosition(std::nullopt);
         }
+    ).BeforeStarting
+    (
+        [this]
+        {
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
+        }
     ).FinallyDo
     (
         [this]
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
         }
     );
 }
@@ -126,14 +131,19 @@ frc2::CommandPtr Autonomous::GoToL2()
             if (isWristAtPosition == true) SetWristPosition(Positions::L2);
             else SetWristPosition(std::nullopt);
         }
+    ).BeforeStarting
+    (
+        [this]
+        {
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
+        }
     ).FinallyDo
     (
         [this]
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
         }
     );
 }
@@ -152,14 +162,19 @@ frc2::CommandPtr Autonomous::GoToL3()
             if (isWristAtPosition == true) SetWristPosition(Positions::L3);
             else SetWristPosition(std::nullopt);
         }
+    ).BeforeStarting
+    (
+        [this]
+        {
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
+        }
     ).FinallyDo
     (
         [this]
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
         }
     );
 }
@@ -178,14 +193,19 @@ frc2::CommandPtr Autonomous::GoToL4()
             if (isWristAtPosition == true) SetWristPosition(Positions::L4);
             else SetWristPosition(std::nullopt);
         }
+    ).BeforeStarting
+    (
+        [this]
+        {
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
+        }
     ).FinallyDo
     (
         [this]
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
         }
     );
 }
@@ -204,15 +224,19 @@ frc2::CommandPtr Autonomous::GoToCoralStation()
             if (isWristAtPosition == true) SetWristPosition(Positions::CoralStation);
             else SetWristPosition(std::nullopt);
         }
+    ).BeforeStarting
+    (
+        [this]
+        {
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
+        }
     ).FinallyDo
     (
         [this]
         {
-
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
         }
     );
 }
@@ -231,14 +255,19 @@ frc2::CommandPtr Autonomous::GoToCoralHome()
             if (isWristAtPosition == true) SetWristPosition(Positions::CoralHome);
             else SetWristPosition(std::nullopt);
         }
+    ).BeforeStarting
+    (
+        [this]
+        {
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
+        }
     ).FinallyDo
     (
         [this]
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
         }
     );
 }
@@ -257,14 +286,19 @@ frc2::CommandPtr Autonomous::GoToAlgaeHigh()
             if (isWristAtPosition == true) SetWristPosition(Positions::AlgaeHigh);
             else SetWristPosition(std::nullopt);
         }
+    ).BeforeStarting
+    (
+        [this]
+        {
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
+        }
     ).FinallyDo
     (
         [this]
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
         }
     );
 }

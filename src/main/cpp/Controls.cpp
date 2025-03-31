@@ -155,8 +155,8 @@ void Controls::DriveControls()
 
 void Controls::ElevatorControls() 
 {
-    if (gamepad.GetBackButton()) elevator->SetBypassTopLimit(false);
-    if (gamepad.GetStartButton()) elevator->SetBypassTopLimit(true);
+    if (gamepad.GetBackButtonPressed()) elevator->SetBypassTopLimit(false);
+    else if (gamepad.GetStartButtonPressed()) elevator->SetBypassTopLimit(true);
 
     if (GetDesiredPosition().has_value() && frc::SmartDashboard::GetBoolean("Elevator Disable Motion Profiling", false) == false)
     {
@@ -180,21 +180,17 @@ void Controls::ElevatorControls()
     {
         // Manual control up
         elevator->SetMotors(kElevatorPower);
-        elevator->ResetMotionController();
         SetElevatorPosition(std::nullopt);
     }
     else if (controlBoard.GetRawAxis(kManualElevatorAxis) < -0.5)
     {
         // Manual control down
         elevator->SetMotors(-kElevatorPower);
-        elevator->ResetMotionController();
         SetElevatorPosition(std::nullopt);
     }
     else
     {
-        // Go down
         elevator->SetMotors(0.0);
-        elevator->ResetMotionController();
         SetElevatorPosition(std::nullopt);
     }
 }
@@ -233,7 +229,6 @@ void Controls::ClawControls()
     else
     {
         claw->SetWristPower(0.0);
-        claw->ResetMotionController();
         SetWristPosition(std::nullopt);
     }
     
@@ -329,6 +324,7 @@ frc2::CommandPtr Controls::GetBargeCommand()
 
 void Controls::SetDesiredPosition()
 {
+    std::optional<Position> oldPosition = desiredPosition;
     if (controlBoard.GetRawButton(kL1Button))
     {
         desiredPosition = Positions::L1;
@@ -376,6 +372,12 @@ void Controls::SetDesiredPosition()
     else
     {
         desiredPosition = std::nullopt;
+    }
+
+    if (!oldPosition && desiredPosition)
+    {
+        elevator->ResetMotionController();
+        claw->ResetMotionController();
     }
 }
 

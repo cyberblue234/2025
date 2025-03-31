@@ -41,7 +41,7 @@ void Robot::DisabledPeriodic()
 		{
 			for (frc::Pose2d pose : path->getPathPoses())
 			{
-				allPathsPoses.push_back(pose);
+				allPathsPoses.push_back(swerve.FlipPose(pose));
 			}
 		}
 		swerve.SetFieldPath(allPathsPoses);
