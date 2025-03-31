@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.407792198623254,
-        "y": 5.736183857644926
+        "x": 13.6210504722116,
+        "y": 5.372236079218382
       },
       "isLocked": false,
       "linkedName": "RightCoralStation"
@@ -20,28 +20,23 @@
         "y": 5.2871575342465755
       },
       "prevControl": {
-        "x": 13.925102297027772,
-        "y": 5.880979594325113
+        "x": 14.292171651549902,
+        "y": 5.748093854795048
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "D"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.28342245989304765,
-      "rotationDegrees": -119.99999999999999
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.8029850746268644,
+      "maxWaypointRelativePos": 0.7970149253731357,
       "constraints": {
-        "maxVelocity": 1.25,
-        "maxAcceleration": 0.6,
+        "maxVelocity": 1.5,
+        "maxAcceleration": 1.0,
         "maxAngularVelocity": 240.0,
         "maxAngularAcceleration": 240.0,
         "nominalVoltage": 12.0,
@@ -52,9 +47,33 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Home",
+      "name": "CoralStation",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.49830508474576557,
+      "endWaypointRelativePos": 0.1970149253731343,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "CoralStation"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Home",
+      "waypointRelativePos": 0.3970149253731343,
+      "endWaypointRelativePos": 0.5970149253731336,
       "command": {
         "type": "named",
         "data": {
@@ -64,12 +83,23 @@
     },
     {
       "name": "L4",
-      "waypointRelativePos": 0.5016949152542379,
+      "waypointRelativePos": 0.8000000000000003,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
         "data": {
           "name": "L4"
+        }
+      }
+    },
+    {
+      "name": "Score",
+      "waypointRelativePos": 0.952238805970149,
+      "endWaypointRelativePos": 1.0,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Score"
         }
       }
     }
@@ -87,7 +117,7 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "Right 2",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -125.00000000000001
