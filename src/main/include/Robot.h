@@ -49,6 +49,10 @@ private:
     Limelight limelightHigh{"limelight-high"};
     Limelight limelightLow{"limelight-low"};
 
+    nt::StructPublisher<frc::Pose3d> stage1Publisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructTopic<frc::Pose3d>("stage 1").Publish();
+    nt::StructPublisher<frc::Pose3d> carriagePublisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructTopic<frc::Pose3d>("carriage").Publish();
+    nt::StructPublisher<frc::Pose3d> clawPublisher = nt::NetworkTableInstance::GetDefault().GetTable("datatable")->GetStructTopic<frc::Pose3d>("claw").Publish();
+
 	frc::PowerDistribution pdp{1, frc::PowerDistribution::ModuleType::kRev};
     
 	Controls controls{GetSwerve(), GetElevator(), GetClaw(), GetClimber(), GetPneumatics(), GetLimelightHigh(), GetLimelightLow()};

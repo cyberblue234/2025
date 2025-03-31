@@ -120,6 +120,8 @@ void Claw::UpdateTelemetry()
     if (newKv != feedforward.GetKv().value()) feedforward.SetKv(units::kv_degrees_t{newKv});
     double newKa = frc::SmartDashboard::GetNumber("Wrist kA", kA.value());
     if (newKa != feedforward.GetKa().value()) feedforward.SetKa(units::ka_degrees_t{newKa});
+
+    
 }
 
 void Claw::SimMode()

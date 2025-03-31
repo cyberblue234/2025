@@ -99,6 +99,12 @@ void Robot::UpdateTelemetry()
 	climber.UpdateTelemetry();
 	limelightHigh.UpdateTelemetry();
 	limelightLow.UpdateTelemetry();
+
+    stage1Publisher.Set(frc::Pose3d{0_m, 0_m, (elevator.GetHeight() - ElevatorConstants::kHeightOffset) / 2 + 5.5_in, frc::Rotation3d{0_deg, 0_deg, 0_deg}});
+    carriagePublisher.Set(frc::Pose3d{0_m, 0_m, elevator.GetHeight(), frc::Rotation3d{0_deg, 0_deg, 0_deg}});
+	units::meter_t x = 0.265_m;
+	units::meter_t y = 0.2402_m;
+	clawPublisher.Set(frc::Pose3d{x, 0_m, elevator.GetHeight() + y, frc::Rotation3d{0_deg, claw.GetCurrentAngle(), 0_deg}});
 }
 
 #ifndef RUNNING_FRC_TESTS
