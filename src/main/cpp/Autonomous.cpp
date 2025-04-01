@@ -185,9 +185,18 @@ frc2::CommandPtr Autonomous::GoToL4()
     (
         [this]
         {
-            bool isElevatorAtPos = elevator->GoToPosition(Positions::L4);
-            if (isElevatorAtPos == true) SetElevatorPosition(Positions::L4);
-            else SetElevatorPosition(std::nullopt);
+            units::meter_t deltaHeight = Positions::L4.height - elevator->GetHeight();
+            if ((claw->GetCurrentAngle() <= 13.5_deg && ((deltaHeight > 0_m && elevator->GetHeight() >= 2_ft) || (deltaHeight < 0_m && elevator->GetHeight() <= 2.5_ft))) 
+            || (claw->GetCurrentAngle() >= 150_deg && (deltaHeight < 0_m && elevator->GetHeight() < 8_in)))
+            {
+                elevator->SetMotors(0);   
+            }
+            else
+            {
+                bool isElevatorAtPos = elevator->GoToPosition(Positions::L4);
+                if (isElevatorAtPos == true) SetElevatorPosition(Positions::L4);
+                else SetElevatorPosition(std::nullopt);
+            }
 
             bool isWristAtPosition = claw->GoToPosition(Positions::L4);
             if (isWristAtPosition == true) SetWristPosition(Positions::L4);

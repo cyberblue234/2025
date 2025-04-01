@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.37853780779157,
-        "y": 5.769143895450193
+        "x": 14.336594674876231,
+        "y": 5.793934800422546
       },
       "isLocked": false,
       "linkedName": "D"
     },
     {
       "anchor": {
-        "x": 16.26484251968504,
-        "y": 7.06515748031496
+        "x": 16.278661417322834,
+        "y": 7.023700787401574
       },
       "prevControl": {
-        "x": 15.696540291889459,
-        "y": 6.690499655479136
+        "x": 15.708076633785318,
+        "y": 6.633684654710151
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "RightCoralStationHopper"
     }
   ],
   "rotationTargets": [],
@@ -84,7 +84,7 @@
     "rotation": -125.00000000000001
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right 3",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -119.99999999999999

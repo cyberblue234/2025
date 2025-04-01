@@ -40,6 +40,8 @@ Elevator::Elevator()
     frc::SmartDashboard::PutBoolean("Elevator Disable Motion Profiling", false);
 
     controller.SetTolerance(kTolerance);
+
+    if (frc::RobotBase::IsSimulation()) isElevatorRegistered = true;
 }
 
 void Elevator::SetMotors(double power)
@@ -97,10 +99,11 @@ bool Elevator::GoToPosition(const Position &pos)
 
 void Elevator::UpdateElevator()
 {
+    if (frc::RobotBase::IsSimulation()) return;
     // If the limit switch is pressed AND the encoders are close to 0 or the elevator isn't registered
     if (IsBottomLimitSwitchClosed() == true && ((GetEncoder() > 0.025_tr || GetEncoder() < -0.025_tr) || isElevatorRegistered == false))
     {
-        if (hitCount > 10 && frc::RobotBase::IsReal()) ResetEncoders();
+        if (hitCount > 10) ResetEncoders();
         hitCount++;
         isElevatorRegistered = true;
     }
@@ -157,23 +160,9 @@ void Elevator::SimMode()
 {
     ctre::phoenix6::sim::TalonFXSimState& motor1Sim = motor1.GetSimState();
     ctre::phoenix6::sim::TalonFXSimState& motor2Sim = motor2.GetSimState();
-
-    // set the supply voltage of the TalonFX
     motor1Sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
     motor2Sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-
-    // get the motor voltage of the TalonFX
-    units::volt_t motorVoltage = motor1Sim.GetMotorVoltage();
-
-    // use the motor voltage to calculate new position and velocity
-    // using WPILib's DCMotorSim class for physics simulation
-    elevatorSim.SetInputVoltage(motorVoltage);
-    elevatorSim.Update(20_ms); // assume 20 ms loop time
-
-    simLimSwitch = elevatorSim.HasHitLowerLimit();
-
-    motor1Sim.SetRawRotorPosition((elevatorSim.GetPosition() - kHeightOffset) / kMetersPerMotorTurn);
-    motor2Sim.SetRawRotorPosition((elevatorSim.GetPosition() - kHeightOffset) / kMetersPerMotorTurn);
-    motor1Sim.SetRotorVelocity(elevatorSim.GetVelocity() / kMetersPerMotorTurn);
-    motor2Sim.SetRotorVelocity(elevatorSim.GetVelocity() / kMetersPerMotorTurn);
+    motor1Sim.SetRawRotorPosition((controller.GetSetpoint().position - kHeightOffset) / kMetersPerMotorTurn);
+    motor2Sim.SetRawRotorPosition((controller.GetSetpoint().position - kHeightOffset) / kMetersPerMotorTurn);
+    
 }

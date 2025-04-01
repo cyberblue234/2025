@@ -8,11 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.6210504722116,
-        "y": 5.372236079218382
+        "x": 13.659428572603266,
+        "y": 5.314525841225652
       },
       "isLocked": false,
-      "linkedName": "RightCoralStation"
+      "linkedName": "RightCoralStationHopper"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 5.2871575342465755
       },
       "prevControl": {
-        "x": 14.292171651549902,
-        "y": 5.748093854795048
+        "x": 14.301374173305861,
+        "y": 5.731899760084101
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.7970149253731357,
+      "maxWaypointRelativePos": 0.8,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 1.0,
@@ -49,7 +49,7 @@
     {
       "name": "CoralStation",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.1970149253731343,
+      "endWaypointRelativePos": 0.0979020979020977,
       "command": {
         "type": "parallel",
         "data": {
@@ -72,8 +72,8 @@
     },
     {
       "name": "Home",
-      "waypointRelativePos": 0.3970149253731343,
-      "endWaypointRelativePos": 0.5970149253731336,
+      "waypointRelativePos": 0.10722610722610706,
+      "endWaypointRelativePos": 0.18648018648018652,
       "command": {
         "type": "named",
         "data": {
@@ -83,7 +83,7 @@
     },
     {
       "name": "L4",
-      "waypointRelativePos": 0.8000000000000003,
+      "waypointRelativePos": 0.1981351981351985,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
@@ -94,7 +94,7 @@
     },
     {
       "name": "Score",
-      "waypointRelativePos": 0.952238805970149,
+      "waypointRelativePos": 0.95,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
@@ -117,7 +117,7 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right 3",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -125.00000000000001

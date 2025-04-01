@@ -81,7 +81,15 @@ void Robot::TeleopPeriodic()
 
 void Robot::TestPeriodic() {}
 
-void Robot::SimulationInit() {}
+void Robot::SimulationInit() 
+{
+	frc::sim::DIOSim bottom{RobotMap::Elevator::kBottomLimitSwitchID};
+	bottom.SetValue(false);
+	frc::sim::DIOSim top{RobotMap::Elevator::kTopLimitSwitchID};
+	top.SetValue(false);
+	frc::sim::DIOSim climber{RobotMap::Climber::kLimitSwitch};
+	climber.SetValue(false);
+}
 
 void Robot::SimulationPeriodic() 
 {

@@ -153,6 +153,8 @@ namespace RobotMap
     {
         //SparkMax
         constexpr int kClimbMotorID = 2;
+        //DIO
+        constexpr int kLimitSwitch = 1;
     }
     namespace Pneumatics
     {
@@ -194,6 +196,8 @@ namespace units
     using meters_per_turn_t = unit_t<meters_per_turn>;
     using radians_per_turn = compound_unit<radian, inverse<turn>>;
     using radians_per_turn_t = unit_t<radians_per_turn>;
+    using degrees_per_turn = compound_unit<degree, inverse<turn>>;
+    using degrees_per_turn_t = unit_t<degrees_per_turn>;
 
     using kv_meters_t = unit_t<frc::SimpleMotorFeedforward<meters>::kv_unit>;
     using ka_meters_t = unit_t<frc::SimpleMotorFeedforward<meters>::ka_unit>;
@@ -367,14 +371,15 @@ namespace ClawConstants
     constexpr double kBargePower = -1.0;
     constexpr double kManualIOPower = 0.2;
 
-    constexpr units::turn_t canCoderMagnetOffset = 0.1582_tr;
+    constexpr units::turn_t kCanCoderMagnetOffset = 0.1582_tr;
 
     constexpr units::degree_t kTolerance = 2.0_deg;
 
-    constexpr units::degree_t kLowLimit = 10_deg;
+    constexpr units::degree_t kLowLimit = -3.5_deg;
     constexpr units::degree_t kHighLimit = 180_deg;
 
     constexpr units::turn_t kWristGearRatio = 233.45_tr;
+    constexpr units::degrees_per_turn_t kDegreesPerMotorTurn = 360_deg / kWristGearRatio;
 
     constexpr double kWristPower = 0.2;
 }
@@ -428,7 +433,7 @@ namespace Positions
     constexpr Position L4           = Position(4.5_ft, 13.5_deg, -ClawConstants::kCoralOutputPower, false);
     constexpr Position AlgaeLow     = Position(2.2_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
     constexpr Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
-    constexpr Position CoralStation = Position(1.85_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true);
+    constexpr Position CoralStation = Position(ElevatorConstants::kHeightOffset, -3.5_deg,  ClawConstants::kCoralIntakePower, true);
     constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset, 160.0_deg,  ClawConstants::kProcessorPower, false);
     constexpr Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 63.0_deg,  ClawConstants::kBargePower, false);
     constexpr Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 15.0_deg,  ClawConstants::kCoralIntakePower, false);

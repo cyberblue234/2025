@@ -26,7 +26,7 @@ Claw::Claw()
     configs::CANcoderConfiguration canCoderWristConfig{};
 
     // Sets the offset for the CANcoder - makes sure 0 is when the wrist is horizontal
-    canCoderWristConfig.MagnetSensor.MagnetOffset = canCoderMagnetOffset;
+    if (frc::RobotBase::IsReal()) canCoderWristConfig.MagnetSensor.MagnetOffset = kCanCoderMagnetOffset;
     // Sets the range of the CANcoder. When it is at 0.5 turn, the CANcoders range is from [-0.2, 0.8)
     canCoderWristConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.8_tr;
     canCoderWristConfig.MagnetSensor.SensorDirection = signals::SensorDirectionValue::Clockwise_Positive;
@@ -119,25 +119,12 @@ void Claw::UpdateTelemetry()
     double newKv = frc::SmartDashboard::GetNumber("Wrist kV", kV.value());
     if (newKv != feedforward.GetKv().value()) feedforward.SetKv(units::kv_degrees_t{newKv});
     double newKa = frc::SmartDashboard::GetNumber("Wrist kA", kA.value());
-    if (newKa != feedforward.GetKa().value()) feedforward.SetKa(units::ka_degrees_t{newKa});
-
-    
+    if (newKa != feedforward.GetKa().value()) feedforward.SetKa(units::ka_degrees_t{newKa});    
 }
 
 void Claw::SimMode()
 {
-    ctre::phoenix6::sim::TalonFXSimState& wristMotorSim = wristMotor.GetSimState();
     ctre::phoenix6::sim::CANcoderSimState& canCoderWristSim = canCoderWrist.GetSimState();
-    
-    wristMotorSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
     canCoderWristSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-
-    units::volt_t motorVoltage = wristMotorSim.GetMotorVoltage();
-
-    clawSim.SetInputVoltage(motorVoltage);
-    clawSim.Update(20_ms); // assume 20 ms loop time
-
-    wristMotorSim.SetRawRotorPosition(-clawSim.GetAngle() * kWristGearRatio.value());
-    wristMotorSim.SetRotorVelocity(-clawSim.GetVelocity() * kWristGearRatio.value());
-    canCoderWristSim.SetRawPosition(-clawSim.GetAngle());
+    canCoderWristSim.SetRawPosition(-controller.GetSetpoint().position);
 }

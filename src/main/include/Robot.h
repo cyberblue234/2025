@@ -3,8 +3,7 @@
 #include <frc/TimedRobot.h>
 #include <frc/PowerDistribution.h>
 
-#include <frc/smartdashboard/Mechanism2d.h>
-#include <frc/smartdashboard/MechanismLigament2d.h>
+#include <frc/simulation/DIOSim.h>
 
 #include "frc/DataLogManager.h"
 #include "frc/DriverStation.h"

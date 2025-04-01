@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 10.55763779527559,
-        "y": 5.6832677165354335
+        "x": 10.53577302631579,
+        "y": 5.939720394736842
       },
       "prevControl": null,
       "nextControl": {
-        "x": 12.048031630892028,
-        "y": 5.5957077850285835
+        "x": 12.77194717216099,
+        "y": 5.184652125623022
       },
       "isLocked": false,
       "linkedName": "Right3"
@@ -20,8 +20,8 @@
         "y": 5.272131849315068
       },
       "prevControl": {
-        "x": 12.275984589041096,
-        "y": 5.647773972602739
+        "x": 12.25283904369673,
+        "y": 5.379436341301453
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "L4",
-      "waypointRelativePos": 0.49552238805970106,
+      "waypointRelativePos": 0.19813519813519934,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
@@ -59,7 +59,7 @@
     },
     {
       "name": "Score",
-      "waypointRelativePos": 0.9559322033898315,
+      "waypointRelativePos": 0.9533213644524238,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
@@ -82,10 +82,10 @@
     "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right 3",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -25.0
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": true
 }

@@ -27,5 +27,5 @@ private:
     // Creates the climber motor
     SparkFlex climbMotor{RobotMap::Climber::kClimbMotorID, SparkLowLevel::MotorType::kBrushless};
 
-    frc::DigitalInput limit{1};
+    frc::DigitalInput limit{RobotMap::Climber::kLimitSwitch};
 };

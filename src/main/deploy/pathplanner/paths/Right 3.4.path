@@ -12,7 +12,7 @@
         "y": 5.094335580257728
       },
       "isLocked": false,
-      "linkedName": "RightCoralStation"
+      "linkedName": "RightCoralStationHopper"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "C"
     }
   ],
   "rotationTargets": [],
@@ -49,7 +49,7 @@
     {
       "name": "CoralStation",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.1970149253731343,
+      "endWaypointRelativePos": 0.10256410256410246,
       "command": {
         "type": "parallel",
         "data": {
@@ -72,8 +72,8 @@
     },
     {
       "name": "Home",
-      "waypointRelativePos": 0.3970149253731343,
-      "endWaypointRelativePos": 0.5970149253731336,
+      "waypointRelativePos": 0.10955710955710936,
+      "endWaypointRelativePos": 0.19347319347319356,
       "command": {
         "type": "named",
         "data": {
@@ -83,7 +83,7 @@
     },
     {
       "name": "L4",
-      "waypointRelativePos": 0.8000000000000003,
+      "waypointRelativePos": 0.19813519813519828,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
@@ -117,7 +117,7 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right 3",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -125.00000000000001

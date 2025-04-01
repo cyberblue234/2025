@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.293779527559055,
-        "y": 6.0701968503937005
+        "x": 13.268338815789473,
+        "y": 6.28610197368421
       },
       "isLocked": false,
       "linkedName": "E"
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "RightCoralStationHopper"
     }
   ],
   "rotationTargets": [
@@ -93,7 +93,7 @@
     "rotation": -125.00000000000001
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right 3",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -59.99999999999999
