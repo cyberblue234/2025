@@ -181,17 +181,20 @@ void Controls::ElevatorControls()
         // Manual control up
         elevator->SetMotors(kElevatorPower);
         SetElevatorPosition(std::nullopt);
+        elevator->ResetMotionController();
     }
     else if (controlBoard.GetRawAxis(kManualElevatorAxis) < -0.5)
     {
         // Manual control down
         elevator->SetMotors(-kElevatorPower);
         SetElevatorPosition(std::nullopt);
+        elevator->ResetMotionController();
     }
     else
     {
         elevator->SetMotors(0.0);
         SetElevatorPosition(std::nullopt);
+        elevator->ResetMotionController();
     }
 }
 
@@ -220,16 +223,19 @@ void Controls::ClawControls()
     {
         claw->SetWristPower(-kWristPower);
         SetWristPosition(std::nullopt);
+        claw->ResetMotionController();
     }
     else if (controlBoard.GetRawAxis(kManualWristAxis) > 0.5)
     {
         claw->SetWristPower(kWristPower);
         SetWristPosition(std::nullopt);
+        claw->ResetMotionController();
     }
     else
     {
         claw->SetWristPower(0.0);
         SetWristPosition(std::nullopt);
+        claw->ResetMotionController();
     }
     
     
@@ -253,10 +259,6 @@ void Controls::ClawControls()
     else if (controlBoard.GetRawAxis(kManualIntakeAxis) > 0.5)
     {
         claw->SetIOPower(kManualIOPower);
-    }
-    else if (gamepad.GetLeftTriggerAxis() > 0.5)
-    {
-        claw->SetIOPower(-1.0);
     }
     else
     {
@@ -374,11 +376,11 @@ void Controls::SetDesiredPosition()
         desiredPosition = std::nullopt;
     }
 
-    if (!oldPosition && desiredPosition)
-    {
-        elevator->ResetMotionController();
-        claw->ResetMotionController();
-    }
+    // if (!oldPosition && desiredPosition)
+    // {
+    //     elevator->ResetMotionController();
+    //     claw->ResetMotionController();
+    // }
 }
 
 void Controls::UpdateTelemetry()
