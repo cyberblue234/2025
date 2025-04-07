@@ -42,6 +42,8 @@ Elevator::Elevator()
     controller.SetTolerance(kTolerance);
 
     if (frc::RobotBase::IsSimulation()) isElevatorRegistered = true;
+
+    frc::SmartDashboard::PutBoolean("Elevator Bypass Top Limit", bypassTopLimit);
 }
 
 void Elevator::SetMotors(double power)
@@ -154,6 +156,7 @@ void Elevator::UpdateTelemtry()
     double newKa = frc::SmartDashboard::GetNumber("Elevator kA", kA.value());
     if (newKa != feedforward.GetKa().value()) feedforward.SetKa(units::ka_meters_t{newKa});
 
+    bypassTopLimit = frc::SmartDashboard::GetBoolean("Elevator Bypass Top Limit", bypassTopLimit);
 }
 
 void Elevator::SimMode()

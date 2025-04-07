@@ -176,6 +176,8 @@ simgui.json
 # Folder that has CTRE Phoenix Sim device config storage
 ctre_sim/
 
+logs/
+
 # clangd
 /.cache
 compile_commands.json

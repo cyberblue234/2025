@@ -79,11 +79,23 @@ std::optional<frc2::CommandPtr> Drivetrain::PathfindToBranch(Sides side, units::
     units::degree_t theta = aprilTagPose.Rotation().Degrees() + 90_deg;
     units::meter_t deltaX1 = units::math::cos(theta) * kDeltaReefAprilTagToBranch;
     units::meter_t deltaY1 = units::math::sin(theta) * kDeltaReefAprilTagToBranch;
-    if (side == Sides::Left)
+    if (IsPoseOnFarSideOfReef(aprilTagPose))
     {
-        deltaX1 = -deltaX1;
-        deltaY1 = -deltaY1;
+        if (side == Sides::Right)
+        {
+            deltaX1 = -deltaX1;
+            deltaY1 = -deltaY1;
+        }
     }
+    else
+    {
+        if (side == Sides::Left)
+        {
+            deltaX1 = -deltaX1;
+            deltaY1 = -deltaY1;
+        }
+    }
+    
     units::meter_t deltaX2 = units::math::sin(theta) * offset;
     units::meter_t deltaY2 = -units::math::cos(theta) * offset;
 
@@ -220,6 +232,19 @@ void Drivetrain::UpdateLimelights()
         SetStdDevs(wpi::array<double, 3>{currentVisionStdDevs[0] + visionLow.avgTagDist, currentVisionStdDevs[1] + visionLow.avgTagDist, currentVisionStdDevs[2] + visionLow.avgTagDist});
         odometry.AddVisionMeasurement(visionLow.pose, visionLow.timestampSeconds);
     }
+}
+
+void Drivetrain::SetAnchorState()
+{
+    frc::SwerveModuleState fl = {0_mps, frc::Rotation2d(units::angle::degree_t(45))};
+    frc::SwerveModuleState fr = {0_mps, frc::Rotation2d(units::angle::degree_t(-45))};
+    frc::SwerveModuleState bl = {0_mps, frc::Rotation2d(units::angle::degree_t(-45))};
+    frc::SwerveModuleState br = {0_mps, frc::Rotation2d(units::angle::degree_t(45))};
+
+    frontLeft.SetDesiredState(fl);
+    frontRight.SetDesiredState(fr);
+    backLeft.SetDesiredState(bl);
+    backRight.SetDesiredState(br);
 }
 
 void Drivetrain::UpdateTelemetry()

@@ -181,6 +181,19 @@ public:
         return aprilTagLocations.GetTagPose(id).value().ToPose2d();
     }
 
+    bool IsPoseOnFarSideOfReef(const frc::Pose2d pose)
+    {
+        auto alliance = frc::DriverStation::GetAlliance();
+        if (alliance.value() == frc::DriverStation::Alliance::kBlue)
+        {
+            return pose.X() >= 4.5_m;
+        }
+        else
+        {
+            return pose.X() <= 13.075_m;
+        }
+    }
+
     void SetStdDevs(wpi::array<double, 3> stdDevs) 
     { 
         currentVisionStdDevs = stdDevs;
@@ -215,6 +228,8 @@ public:
         }
         else return pose;
     }
+
+    void SetAnchorState();
 private:
     // Creates the four swerve modules - see SwerveModule.h
     SwerveModule frontLeft{"Front Left", RobotMap::Drivetrain::kFrontLeftDriveID, RobotMap::Drivetrain::kFrontLeftTurnID, RobotMap::Drivetrain::kFrontLeftCanCoderID, kFrontLeftMagnetOffset};

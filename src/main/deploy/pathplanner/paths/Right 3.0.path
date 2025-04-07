@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 12.546446917808218,
-        "y": 5.272131849315068
+        "x": 12.576498287671233,
+        "y": 5.227054794520548
       },
       "prevControl": {
-        "x": 12.25283904369673,
-        "y": 5.379436341301453
+        "x": 12.282890413559745,
+        "y": 5.334359286506933
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,6 +46,17 @@
   ],
   "pointTowardsZones": [],
   "eventMarkers": [
+    {
+      "name": "Home",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.18644067796610173,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Home"
+        }
+      }
+    },
     {
       "name": "L4",
       "waypointRelativePos": 0.19813519813519934,

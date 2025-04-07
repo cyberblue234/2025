@@ -100,19 +100,14 @@ frc2::CommandPtr Autonomous::GoToL1()
             if (isWristAtPosition == true) SetWristPosition(Positions::L1);
             else SetWristPosition(std::nullopt);
         }
-    ).BeforeStarting
-    (
-        [this]
-        {
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
-        }
     ).FinallyDo
     (
         [this]
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
         }
     );
 }
@@ -131,19 +126,14 @@ frc2::CommandPtr Autonomous::GoToL2()
             if (isWristAtPosition == true) SetWristPosition(Positions::L2);
             else SetWristPosition(std::nullopt);
         }
-    ).BeforeStarting
-    (
-        [this]
-        {
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
-        }
     ).FinallyDo
     (
         [this]
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
         }
     );
 }
@@ -162,19 +152,14 @@ frc2::CommandPtr Autonomous::GoToL3()
             if (isWristAtPosition == true) SetWristPosition(Positions::L3);
             else SetWristPosition(std::nullopt);
         }
-    ).BeforeStarting
-    (
-        [this]
-        {
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
-        }
     ).FinallyDo
     (
         [this]
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
         }
     );
 }
@@ -185,29 +170,13 @@ frc2::CommandPtr Autonomous::GoToL4()
     (
         [this]
         {
-            units::meter_t deltaHeight = Positions::L4.height - elevator->GetHeight();
-            if ((claw->GetCurrentAngle() <= 13.5_deg && ((deltaHeight > 0_m && elevator->GetHeight() >= 2_ft) || (deltaHeight < 0_m && elevator->GetHeight() <= 2.5_ft))) 
-            || (claw->GetCurrentAngle() >= 150_deg && (deltaHeight < 0_m && elevator->GetHeight() < 8_in)))
-            {
-                elevator->SetMotors(0);   
-            }
-            else
-            {
-                bool isElevatorAtPos = elevator->GoToPosition(Positions::L4);
-                if (isElevatorAtPos == true) SetElevatorPosition(Positions::L4);
-                else SetElevatorPosition(std::nullopt);
-            }
+            bool isElevatorAtPos = elevator->GoToPosition(Positions::L4);
+            if (isElevatorAtPos == true) SetElevatorPosition(Positions::L4);
+            else SetElevatorPosition(std::nullopt);
 
             bool isWristAtPosition = claw->GoToPosition(Positions::L4);
             if (isWristAtPosition == true) SetWristPosition(Positions::L4);
             else SetWristPosition(std::nullopt);
-        }
-    ).BeforeStarting
-    (
-        [this]
-        {
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
         }
     ).FinallyDo
     (
@@ -215,6 +184,8 @@ frc2::CommandPtr Autonomous::GoToL4()
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
         }
     );
 }
@@ -233,19 +204,14 @@ frc2::CommandPtr Autonomous::GoToCoralStation()
             if (isWristAtPosition == true) SetWristPosition(Positions::CoralStation);
             else SetWristPosition(std::nullopt);
         }
-    ).BeforeStarting
-    (
-        [this]
-        {
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
-        }
     ).FinallyDo
     (
         [this]
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
         }
     );
 }
@@ -264,19 +230,14 @@ frc2::CommandPtr Autonomous::GoToCoralHome()
             if (isWristAtPosition == true) SetWristPosition(Positions::CoralHome);
             else SetWristPosition(std::nullopt);
         }
-    ).BeforeStarting
-    (
-        [this]
-        {
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
-        }
     ).FinallyDo
     (
         [this]
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
         }
     );
 }
@@ -295,19 +256,14 @@ frc2::CommandPtr Autonomous::GoToAlgaeHigh()
             if (isWristAtPosition == true) SetWristPosition(Positions::AlgaeHigh);
             else SetWristPosition(std::nullopt);
         }
-    ).BeforeStarting
-    (
-        [this]
-        {
-            elevator->ResetMotionController();
-            claw->ResetMotionController();
-        }
     ).FinallyDo
     (
         [this]
         {
             elevator->SetMotors(0.0);
             claw->SetWristPower(0.0);
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
         }
     );
 }

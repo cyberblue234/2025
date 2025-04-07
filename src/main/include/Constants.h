@@ -375,7 +375,7 @@ namespace ClawConstants
 
     constexpr units::degree_t kTolerance = 2.0_deg;
 
-    constexpr units::degree_t kLowLimit = -3.5_deg;
+    constexpr units::degree_t kLowLimit = -10.0_deg;
     constexpr units::degree_t kHighLimit = 180_deg;
 
     constexpr units::turn_t kWristGearRatio = 233.45_tr;
@@ -392,8 +392,8 @@ namespace ClimberConstants
 namespace LimelightConstants
 {
     // Forward, Right, Up, Roll, Pitch, Yaw
-    constexpr frc::Pose3d kHighOffset{8.75_in, 12_in, 37.875_in, frc::Rotation3d{0_deg, 0_deg, 0_deg}};
-    constexpr frc::Pose3d kLowOffset{11.5_in, 0.1875_in, 7.875_in, frc::Rotation3d{0_deg, 0_deg, 0_deg}};
+    constexpr frc::Pose3d kHighOffset{6.75_in, 12_in, 38.125_in, frc::Rotation3d{0_deg, 0_deg, -2.29_deg}};
+    constexpr frc::Pose3d kLowOffset{11.25_in, -0.125_in, 7.625_in, frc::Rotation3d{0_deg, 20_deg, 0_deg}};
 
     constexpr wpi::array<double, 3> autonStdDevs{1.8, 1.8, 1.8};
     constexpr wpi::array<double, 3> teleopStdDevs{0.9, 0.9, 0.9};
@@ -428,12 +428,12 @@ struct Position
 namespace Positions
 {    
     constexpr Position L1           = Position(1.6_ft, 150.0_deg,  ClawConstants::kCoralOutputPower, false);
-    constexpr Position L2           = Position(1.0_ft, 13.5_deg,  -ClawConstants::kCoralOutputPower, false);
+    constexpr Position L2           = Position(1.1_ft, 13.5_deg,  -ClawConstants::kCoralOutputPower, false);
     constexpr Position L3           = Position(2.5_ft, 13.5_deg,  -ClawConstants::kCoralOutputPower, false);
-    constexpr Position L4           = Position(4.5_ft, 13.5_deg, -ClawConstants::kCoralOutputPower, false);
+    constexpr Position L4           = Position(4.55_ft, 13.5_deg, -ClawConstants::kCoralOutputPower, false);
     constexpr Position AlgaeLow     = Position(2.2_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
     constexpr Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
-    constexpr Position CoralStation = Position(ElevatorConstants::kHeightOffset, -3.5_deg,  ClawConstants::kCoralIntakePower, true);
+    constexpr Position CoralStation = Position(1.915_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true);
     constexpr Position Processor    = Position(ElevatorConstants::kHeightOffset, 160.0_deg,  ClawConstants::kProcessorPower, false);
     constexpr Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 63.0_deg,  ClawConstants::kBargePower, false);
     constexpr Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 15.0_deg,  ClawConstants::kCoralIntakePower, false);

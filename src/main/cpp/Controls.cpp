@@ -40,6 +40,13 @@ void Controls::DriveControls()
         swerve->ResetGyro();
     }
 
+    if (gamepad.GetLeftTriggerAxis() >= 0.5)
+    {
+        if (path) path->Cancel();
+        swerve->SetAnchorState();
+        return;
+    }
+
     if ((gamepad.GetLeftBumperButtonPressed() && leftPathfindRunnable) || (gamepad.GetRightBumperButtonPressed() && rightPathfindRunnable)) 
     {
         units::meter_t offset = RobotConstants::kRobotLength / 2 + RobotConstants::kBumperWidth;
@@ -155,14 +162,11 @@ void Controls::DriveControls()
 
 void Controls::ElevatorControls() 
 {
-    if (gamepad.GetBackButtonPressed()) elevator->SetBypassTopLimit(false);
-    else if (gamepad.GetStartButtonPressed()) elevator->SetBypassTopLimit(true);
-
     if (GetDesiredPosition().has_value() && frc::SmartDashboard::GetBoolean("Elevator Disable Motion Profiling", false) == false)
     {
         // Runs the elevator to the position
         units::meter_t deltaHeight = GetDesiredPosition().value().height - elevator->GetHeight();
-        if ((claw->GetCurrentAngle() <= 13.5_deg && ((deltaHeight > 0_m && elevator->GetHeight() >= 2_ft) || (deltaHeight < 0_m && elevator->GetHeight() <= 2.5_ft))) 
+        if ((claw->GetCurrentAngle() <= 10_deg && ((deltaHeight > 0_m && elevator->GetHeight() >= 2_ft) || (deltaHeight < 0_m && elevator->GetHeight() <= 2.5_ft))) 
             || (claw->GetCurrentAngle() >= 150_deg && (deltaHeight < 0_m && elevator->GetHeight() < 8_in)))
         {
             elevator->SetMotors(0);   
@@ -326,7 +330,6 @@ frc2::CommandPtr Controls::GetBargeCommand()
 
 void Controls::SetDesiredPosition()
 {
-    std::optional<Position> oldPosition = desiredPosition;
     if (controlBoard.GetRawButton(kL1Button))
     {
         desiredPosition = Positions::L1;

@@ -57,6 +57,8 @@ Claw::Claw()
     proxSensor.GetConfigurator().Apply(proxSensorConfig);
 
     frc::SmartDashboard::PutData("Wrist PID", &controller);
+    frc::SmartDashboard::PutNumber("Wrist Trapezoid Max Velocity", kTrapezoidProfileContraints.maxVelocity.value());
+    frc::SmartDashboard::PutNumber("Wrist Trapezoid Max Acceleration", kTrapezoidProfileContraints.maxAcceleration.value());
     frc::SmartDashboard::PutNumber("Wrist kS", kS.value());
     frc::SmartDashboard::PutNumber("Wrist kG", kG.value());
     frc::SmartDashboard::PutNumber("Wrist kV", kV.value());
@@ -111,6 +113,13 @@ void Claw::UpdateTelemetry()
     frc::SmartDashboard::PutNumber("Wrist Angle", GetCurrentAngle().value());
     frc::SmartDashboard::PutNumber("Wrist Setpoint", controller.GetSetpoint().position.value());
     frc::SmartDashboard::PutNumber("Wrist motor output", wristMotor.GetMotorVoltage().GetValueAsDouble());
+
+    double newMaxVel = frc::SmartDashboard::GetNumber("Wrist Trapezoid Max Velocity", kTrapezoidProfileContraints.maxVelocity.value());
+    if (newMaxVel != controller.GetConstraints().maxVelocity.value()) 
+        controller.SetConstraints(frc::TrapezoidProfile<units::degrees>::Constraints{units::degrees_per_second_t{newMaxVel}, controller.GetConstraints().maxAcceleration});
+    double newMaxAccel = frc::SmartDashboard::GetNumber("Wrist Trapezoid Max Acceleration", kTrapezoidProfileContraints.maxAcceleration.value());
+    if (newMaxAccel != controller.GetConstraints().maxAcceleration.value()) 
+        controller.SetConstraints(frc::TrapezoidProfile<units::degrees>::Constraints{controller.GetConstraints().maxVelocity, units::degrees_per_second_squared_t{newMaxAccel}});
 
     double newKs = frc::SmartDashboard::GetNumber("Wrist kS", kS.value());
     if (newKs != feedforward.GetKs().value()) feedforward.SetKs(units::volt_t{newKs});
