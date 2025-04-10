@@ -96,8 +96,6 @@ private:
     std::optional<Position> wristPosition;
     std::optional<Position> desiredPosition; 
 
-    Position coralStation = Positions::CoralStation;
-
     std::optional<frc2::CommandPtr> path;
 
     frc2::CommandPtr barge = GetBargeCommand();

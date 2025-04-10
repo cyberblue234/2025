@@ -74,6 +74,12 @@ void Claw::SetWristPower(double power)
     // Sets the duty cycle of the motor
     wristMotor.SetControl(controls::DutyCycleOut{power}
                         .WithLimitForwardMotion(GetCurrentAngle() <= 1_deg));
+    if (frc::RobotBase::IsSimulation())
+    {
+        ctre::phoenix6::sim::CANcoderSimState& canCoderWristSim = canCoderWrist.GetSimState();
+        canCoderWristSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+        canCoderWristSim.AddPosition((1_deg_per_s / ClawConstants::kDegreesPerMotorTurn * power) * 0.02_s);
+    }
 }
 
 bool Claw::GoToAngle(units::degree_t angle)
@@ -87,6 +93,12 @@ bool Claw::GoToAngle(units::degree_t angle)
         wristMotor.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
                             .WithLimitReverseMotion(GetCurrentAngle() >= kHighLimit)
                             .WithLimitForwardMotion(GetCurrentAngle() <= kLowLimit));
+        if (frc::RobotBase::IsSimulation())
+        {
+            ctre::phoenix6::sim::CANcoderSimState& canCoderWristSim = canCoderWrist.GetSimState();
+            canCoderWristSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+            canCoderWristSim.SetRawPosition(-controller.GetSetpoint().position);
+        }
     }
 
     // Returns true if the change in angle is less than the deadzone
@@ -133,7 +145,5 @@ void Claw::UpdateTelemetry()
 
 void Claw::SimMode()
 {
-    ctre::phoenix6::sim::CANcoderSimState& canCoderWristSim = canCoderWrist.GetSimState();
-    canCoderWristSim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-    canCoderWristSim.SetRawPosition(-controller.GetSetpoint().position);
+
 }

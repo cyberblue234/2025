@@ -56,6 +56,15 @@ void Elevator::SetMotors(double power)
     motor1.SetControl(controls::DutyCycleOut{power}
                     .WithLimitForwardMotion(GetEncoder() > kMaxEncoderValue || IsTopLimitSwitchClosed())
                     .WithLimitReverseMotion(IsBottomLimitSwitchClosed()));
+    if (frc::RobotBase::IsSimulation())
+    {
+        ctre::phoenix6::sim::TalonFXSimState& motor1Sim = motor1.GetSimState();
+        ctre::phoenix6::sim::TalonFXSimState& motor2Sim = motor2.GetSimState();
+        motor1Sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+        motor2Sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+        motor1Sim.AddRotorPosition((1_mps / kMetersPerMotorTurn * power) * 0.02_s);
+        motor2Sim.AddRotorPosition((1_mps / kMetersPerMotorTurn * power) * 0.02_s);
+    }
 }
 
 bool Elevator::GoToHeight(const units::meter_t desiredHeight)
@@ -87,6 +96,15 @@ bool Elevator::GoToHeight(const units::meter_t desiredHeight)
             motor1.SetControl(voltageOut.WithOutput(pidSet + feedforwardSet)
                         .WithLimitForwardMotion(GetEncoder() > kMaxEncoderValue || IsTopLimitSwitchClosed())
                         .WithLimitReverseMotion(IsBottomLimitSwitchClosed()));
+            if (frc::RobotBase::IsSimulation())
+            {
+                ctre::phoenix6::sim::TalonFXSimState& motor1Sim = motor1.GetSimState();
+                ctre::phoenix6::sim::TalonFXSimState& motor2Sim = motor2.GetSimState();
+                motor1Sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+                motor2Sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
+                motor1Sim.SetRawRotorPosition((controller.GetSetpoint().position - kHeightOffset) / kMetersPerMotorTurn);
+                motor2Sim.SetRawRotorPosition((controller.GetSetpoint().position - kHeightOffset) / kMetersPerMotorTurn);
+            }
         }
     }
     // Returns true if the position is within the deadzone
@@ -161,11 +179,5 @@ void Elevator::UpdateTelemtry()
 
 void Elevator::SimMode()
 {
-    ctre::phoenix6::sim::TalonFXSimState& motor1Sim = motor1.GetSimState();
-    ctre::phoenix6::sim::TalonFXSimState& motor2Sim = motor2.GetSimState();
-    motor1Sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-    motor2Sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
-    motor1Sim.SetRawRotorPosition((controller.GetSetpoint().position - kHeightOffset) / kMetersPerMotorTurn);
-    motor2Sim.SetRawRotorPosition((controller.GetSetpoint().position - kHeightOffset) / kMetersPerMotorTurn);
-    
+
 }

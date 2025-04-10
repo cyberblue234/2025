@@ -186,7 +186,6 @@ namespace ControlsConstants
     constexpr int kAlgaeHomeButton = 12;
 
     constexpr int kIOButton = 10;
-    
 }
 
 /// @brief Personal add-on to the WPILib units library. See https://docs.wpilib.org/en/stable/docs/software/basic-programming/cpp-units.html for details on it.
