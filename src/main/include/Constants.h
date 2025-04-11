@@ -79,6 +79,9 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/WaitCommand.h>
 
+#include <ctre/phoenix6/swerve/SwerveDrivetrainConstants.hpp>
+#include <ctre/phoenix6/swerve/SwerveModuleConstants.hpp>
+
 #include <numbers>
 #include <string>
 #include <array>

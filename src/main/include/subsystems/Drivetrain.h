@@ -29,6 +29,9 @@
 
 #include <ctre/phoenix6/Pigeon2.hpp>
 #include <ctre/phoenix6/sim/Pigeon2SimState.hpp>
+#include <ctre/phoenix6/swerve/SwerveDrivetrain.hpp>
+#include <ctre/phoenix6/swerve/SwerveRequest.hpp>
+#include <ctre/phoenix6/Utils.hpp>
 
 #include "subsystems/SwerveModule.h"
 #include "subsystems/Limelight.h"
@@ -39,7 +42,7 @@ using namespace PathPlannerConstants;
 using namespace pathplanner;
 using namespace ctre::phoenix6;
 
-class Drivetrain : frc2::SubsystemBase
+class Drivetrain : frc2::Subsystem
 {
 public:
     /// @brief Constructs the swerve drivetrain
@@ -311,4 +314,10 @@ private:
         frc::Pose2d pose = frc::Pose2d(11.52_m, 7.59_m, frc::Rotation2d(90_deg));
         return FlipPose(pose);
     }
+
+    swerve::SwerveDrivetrain<hardware::TalonFX, hardware::TalonFX, hardware::CANcoder> test;
+    swerve::SwerveDrivetrainConstants swerveConstants;
+    swerve::SwerveModuleConstantsFactory<hardware::TalonFX, hardware::TalonFX, hardware::CANcoder> constantsFactory;
+    swerve::SwerveModuleConstants<hardware::TalonFX, hardware::TalonFX, hardware::CANcoder> frontLeftTest;
+    
 };
