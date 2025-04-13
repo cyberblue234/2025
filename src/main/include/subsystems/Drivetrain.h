@@ -314,10 +314,4 @@ private:
         frc::Pose2d pose = frc::Pose2d(11.52_m, 7.59_m, frc::Rotation2d(90_deg));
         return FlipPose(pose);
     }
-
-    swerve::SwerveDrivetrain<hardware::TalonFX, hardware::TalonFX, hardware::CANcoder> test;
-    swerve::SwerveDrivetrainConstants swerveConstants;
-    swerve::SwerveModuleConstantsFactory<hardware::TalonFX, hardware::TalonFX, hardware::CANcoder> constantsFactory;
-    swerve::SwerveModuleConstants<hardware::TalonFX, hardware::TalonFX, hardware::CANcoder> frontLeftTest;
-    
 };
