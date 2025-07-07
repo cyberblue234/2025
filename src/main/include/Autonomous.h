@@ -21,6 +21,7 @@ class Autonomous
 public:
     Autonomous(Drivetrain *swerve, Elevator *elevator, Claw *claw, Climber *climber, Pneumatics *pneumatics,  Limelight *limelightHigh, Limelight *limelightLow);
     std::optional<frc2::CommandPtr> GetAutoCommand();
+    frc2::CommandPtr GetBargeCommand();
 
     frc2::CommandPtr IO();
 

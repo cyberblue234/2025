@@ -32,6 +32,43 @@ Autonomous::Autonomous(Drivetrain *swerve, Elevator *elevator, Claw *claw, Climb
 	frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 }
 
+frc2::CommandPtr Autonomous::GetBargeCommand()
+{
+    return frc2::RunCommand
+    (
+        [this]
+        {
+            bool isElevatorAtPos = elevator->GoToPosition(Positions::Barge);
+            if (isElevatorAtPos == true) SetElevatorPosition(Positions::Barge);
+            else SetElevatorPosition(std::nullopt);
+
+            if (Positions::Barge.height - elevator->GetHeight() > 10_in)
+            {
+                claw->GoToAngle(80_deg);
+            }
+            else
+            {
+                claw->GoToAngle(Positions::Barge.angle);
+            }
+            
+            if (Positions::Barge.height - elevator->GetHeight() > 6_in)
+            {
+                claw->SetIOPower(0.0);
+            }
+            else
+            {
+                claw->SetIOPower(kBargePower);
+            }
+        }
+    ).Until
+    (
+        [this]
+        {
+            return GetElevatorPosition().has_value();
+        }
+    );
+}
+
 std::optional<frc2::CommandPtr> Autonomous::GetAutoCommand()
 {
     std::string auton = autoChooser.GetSelected();
