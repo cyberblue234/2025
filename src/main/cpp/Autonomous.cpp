@@ -18,7 +18,9 @@ Autonomous::Autonomous(Drivetrain *swerve, Elevator *elevator, Claw *claw, Climb
 	NamedCommands::registerCommand("L4", GoToL4());
     NamedCommands::registerCommand("CoralStation", GoToCoralStation());
     NamedCommands::registerCommand("Home", GoToCoralHome());
-    NamedCommands::registerCommand("AlgaeHigh", GoToAlgaeHigh());
+    NamedCommands::registerCommand("AlgaeLow", GoToAlgaeLow());
+    NamedCommands::registerCommand("AlgaeHome", GoToAlgaeHome());
+    
 
     frc::SmartDashboard::PutBoolean("Simulated Coral in Claw", this->simCoralInClaw);
 
@@ -34,38 +36,42 @@ Autonomous::Autonomous(Drivetrain *swerve, Elevator *elevator, Claw *claw, Climb
 
 frc2::CommandPtr Autonomous::GetBargeCommand()
 {
-    return frc2::RunCommand
+    return frc2::cmd::Parallel
     (
-        [this]
-        {
-            bool isElevatorAtPos = elevator->GoToPosition(Positions::Barge);
-            if (isElevatorAtPos == true) SetElevatorPosition(Positions::Barge);
-            else SetElevatorPosition(std::nullopt);
-
-            if (Positions::Barge.height - elevator->GetHeight() > 10_in)
+        frc2::cmd::Run
+        (
+            [this]
             {
-                claw->GoToAngle(80_deg);
+                bool isElevatorAtPos = elevator->GoToPosition(Positions::Barge);
+                if (isElevatorAtPos == true) SetElevatorPosition(Positions::Barge);
+                else SetElevatorPosition(std::nullopt);
             }
-            else
+        ),
+        frc2::cmd::RunOnce
+        (
+            [this]
             {
-                claw->GoToAngle(Positions::Barge.angle);
+                claw->SetWristPower(0.0);
             }
-            
-            if (Positions::Barge.height - elevator->GetHeight() > 6_in)
+        ).Repeatedly().Until([this] { return elevator->GetHeight() > 2.5_ft; }).AndThen
+        (
+            frc2::cmd::Run
+            (
+                [this]
+                {
+                    bool isClawAtPos = claw->GoToPosition(Positions::Barge);
+                    if (isClawAtPos == true) SetWristPosition(Positions::Barge);
+                    else SetWristPosition(std::nullopt);
+                }
+            )
+        ),
+        frc2::cmd::Run
+        (
+            [this]
             {
-                claw->SetIOPower(0.0);
+                claw->SetIOPower(ClawConstants::kManualIOPower);
             }
-            else
-            {
-                claw->SetIOPower(kBargePower);
-            }
-        }
-    ).Until
-    (
-        [this]
-        {
-            return GetElevatorPosition().has_value();
-        }
+        ).Until([this] { return GetElevatorPosition().has_value() && GetWristPosition().has_value(); })
     );
 }
 
@@ -105,6 +111,8 @@ frc2::CommandPtr Autonomous::IO()
             {
                 if (this->GetCurrentPosition().has_value() == false) return false;
                 if (this->GetCurrentPosition().value() == Positions::CoralHome) return false;
+                if (this->GetCurrentPosition().value() == Positions::Barge) return false;
+                if (this->GetCurrentPosition().value() == Positions::AlgaeLow) return false;
                 return this->claw->IsCoralInClaw() == this->GetCurrentPosition().value().isForCoralIntake;
             }
             else 
@@ -279,18 +287,44 @@ frc2::CommandPtr Autonomous::GoToCoralHome()
     );
 }
 
-frc2::CommandPtr Autonomous::GoToAlgaeHigh()
+frc2::CommandPtr Autonomous::GoToAlgaeLow()
 {
     return frc2::RunCommand
     (
         [this]
         {
-            bool isElevatorAtPos = elevator->GoToPosition(Positions::AlgaeHigh);
-            if (isElevatorAtPos == true) SetElevatorPosition(Positions::AlgaeHigh);
+            bool isElevatorAtPos = elevator->GoToPosition(Positions::AlgaeLow);
+            if (isElevatorAtPos == true) SetElevatorPosition(Positions::AlgaeLow);
             else SetElevatorPosition(std::nullopt);
 
-            bool isWristAtPosition = claw->GoToPosition(Positions::AlgaeHigh);
-            if (isWristAtPosition == true) SetWristPosition(Positions::AlgaeHigh);
+            bool isWristAtPosition = claw->GoToPosition(Positions::AlgaeLow);
+            if (isWristAtPosition == true) SetWristPosition(Positions::AlgaeLow);
+            else SetWristPosition(std::nullopt);
+        }
+    ).FinallyDo
+    (
+        [this]
+        {
+            elevator->SetMotors(0.0);
+            claw->SetWristPower(0.0);
+            elevator->ResetMotionController();
+            claw->ResetMotionController();
+        }
+    );
+}
+
+frc2::CommandPtr Autonomous::GoToAlgaeHome()
+{
+    return frc2::RunCommand
+    (
+        [this]
+        {
+            bool isElevatorAtPos = elevator->GoToPosition(Positions::AlgaeHome);
+            if (isElevatorAtPos == true) SetElevatorPosition(Positions::AlgaeHome);
+            else SetElevatorPosition(std::nullopt);
+
+            bool isWristAtPosition = claw->GoToPosition(Positions::AlgaeHome);
+            if (isWristAtPosition == true) SetWristPosition(Positions::AlgaeHome);
             else SetWristPosition(std::nullopt);
         }
     ).FinallyDo

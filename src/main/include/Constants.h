@@ -437,9 +437,9 @@ namespace Positions
     const Position AlgaeHigh    = Position(3.4_ft, 170.0_deg,  ClawConstants::kAlgaeIntakePower, false);
     const Position CoralStation = Position(1.915_ft, 110.0_deg,  ClawConstants::kCoralIntakePower, true);
     const Position Processor    = Position(ElevatorConstants::kHeightOffset, 160.0_deg,  ClawConstants::kProcessorPower, false);
-    const Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 63.0_deg,  ClawConstants::kBargePower, false);
+    const Position Barge        = Position(ElevatorConstants::kMaxElevatorHeight, 60.0_deg,  ClawConstants::kBargePower, false);
     const Position CoralHome    = Position(ElevatorConstants::kHeightOffset, 15.0_deg,  ClawConstants::kCoralIntakePower, false);
-    const Position AlgaeHome    = Position(ElevatorConstants::kHeightOffset, 75.0_deg,  0.0, false);
+    const Position AlgaeHome    = Position(ElevatorConstants::kHeightOffset, 75.0_deg,  ClawConstants::kManualIOPower, false);
 }
 
 /// @brief Clamps the input to a specifed range

@@ -31,7 +31,8 @@ public:
     frc2::CommandPtr GoToL4();
     frc2::CommandPtr GoToCoralStation();
     frc2::CommandPtr GoToCoralHome();
-    frc2::CommandPtr GoToAlgaeHigh();
+    frc2::CommandPtr GoToAlgaeLow();
+    frc2::CommandPtr GoToAlgaeHome();
 
     std::string GetAutoChooser() { return autoChooser.GetSelected(); }
 

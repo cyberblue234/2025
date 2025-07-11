@@ -293,38 +293,51 @@ void Controls::PneumaticsControls()
 
 frc2::CommandPtr Controls::GetBargeCommand()
 {
-    return frc2::RunCommand
+    return frc2::cmd::Parallel
     (
-        [this]
-        {
-            bool isElevatorAtPos = elevator->GoToPosition(Positions::Barge);
-            if (isElevatorAtPos == true) SetElevatorPosition(Positions::Barge);
-            else SetElevatorPosition(std::nullopt);
-
-            if (Positions::Barge.height - elevator->GetHeight() > 10_in)
+        frc2::cmd::Run
+        (
+            [this]
             {
-                claw->GoToAngle(80_deg);
+                bool isElevatorAtPos = elevator->GoToPosition(Positions::Barge);
+                if (isElevatorAtPos == true) SetElevatorPosition(Positions::Barge);
+                else SetElevatorPosition(std::nullopt);
             }
-            else
+        ),
+        frc2::cmd::RunOnce
+        (
+            [this]
             {
-                claw->GoToAngle(Positions::Barge.angle);
+                claw->SetWristPower(0.0);
             }
-            
-            if (Positions::Barge.height - elevator->GetHeight() > 6_in)
+        ).Repeatedly().Until([this] { return elevator->GetHeight() > 2_ft; }).AndThen
+        (
+            frc2::cmd::Run
+            (
+                [this]
+                {
+                    bool isClawAtPos = claw->GoToPosition(Positions::Barge);
+                    if (isClawAtPos == true) SetWristPosition(Positions::Barge);
+                    else SetWristPosition(std::nullopt);
+                }
+            )
+        ),
+        frc2::cmd::Run
+        (
+            [this]
             {
-                claw->SetIOPower(0.0);
+                claw->SetIOPower(ClawConstants::kManualIOPower);
             }
-            else
-            {
-                claw->SetIOPower(kBargePower);
-            }
-        }
-    ).Until
-    (
-        [this]
-        {
-            return GetElevatorPosition().has_value();
-        }
+        ).Until([this] { return controlBoard.GetRawButton(kIOButton); }).AndThen
+        (
+            frc2::cmd::Run
+            (
+                [this]
+                {
+                    claw->SetIOPower(ClawConstants::kBargePower);
+                }
+            )
+        )
     );
 }
 
